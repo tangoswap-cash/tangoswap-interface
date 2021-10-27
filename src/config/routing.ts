@@ -1,8 +1,8 @@
 import {
-    MIST, XMIST, FLEXUSD
+    TANGO, XTANGO, FLEXUSD
 } from '../config/tokens'
 // a list of tokens by chain
-import { ChainId, Currency, Token, WNATIVE } from '@mistswapdex/sdk'
+import { ChainId, Currency, Token, WNATIVE } from '@tangoswapcash/sdk'
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[]
@@ -50,11 +50,11 @@ export const COMMON_BASES: ChainTokenList = {
   [ChainId.SMARTBCH]: [
     ...WRAPPED_NATIVE_ONLY[ChainId.SMARTBCH],
     FLEXUSD,
-    MIST[ChainId.SMARTBCH],
+    TANGO[ChainId.SMARTBCH],
   ],
   [ChainId.SMARTBCH_AMBER]: [
     ...WRAPPED_NATIVE_ONLY[ChainId.SMARTBCH_AMBER],
-    MIST[ChainId.SMARTBCH_AMBER],
+    TANGO[ChainId.SMARTBCH_AMBER],
   ],
 }
 
@@ -69,9 +69,9 @@ export const PINNED_PAIRS: {
   readonly [chainId in ChainId]?: [Token, Token][]
 } = {
   [ChainId.SMARTBCH]: [
-      [MIST[ChainId.SMARTBCH], WNATIVE[ChainId.SMARTBCH]],
+      [TANGO[ChainId.SMARTBCH], WNATIVE[ChainId.SMARTBCH]],
   ],
   [ChainId.SMARTBCH_AMBER]: [
-      [MIST[ChainId.SMARTBCH_AMBER], WNATIVE[ChainId.SMARTBCH_AMBER]]
+      [TANGO[ChainId.SMARTBCH_AMBER], WNATIVE[ChainId.SMARTBCH_AMBER]]
   ],
 }

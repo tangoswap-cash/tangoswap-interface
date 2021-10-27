@@ -1,4 +1,4 @@
-import { ChainId, Currency, NATIVE, MIST_ADDRESS } from '@mistswapdex/sdk'
+import { ChainId, Currency, NATIVE, TANGO_ADDRESS } from '@tangoswapcash/sdk'
 import { Feature, featureEnabled } from '../../functions/feature'
 import React, { useEffect, useState } from 'react'
 
@@ -37,7 +37,7 @@ function AppBar(): JSX.Element {
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <Image src="/logo.png" alt="Mist" width="32px" height="32px" />
+                  <Image src="/logo.png" alt="Tango" width="32px" height="32px" />
                   <div className="hidden sm:block sm:ml-4">
                     <div className="flex space-x-2">
                       {/* <Buy /> */}
@@ -115,7 +115,7 @@ function AppBar(): JSX.Element {
                   <div className="flex items-center justify-between w-full space-x-2 sm:justify-end">
                     {chainId && [ChainId.SMARTBCH].includes(chainId) && library && library.provider.isMetaMask && (
                       <>
-                        <QuestionHelper text={i18n._(t`Add xMIST to your MetaMask wallet`)}>
+                        <QuestionHelper text={i18n._(t`Add xTANGO to your MetaMask wallet`)}>
                           <div
                             className="hidden p-0.5 rounded-md cursor-pointer sm:inline-flex bg-dark-900 hover:bg-dark-800"
                             onClick={() => {
@@ -124,10 +124,10 @@ function AppBar(): JSX.Element {
                                   type: 'ERC20',
                                   options: {
                                     address: '0xC41C680c60309d4646379eD62020c534eB67b6f4',
-                                    symbol: 'xMIST',
+                                    symbol: 'xTANGO',
                                     decimals: 18,
                                     image:
-                                      'https://raw.githubusercontent.com/mistswapdex/assets/master/blockchains/smartbch/assets/0xC41C680c60309d4646379eD62020c534eB67b6f4/logo.png',
+                                      'https://raw.githubusercontent.com/TANGOswapdex/assets/master/blockchains/smartbch/assets/0xC41C680c60309d4646379eD62020c534eB67b6f4/logo.png',
                                   },
                                 }
                                 library.provider
@@ -137,7 +137,7 @@ function AppBar(): JSX.Element {
                                   })
                                   .then((success) => {
                                     if (success) {
-                                      console.log('Successfully added xMIST to MetaMask')
+                                      console.log('Successfully added xTANGO to MetaMask')
                                     } else {
                                       throw new Error('Something went wrong.')
                                     }
@@ -147,8 +147,8 @@ function AppBar(): JSX.Element {
                             }}
                           >
                             <Image
-                              src="/images/tokens/xmist-square.jpg"
-                              alt="xMIST"
+                              src="/images/tokens/xTANGO-square.jpg"
+                              alt="xTANGO"
                               width="38px"
                               height="38px"
                               objectFit="contain"
@@ -159,20 +159,20 @@ function AppBar(): JSX.Element {
                       </>
                     )}
 
-                    {chainId && chainId in MIST_ADDRESS && library && library.provider.isMetaMask && (
+                    {chainId && chainId in TANGO_ADDRESS && library && library.provider.isMetaMask && (
                       <>
-                        <QuestionHelper text={i18n._(t`Add MIST to your MetaMask wallet`)}>
+                        <QuestionHelper text={i18n._(t`Add TANGO to your MetaMask wallet`)}>
                           <div
                             className="hidden rounded-md cursor-pointer sm:inline-flex bg-dark-900 hover:bg-dark-800 p-0.5"
                             onClick={() => {
                               const params: any = {
                                 type: 'ERC20',
                                 options: {
-                                  address: MIST_ADDRESS[chainId],
-                                  symbol: 'MIST',
+                                  address: TANGO_ADDRESS[chainId],
+                                  symbol: 'TANGO',
                                   decimals: 18,
                                   image:
-                                    'https://raw.githubusercontent.com/mistswapdex/assets/master/blockchains/smartbch/assets/0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129/logo.png',
+                                    'https://raw.githubusercontent.com/TANGOswapdex/assets/master/blockchains/smartbch/assets/0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129/logo.png',
                                 },
                               }
                               if (library && library.provider.isMetaMask && library.provider.request) {
@@ -183,7 +183,7 @@ function AppBar(): JSX.Element {
                                   })
                                   .then((success) => {
                                     if (success) {
-                                      console.log('Successfully added MIST to MetaMask')
+                                      console.log('Successfully added TANGO to MetaMask')
                                     } else {
                                       throw new Error('Something went wrong.')
                                     }
@@ -193,8 +193,8 @@ function AppBar(): JSX.Element {
                             }}
                           >
                             <Image
-                              src="/images/tokens/mist-square.jpg"
-                              alt="MIST"
+                              src="/images/tokens/TANGO-square.jpg"
+                              alt="TANGO"
                               width="38px"
                               height="38px"
                               objectFit="contain"
@@ -344,7 +344,7 @@ function AppBar(): JSX.Element {
                 {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
                   <ExternalLink
                     id={`analytics-nav-link`}
-                    href={ANALYTICS_URL[chainId] || 'https://analytics.mistswap.fi'}
+                    href={ANALYTICS_URL[chainId] || 'https://analytics.TANGOswap.fi'}
                     className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                   >
                     {i18n._(t`Analytics`)}

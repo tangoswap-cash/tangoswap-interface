@@ -1,4 +1,4 @@
-import { ChainId } from '@mistswapdex/sdk'
+import { ChainId } from '@tangoswapcash/sdk'
 
 const config = {
   [ChainId.SMARTBCH]: {},

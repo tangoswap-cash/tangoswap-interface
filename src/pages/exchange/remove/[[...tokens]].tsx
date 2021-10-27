@@ -2,7 +2,7 @@ import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCall
 import { ArrowDown, Plus } from 'react-feather'
 import { AutoRow, RowBetween } from '../../../components/Row'
 import { ButtonConfirmed, ButtonError } from '../../../components/Button'
-import { ChainId, Currency, NATIVE, Percent, WNATIVE, WNATIVE_ADDRESS } from '@mistswapdex/sdk'
+import { ChainId, Currency, NATIVE, Percent, WNATIVE, WNATIVE_ADDRESS } from '@tangoswapcash/sdk'
 import React, { useCallback, useMemo, useState } from 'react'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
 import { calculateGasMargin, calculateSlippageAmount, getGasPrice } from '../../../functions/trade'
@@ -308,7 +308,7 @@ export default function Remove() {
       { name: "verifyingContract", type: "address" },
     ];
     const domain = {
-      name: "MISTswap LP Token",
+      name: "TANGOswap LP Token",
       version: "1",
       chainId: chainId,
       verifyingContract: pair.liquidityToken.address,
@@ -697,8 +697,8 @@ export default function Remove() {
   return (
     <Container id="remove-liquidity-page" className="py-4 space-y-4 md:py-8 lg:py-12" maxWidth="2xl">
       <Head>
-        <title>Remove Liquidity | Mist</title>
-        <meta key="description" name="description" content="Remove liquidity from the MISTswap AMM" />
+        <title>Remove Liquidity | Tango</title>
+        <meta key="description" name="description" content="Remove liquidity from the TANGOswap AMM" />
       </Head>
       <div className="px-4 mb-5">
         <NavLink href="/pool">

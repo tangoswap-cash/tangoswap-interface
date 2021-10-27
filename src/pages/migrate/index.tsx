@@ -1,6 +1,6 @@
 import { AddressZero } from '@ethersproject/constants'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Token, CurrencyAmount, JSBI } from '@mistswapdex/sdk'
+import { ChainId, Token, CurrencyAmount, JSBI } from '@tangoswapcash/sdk'
 import { useSushiRollContract } from '../../hooks/useContract'
 import { useLingui } from '@lingui/react'
 import { t } from '@lingui/macro'
@@ -307,7 +307,7 @@ const MigrateButtons = ({ state, exchange }: { state: MigrateState; exchange: st
                 <div className="text-red text-center font-medium">{error.message}</div>
             )}
             <div className="text-xs text-low-emphesis text-center">
-                {`Your ${exchange} ${state.selectedLPToken.tokenA.symbol}/${state.selectedLPToken.tokenB.symbol} liquidity will become MistSwap ${state.selectedLPToken.tokenA.symbol}/${state.selectedLPToken.tokenB.symbol} liquidity.`}
+                {`Your ${exchange} ${state.selectedLPToken.tokenA.symbol}/${state.selectedLPToken.tokenB.symbol} liquidity will become TangoSwap ${state.selectedLPToken.tokenA.symbol}/${state.selectedLPToken.tokenB.symbol} liquidity.`}
             </div>
         </div>
     )
@@ -372,27 +372,27 @@ export default function MigrateV2() {
   return (
     <Container id="migrate-page" className="py-4 space-y-6 md:py-8 lg:py-12" maxWidth="2xl">
       <Head>
-          <title key="title">Migrate LP tokens | Mist</title>
+          <title key="title">Migrate LP tokens | Tango</title>
           <meta
             key="description"
             name="description"
-            content="Migrate LP tokens to Mist LP tokens"
+            content="Migrate LP tokens to Tango LP tokens"
           />
-          <meta key="twitter:url" name="twitter:url" content="https://app.mistswap.fi/migrate" />
+          <meta key="twitter:url" name="twitter:url" content="https://app.TANGOswap.fi/migrate" />
           <meta key="twitter:title" name="twitter:title" content="MIGRATE LP" />
           <meta
             key="twitter:description"
             name="twitter:description"
-            content="Migrate LP tokens to Mist LP tokens"
+            content="Migrate LP tokens to Tango LP tokens"
           />
-          <meta key="twitter:image" name="twitter:image" content="https://app.mistswap.fi/xmist-sign.png" />
+          <meta key="twitter:image" name="twitter:image" content="https://app.TANGOswap.fi/xTANGO-sign.png" />
           <meta key="og:title" property="og:title" content="MIGRATE LP" />
-          <meta key="og:url" property="og:url" content="https://app.mistswap.fi/migrate" />
-          <meta key="og:image" property="og:image" content="https://app.mistswap.fi/xmist-sign.png" />
+          <meta key="og:url" property="og:url" content="https://app.TANGOswap.fi/migrate" />
+          <meta key="og:image" property="og:image" content="https://app.TANGOswap.fi/xTANGO-sign.png" />
           <meta
             key="og:description"
             property="og:description"
-            content="Migrate LP tokens to Mist LP tokens"
+            content="Migrate LP tokens to Tango LP tokens"
           />
       </Head>
 

@@ -1,12 +1,12 @@
-import { ChainId } from '@mistswapdex/sdk'
+import { ChainId } from '@tangoswapcash/sdk'
 import { GRAPH_HOST } from '../constants'
 import { request } from 'graphql-request'
 import { barHistoriesQuery, barQuery } from '../queries/bar'
 import { useActiveWeb3React } from '../../../hooks'
 
 const BAR = {
-  [ChainId.SMARTBCH]: 'mistswap/bar',
-  [ChainId.SMARTBCH_AMBER]: 'mistswap/bar',
+  [ChainId.SMARTBCH]: 'TANGOswap/bar',
+  [ChainId.SMARTBCH_AMBER]: 'TANGOswap/bar',
 }
 
 export const bar = async (query, variables = undefined) => {

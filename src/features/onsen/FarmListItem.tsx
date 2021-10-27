@@ -1,6 +1,6 @@
 import { classNames, formatNumber, formatPercent } from '../../functions'
 
-import { ZERO } from '@mistswapdex/sdk'
+import { ZERO } from '@tangoswapcash/sdk'
 import { Disclosure } from '@headlessui/react'
 import DoubleLogo from '../../components/DoubleLogo'
 import FarmListItemDetails from './FarmListItemDetails'
@@ -41,7 +41,7 @@ const FarmListItem = ({ farm, ...rest }) => {
                     </span>
                   </div>
                   {farm?.pair?.type === PairType.SWAP && (
-                    <div className="text-xs md:text-base text-secondary">{i18n._(t`MistSwap Farm`)}</div>
+                    <div className="text-xs md:text-base text-secondary">{i18n._(t`TangoSwap Farm`)}</div>
                   )}
                   {farm?.pair?.type === PairType.KASHI && (
                     <div className="text-xs md:text-base text-secondary">Kashi Farm</div>
@@ -83,18 +83,18 @@ const FarmListItem = ({ farm, ...rest }) => {
                   <div className="flex items-center space-x-2">
                     <div key="0" className="flex items-center">
                       <Image
-                        src="https://raw.githubusercontent.com/mistswapdex/assets/master/blockchains/smartbch/assets/0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129/logo.png"
+                        src="https://raw.githubusercontent.com/TANGOswapdex/assets/master/blockchains/smartbch/assets/0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129/logo.png"
                         width="30px"
                         height="30px"
                         className="rounded-md"
                         layout="fixed"
-                        alt="MIST"
+                        alt="TANGO"
                       />
                     </div>
                   </div>
                   <div className="flex flex-col space-y-1">
                     <div key="0" className="text-xs md:text-sm whitespace-nowrap">
-                      {formatNumber(pendingSushi.toFixed(18))} MIST
+                      {formatNumber(pendingSushi.toFixed(18))} TANGO
                     </div>
                   </div>
               </div>

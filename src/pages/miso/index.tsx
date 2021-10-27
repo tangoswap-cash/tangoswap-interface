@@ -11,8 +11,8 @@ function MISO() {
   return (
     <>
       <Head>
-        <title>MISO | Mist</title>
-        <meta key="description" name="description" content="MISO by Mist, an initial Mist offering on steroids ..." />
+        <title>MISO | Tango</title>
+        <meta key="description" name="description" content="MISO by Tango, an initial Tango offering on steroids ..." />
       </Head>
       <div
         className="flex flex-col w-full"
@@ -116,8 +116,8 @@ function MISO() {
               <Article
                 title={`Learn more about MISO`}
                 content={`MISO is a suite of open-source smart contracts created to ease the process of launching 
-                          a new project on the MISTswap exchange. MISO aims to drive new capital and trade to the exchange 
-                          by increasing the attractiveness of MISTswap as a place for token creators and communities to launch 
+                          a new project on the TANGOswap exchange. MISO aims to drive new capital and trade to the exchange 
+                          by increasing the attractiveness of TANGOswap as a place for token creators and communities to launch 
                           new project tokens.`}
               />
             </div>

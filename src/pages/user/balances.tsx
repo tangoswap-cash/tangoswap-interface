@@ -1,5 +1,5 @@
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
-import { BENTOBOX_ADDRESS, CurrencyAmount, Token, WNATIVE_ADDRESS } from '@mistswapdex/sdk'
+import { BENTOBOX_ADDRESS, CurrencyAmount, Token, WNATIVE_ADDRESS } from '@tangoswapcash/sdk'
 import { BentoBalance, useBentoBalances } from '../../state/bentobox/hooks'
 import React, { useState } from 'react'
 import { useFuse, useSortableData } from '../../hooks'
@@ -41,7 +41,7 @@ function Balances() {
   return (
     <>
       <Head>
-        <title>Balances | Mist</title>
+        <title>Balances | Tango</title>
         <meta key="description" name="description" content="" />
       </Head>
       <Card

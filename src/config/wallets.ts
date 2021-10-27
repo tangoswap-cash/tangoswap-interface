@@ -1,5 +1,5 @@
 import { AbstractConnector } from '@web3-react/abstract-connector'
-import { ChainId } from '@mistswapdex/sdk'
+import { ChainId } from '@tangoswapcash/sdk'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '../entities/NetworkConnector'
 import RPC from './rpc'
@@ -87,7 +87,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
       return new LatticeConnector({
         chainId: ChainId.SMARTBCH,
         url: RPC[ChainId.SMARTBCH],
-        appName: 'MistSwap',
+        appName: 'TangoSwap',
       })
     },
     name: 'Lattice',
@@ -102,8 +102,8 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
       const WalletLinkConnector = (await import('@web3-react/walletlink-connector')).WalletLinkConnector
       return new WalletLinkConnector({
         url: RPC[ChainId.SMARTBCH],
-        appName: 'MistSwap',
-        appLogoUrl: 'https://raw.githubusercontent.com/mistswapdex/art/master/sushi/logo-256x256.png',
+        appName: 'TangoSwap',
+        appLogoUrl: 'https://raw.githubusercontent.com/TANGOswapdex/art/master/sushi/logo-256x256.png',
       })
     },
     name: 'Coinbase Wallet',

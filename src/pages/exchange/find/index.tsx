@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, SmartBCH, JSBI, NATIVE, Token } from '@mistswapdex/sdk'
+import { Currency, CurrencyAmount, SmartBCH, JSBI, NATIVE, Token } from '@tangoswapcash/sdk'
 import { PairState, useV2Pair } from '../../../hooks/useV2Pairs'
 import React, { useCallback, useEffect, useState } from 'react'
 
@@ -75,7 +75,7 @@ export default function PoolFinder() {
   return (
     <Container id="find-pool-page" className="py-4 space-y-6 md:py-8 lg:py-12" maxWidth="2xl">
       <Head>
-        <title>{i18n._(t`Find Pool`)} | Mist</title>
+        <title>{i18n._(t`Find Pool`)} | Tango</title>
         <meta key="description" name="description" content="Find pool" />
       </Head>
       <div className="p-4 mb-3 space-y-3">

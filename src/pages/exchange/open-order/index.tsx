@@ -2,7 +2,7 @@
 
 import Alert from '../../../components/Alert'
 import { ArrowLeftIcon } from '@heroicons/react/solid'
-import { ChainId } from '@mistswapdex/sdk'
+import { ChainId } from '@tangoswapcash/sdk'
 import CompletedOrders from '../../../features/exchange-v1/open-order/CompletedOrders'
 import Container from '../../../components/Container'
 import DoubleGlowShadow from '../../../components/DoubleGlowShadow'
@@ -24,7 +24,7 @@ function OpenOrdersPage() {
   return (
     <Container id="open-order-page" className="py-4 md:py-8 lg:py-12" maxWidth="2xl">
       <Head>
-        <title>Open Orders | Mist</title>
+        <title>Open Orders | Tango</title>
         <meta name="description" content="Open orders..." />
       </Head>
       <div className="min-w-0 md:min-w-[672px]">

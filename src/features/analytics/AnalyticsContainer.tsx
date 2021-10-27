@@ -6,8 +6,8 @@ export default function AnalyticsContainer({ children }): JSX.Element {
   return (
     <>
       <Head>
-        <title>MISTswap Liquidity Pair (MLP) Analytics | Mist</title>
-        <meta name="description" content="MISTswap Liquidity Pair (SLP) Analytics by Mist" />
+        <title>TANGOswap Liquidity Pair (MLP) Analytics | Tango</title>
+        <meta name="description" content="TANGOswap Liquidity Pair (SLP) Analytics by Tango" />
       </Head>
 
       <Container id="analytics" maxWidth="full" className="grid h-full grid-flow-col grid-cols-10 px-4 mx-auto gap-9">
@@ -19,8 +19,8 @@ export default function AnalyticsContainer({ children }): JSX.Element {
                 href: '/analytics/dashboard',
               },
               {
-                text: 'xMist',
-                href: '/analytics/xMIST',
+                text: 'xTango',
+                href: '/analytics/xTANGO',
               },
               {
                 text: 'Farms',

@@ -6,7 +6,7 @@ import {
   Token,
   TradeType,
   Trade as V2Trade,
-} from '@mistswapdex/sdk'
+} from '@tangoswapcash/sdk'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useApproveCallback'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError } from '../../../features/exchange-v1/swap/styleds'
 import { ButtonConfirmed, ButtonError } from '../../../components/Button'
@@ -416,11 +416,11 @@ export default function Swap() {
   return (
     <Container id="swap-page" className="py-4 md:py-8 lg:py-12">
       <Head>
-        <title>{i18n._(t`MISTswap`)} | MISTswap</title>
+        <title>{i18n._(t`TANGOswap`)} | TANGOswap</title>
         <meta
           key="description"
           name="description"
-          content="MISTswap allows for swapping of SEP20 compatible tokens"
+          content="TANGOswap allows for swapping of SEP20 compatible tokens"
         />
       </Head>
       <TokenWarningModal

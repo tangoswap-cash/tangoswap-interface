@@ -12,8 +12,8 @@ import {
 } from '../../services/graph'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, WNATIVE, Token, WBCH, MASTERCHEF_ADDRESS } from '@mistswapdex/sdk'
-import { MIST, FLEXUSD } from '../../config/tokens'
+import { ChainId, WNATIVE, Token, WBCH, MASTERCHEF_ADDRESS } from '@tangoswapcash/sdk'
+import { TANGO, FLEXUSD } from '../../config/tokens'
 import Container from '../../components/Container'
 import FarmList from '../../features/onsen/FarmList'
 import Head from 'next/head'
@@ -40,13 +40,13 @@ export default function Farm(): JSX.Element {
       "0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154": {
         farmId: 7,
         allocPoint: 361916384,
-        token0: MIST[ChainId.SMARTBCH],
+        token0: TANGO[ChainId.SMARTBCH],
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0x437E444365aD9ed788e8f255c908bceAd5AEA645": {
         farmId: 8,
         allocPoint: 86288234,
-        token0: MIST[ChainId.SMARTBCH],
+        token0: TANGO[ChainId.SMARTBCH],
         token1: FLEXUSD,
       },
       "0x80F712670d268cf2C05e7162674c7466c940eBE3": {
@@ -154,7 +154,7 @@ export default function Farm(): JSX.Element {
       "0xa331430473ABA2337698fD95a7c2fCf376DEbFb1": {
         farmId: 19,
         allocPoint: 2579629,
-        token0: new Token(ChainId.SMARTBCH, '0xC41C680c60309d4646379eD62020c534eB67b6f4', 18, 'XMIST', 'MISTbar'),
+        token0: new Token(ChainId.SMARTBCH, '0xC41C680c60309d4646379eD62020c534eB67b6f4', 18, 'XTANGO', 'TANGObar'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0x1c47c2a72e86B9B488f436F7aC76ACc61e531926": {
@@ -178,8 +178,8 @@ export default function Farm(): JSX.Element {
       "0x0663B29E3CAa8F2DB0313eA8B3E942a0431429cf": {
         farmId: 23,
         allocPoint: 2516289,
-        token0: MIST[ChainId.SMARTBCH],
-        token1: new Token(ChainId.SMARTBCH, '0xC41C680c60309d4646379eD62020c534eB67b6f4', 18, 'XMIST', 'MISTbar'),
+        token0: TANGO[ChainId.SMARTBCH],
+        token1: new Token(ChainId.SMARTBCH, '0xC41C680c60309d4646379eD62020c534eB67b6f4', 18, 'XTANGO', 'TANGObar'),
       },
       "0x211c0d74b1213A40Bdfd61490A9893353544ea46": {
         farmId: 24,
@@ -275,15 +275,15 @@ export default function Farm(): JSX.Element {
     farms.push(f);
   }
 
-  const flexUSDMistPool = farms[1].pool;
+  const flexUSDTangoPool = farms[1].pool;
   const bchFlexUSDPool = farms[3].pool;
   let bchPriceUSD = 0;
-  let mistPriceUSD = 0;
+  let TANGOPriceUSD = 0;
   if (bchFlexUSDPool.reserves) {
     bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
   }
-  if (flexUSDMistPool.reserves) {
-    mistPriceUSD = 1. / ( Number.parseFloat(flexUSDMistPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDMistPool.reserves[1].toFixed()))
+  if (flexUSDTangoPool.reserves) {
+    TANGOPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
   }
 
   let v2PairsBalances = {};
@@ -312,13 +312,13 @@ export default function Farm(): JSX.Element {
         const chefBalance = Number.parseFloat(v2PairsBalances[farms[i].pair].toFixed());
 
         let tvl = 0;
-        if (farms[i].pool.token0 === MIST[chainId].address) {
+        if (farms[i].pool.token0 === TANGO[chainId].address) {
           const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed());
-          tvl = reserve / totalSupply * chefBalance * mistPriceUSD * 2;
+          tvl = reserve / totalSupply * chefBalance * TANGOPriceUSD * 2;
         }
-        else if (farms[i].pool.token1 === MIST[chainId].address) {
+        else if (farms[i].pool.token1 === TANGO[chainId].address) {
           const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed());
-          tvl = reserve / totalSupply * chefBalance * mistPriceUSD * 2;
+          tvl = reserve / totalSupply * chefBalance * TANGOPriceUSD * 2;
         }
         else if (farms[i].pool.token0 === FLEXUSD.address) {
           const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed());
@@ -383,11 +383,11 @@ export default function Farm(): JSX.Element {
       const rewardPerBlock = (pool.allocPoint / pool.owner.totalAllocPoint) * sushiPerBlock
 
       const defaultReward = {
-        token: 'MIST',
-        icon: 'https://raw.githubusercontent.com/mistswapdex/assets/master/blockchains/smartbch/assets/0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129/logo.png',
+        token: 'TANGO',
+        icon: 'https://raw.githubusercontent.com/TANGOswapdex/assets/master/blockchains/smartbch/assets/0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129/logo.png',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
-        rewardPrice: +mistPriceUSD,
+        rewardPrice: +TANGOPriceUSD,
       }
 
       const defaultRewards = [defaultReward]
@@ -456,8 +456,8 @@ export default function Farm(): JSX.Element {
   return (
     <Container id="farm-page" className="grid h-full grid-cols-4 py-4 mx-auto md:py-8 lg:py-12 gap-9" maxWidth="7xl">
       <Head>
-        <title>Farm | Mist</title>
-        <meta key="description" name="description" content="Farm MIST" />
+        <title>Farm | Tango</title>
+        <meta key="description" name="description" content="Farm TANGO" />
       </Head>
       <div className={classNames('sticky top-0 hidden lg:block md:col-span-1')} style={{ maxHeight: '40rem' }}>
         <Menu positionsLength={positions.length} />

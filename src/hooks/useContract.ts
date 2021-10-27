@@ -12,10 +12,10 @@ import {
   MULTICALL2_ADDRESS,
   ROUTER_ADDRESS,
   STOP_LIMIT_ORDER_ADDRESS,
-  MIST_ADDRESS,
-  MISTROLL_ADDRESS,
+  TANGO_ADDRESS,
+  TANGOROLL_ADDRESS,
   WNATIVE_ADDRESS,
-} from '@mistswapdex/sdk'
+} from '@tangoswapcash/sdk'
 import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
@@ -42,7 +42,7 @@ import MASTERCHEF_V2_ABI from '../constants/abis/masterchef-v2.json'
 import MULTICALL2_ABI from '../constants/abis/multicall2.json'
 import ROUTER_ABI from '../constants/abis/router.json'
 import SUSHI_ABI from '../constants/abis/sushi.json'
-import SUSHIROLL_ABI from "@mistswapdex/core/abi/SushiRoll.json";
+import SUSHIROLL_ABI from "@TANGOswapdex/core/abi/SushiRoll.json";
 import WBCH_ABI from '../constants/abis/weth.json'
 import ZENKO_ABI from '../constants/abis/zenko.json'
 import { getContract } from '../functions/contract'
@@ -119,7 +119,7 @@ export function useMulticall2Contract() {
 
 export function useSushiContract(withSignerIfPossible = true): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && MIST_ADDRESS[chainId], SUSHI_ABI, withSignerIfPossible)
+  return useContract(chainId && TANGO_ADDRESS[chainId], SUSHI_ABI, withSignerIfPossible)
 }
 
 export function useMasterChefContract(withSignerIfPossible?: boolean): Contract | null {
@@ -167,7 +167,7 @@ export function useChainlinkOracle(): Contract | null {
 
 export function useSushiRollContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && MISTROLL_ADDRESS[chainId], SUSHIROLL_ABI, false);
+  return useContract(chainId && TANGOROLL_ADDRESS[chainId], SUSHIROLL_ABI, false);
 }
 
 export function useComplexRewarderContract(address, withSignerIfPossible?: boolean): Contract | null {

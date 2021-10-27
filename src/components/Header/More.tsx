@@ -12,14 +12,14 @@ import NavLink from '../NavLink'
 const items = (i18n: I18n) => [
   {
     name: i18n._(t`Docs`),
-    description: i18n._(t`Documentation for users of MIST.`),
-    href: 'https://docs.mistswap.fi',
+    description: i18n._(t`Documentation for users of TANGO.`),
+    href: 'https://docs.TANGOswap.fi',
     external: true,
   },
   {
     name: i18n._(t`Open Source`),
-    description: i18n._(t`MIST is a supporter of Open Source.`),
-    href: 'https://github.com/mistswapdex',
+    description: i18n._(t`TANGO is a supporter of Open Source.`),
+    href: 'https://github.com/tangoswap-cash',
     external: true,
   },
   {
@@ -31,7 +31,7 @@ const items = (i18n: I18n) => [
   {
     name: i18n._(t`Telegram`),
     description: i18n._(t`Join the community on Telegram.`),
-    href: 'https://t.me/MistSwapOfficial',
+    href: 'https://t.me/TangoSwapOfficial',
     external: true,
   },
 ]

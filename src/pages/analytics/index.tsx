@@ -6,8 +6,8 @@ export default function Analytics() {
   return (
     <Container maxWidth="full" className="grid h-full grid-cols-4 mx-auto gap-9">
       <Head>
-        <title>Analytics Dashboard | Mist</title>
-        <meta name="description" content="MIST Analytics Dashboard by MIST..." />
+        <title>Analytics Dashboard | Tango</title>
+        <meta name="description" content="TANGO Analytics Dashboard by TANGO..." />
       </Head>
 
       <div className="sticky top-0 hidden lg:block md:col-span-1" style={{ maxHeight: '40rem' }}>

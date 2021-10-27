@@ -1,4 +1,4 @@
-import { ChainId, CurrencyAmount, JSBI, NATIVE, Pair } from '@mistswapdex/sdk'
+import { ChainId, CurrencyAmount, JSBI, NATIVE, Pair } from '@tangoswapcash/sdk'
 import React, { useMemo } from 'react'
 import { classNames, currencyId } from '../../../functions'
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../../../state/user/hooks'
@@ -9,7 +9,7 @@ import Back from '../../../components/Back'
 import Button from '../../../components/Button'
 import Card from '../../../components/Card'
 import Container from '../../../components/Container'
-import { Currency } from '@mistswapdex/sdk'
+import { Currency } from '@tangoswapcash/sdk'
 import Dots from '../../../components/Dots'
 import Empty from '../../../components/Empty'
 import ExternalLink from '../../../components/ExternalLink'
@@ -89,11 +89,11 @@ export default function Pool() {
   return (
     <Container id="pool-page" className="py-4 space-y-6 md:py-8 lg:py-12" maxWidth="2xl">
       <Head>
-        <title>Pool | Mist</title>
+        <title>Pool | Tango</title>
         <meta
           key="description"
           name="description"
-          content="MISTswap liquidity pools are markets for trades between the two tokens, you can provide these tokens and become a liquidity provider to earn 0.25% of fees from trades."
+          content="TANGOswap liquidity pools are markets for trades between the two tokens, you can provide these tokens and become a liquidity provider to earn 0.25% of fees from trades."
         />
       </Head>
 
@@ -125,7 +125,7 @@ export default function Pool() {
             <>
               {/* <div className="flex items-center justify-center">
                   <ExternalLink
-                    href={"https://analytics.mistswap.fi/user/" + account}
+                    href={"https://analytics.TANGOswap.fi/user/" + account}
                   >
                     Account analytics and accrued fees <span> ↗</span>
                   </ExternalLink>

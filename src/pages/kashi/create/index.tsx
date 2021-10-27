@@ -1,4 +1,4 @@
-import { /* CHAINLINK_ORACLE_ADDRESS,*/ Currency, KASHI_ADDRESS } from '@mistswapdex/sdk'
+import { /* CHAINLINK_ORACLE_ADDRESS,*/ Currency, KASHI_ADDRESS } from '@tangoswapcash/sdk'
 import React, { useCallback } from 'react'
 import { useCreateActionHandlers, useCreateState, useDerivedCreateInfo } from '../../../state/create/hook'
 
@@ -157,8 +157,8 @@ function Create() {
   return (
     <>
       <Head>
-        <title>Create Lending Pair | Kashi by Mist</title>
-        <meta key="description" name="description" content="Create Lending Pair on Kashi by Mist" />
+        <title>Create Lending Pair | Kashi by Tango</title>
+        <meta key="description" name="description" content="Create Lending Pair on Kashi by Tango" />
       </Head>
       <Card
         className="h-full bg-dark-900"

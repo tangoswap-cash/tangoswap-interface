@@ -1,5 +1,5 @@
 import { ANALYTICS_URL } from '../../constants'
-import { ChainId } from '@mistswapdex/sdk'
+import { ChainId } from '@tangoswapcash/sdk'
 import ExternalLink from '../ExternalLink'
 import Polling from '../Polling'
 import { t } from '@lingui/macro'
@@ -16,7 +16,7 @@ const Footer = () => {
         {chainId && chainId in ANALYTICS_URL && (
           <ExternalLink
             id={`analytics-nav-link`}
-            href={ANALYTICS_URL[chainId] || 'https://analytics.mistswap.fi'}
+            href={ANALYTICS_URL[chainId] || 'https://analytics.TANGOswap.fi'}
             className="text-low-emphesis"
           >
             <div className="flex items-center space-x-2">

@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Percent } from '@mistswapdex/sdk'
+import { ChainId, JSBI, Percent } from '@tangoswapcash/sdk'
 
 export const POOL_DENY = ['14', '29', '45', '30']
 
@@ -52,7 +52,7 @@ export const BLOCKED_ADDRESSES: string[] = [
 ]
 
 export const ANALYTICS_URL: { [chainId in ChainId]?: string } = {
-  // [ChainId.SMARTBCH]: 'https://analytics.mistswap.fi',
+  // [ChainId.SMARTBCH]: 'https://analytics.TANGOswap.fi',
 }
 
 export const EIP_1559_ACTIVATION_BLOCK: { [chainId in ChainId]?: number } = {}

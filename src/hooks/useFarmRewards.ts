@@ -12,7 +12,7 @@ import {
   useSushiPrice,
 } from '../services/graph'
 
-import { ChainId } from '@mistswapdex/sdk'
+import { ChainId } from '@tangoswapcash/sdk'
 import { getAddress } from '@ethersproject/address'
 import useActiveWeb3React from './useActiveWeb3React'
 import { useMemo } from 'react'
@@ -70,8 +70,8 @@ export default function useFarmRewards() {
       const rewardPerBlock = (pool.allocPoint / pool.owner.totalAllocPoint) * sushiPerBlock
 
       const defaultReward = {
-        token: 'MIST',
-        icon: 'https://raw.githubusercontent.com/mistswapdex/icons/master/token/sushi.jpg',
+        token: 'TANGO',
+        icon: 'https://raw.githubusercontent.com/TANGOswapdex/icons/master/token/sushi.jpg',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
         rewardPrice: sushiPrice,
@@ -84,8 +84,8 @@ export default function useFarmRewards() {
         pool.owner.totalAllocPoint = masterChefV1TotalAllocPoint
 
         const icon = ['0', '3', '4', '8'].includes(pool.id)
-          ? `https://raw.githubusercontent.com/mistswapdex/icons/master/token/${pool.rewardToken.symbol.toLowerCase()}.jpg`
-          : `https://raw.githubusercontent.com/mistswapdex/assets/master/blockchains/smartbch/assets/${getAddress(
+          ? `https://raw.githubusercontent.com/TANGOswapdex/icons/master/token/${pool.rewardToken.symbol.toLowerCase()}.jpg`
+          : `https://raw.githubusercontent.com/TANGOswapdex/assets/master/blockchains/smartbch/assets/${getAddress(
               pool.rewarder.rewardToken
             )}/logo.png`
 

@@ -1,7 +1,7 @@
 import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
 import { AutoRow, RowBetween } from '../../../components/Row'
 import Button, { ButtonError } from '../../../components/Button'
-import { Currency, CurrencyAmount, Percent, WNATIVE, currencyEquals } from '@mistswapdex/sdk'
+import { Currency, CurrencyAmount, Percent, WNATIVE, currencyEquals } from '@tangoswapcash/sdk'
 import { ONE_BIPS, ZERO_PERCENT } from '../../../constants'
 import React, { useCallback, useState } from 'react'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
@@ -312,11 +312,11 @@ export default function Add() {
   return (
     <>
       <Head>
-        <title>Add Liquidity | Mist</title>
+        <title>Add Liquidity | Tango</title>
         <meta
           key="description"
           name="description"
-          content="Add liquidity to the MISTswap AMM to enable gas optimised and low slippage trades across countless networks"
+          content="Add liquidity to the TANGOswap AMM to enable gas optimised and low slippage trades across countless networks"
         />
       </Head>
 

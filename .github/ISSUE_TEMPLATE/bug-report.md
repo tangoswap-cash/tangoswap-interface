@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Describe an issue in the MistSwap Interface
+about: Describe an issue in the TangoSwap Interface
 title: ''
 labels: bug
 assignees: ''
