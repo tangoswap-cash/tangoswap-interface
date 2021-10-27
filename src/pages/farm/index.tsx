@@ -37,12 +37,12 @@ export default function Farm(): JSX.Element {
 
   const hardcodedPairs = {
     [ChainId.SMARTBCH]: {
-      "0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154": {
-        farmId: 7,
-        allocPoint: 361916384,
-        token0: TANGO[ChainId.SMARTBCH],
-        token1: WBCH[ChainId.SMARTBCH],
-      },
+      // "0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154": {
+      //   farmId: 7,
+      //   allocPoint: 361916384,
+      //   token0: TANGO[ChainId.SMARTBCH],
+      //   token1: WBCH[ChainId.SMARTBCH],
+      // },
       "0x437E444365aD9ed788e8f255c908bceAd5AEA645": {
         farmId: 8,
         allocPoint: 86288234,
@@ -154,7 +154,7 @@ export default function Farm(): JSX.Element {
       "0xa331430473ABA2337698fD95a7c2fCf376DEbFb1": {
         farmId: 19,
         allocPoint: 2579629,
-        token0: new Token(ChainId.SMARTBCH, '0xC41C680c60309d4646379eD62020c534eB67b6f4', 18, 'XTANGO', 'TANGObar'),
+        token0: new Token(ChainId.SMARTBCH, '0x0907E283928Cc54C33D513b612A1C3346360453E', 18, 'XTANGO', 'TANGObar'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0x1c47c2a72e86B9B488f436F7aC76ACc61e531926": {
@@ -179,7 +179,7 @@ export default function Farm(): JSX.Element {
         farmId: 23,
         allocPoint: 2516289,
         token0: TANGO[ChainId.SMARTBCH],
-        token1: new Token(ChainId.SMARTBCH, '0xC41C680c60309d4646379eD62020c534eB67b6f4', 18, 'XTANGO', 'TANGObar'),
+        token1: new Token(ChainId.SMARTBCH, '0x0907E283928Cc54C33D513b612A1C3346360453E', 18, 'XTANGO', 'TANGObar'),
       },
       "0x211c0d74b1213A40Bdfd61490A9893353544ea46": {
         farmId: 24,
@@ -217,6 +217,43 @@ export default function Farm(): JSX.Element {
         token0: new Token(ChainId.SMARTBCH, '0xB24D7763516bca9656779d760be9a32490f46E27', 18, 'HODL', 'HODL'),
         token1: WBCH[ChainId.SMARTBCH],
       },
+      // "0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154": {
+      //   farmId: 30,
+      //   allocPoint: 213339573,
+      //   token0: new Token(ChainId.SMARTBCH, '0x77CB87b57F54667978Eb1B199b28a0db8C8E1c0B', 18, 'MIST', 'MistToken'),
+      //   token1: WBCH[ChainId.SMARTBCH],
+      // },
+      // "0xa331430473ABA2337698fD95a7c2fCf376DEbFb1": {
+      //   farmId: 19,
+      //   allocPoint: 2579629,
+      //   token0: new Token(ChainId.SMARTBCH, '0xC41C680c60309d4646379eD62020c534eB67b6f4', 18, 'XTANGO', 'TANGObar'),
+      //   token1: WBCH[ChainId.SMARTBCH],
+      // },
+      // "0x0663B29E3CAa8F2DB0313eA8B3E942a0431429cf": {
+      //   farmId: 23,
+      //   allocPoint: 2516289,
+      //   token0: TANGO[ChainId.SMARTBCH],
+      //   token1: new Token(ChainId.SMARTBCH, '0xC41C680c60309d4646379eD62020c534eB67b6f4', 18, 'XTANGO', 'TANGObar'),
+      // },
+
+      // "0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154": {
+      //   farmId: 7,
+      //   allocPoint: 361916384,
+      //   token0: TANGO[ChainId.SMARTBCH],
+      //   token1: WBCH[ChainId.SMARTBCH],
+      // },
+
+
+
+
+
+      // export const TANGO: ChainTokenMap = {
+      //   [ChainId.SMARTBCH]: new Token(ChainId.SMARTBCH, TANGO_ADDRESS[ChainId.SMARTBCH], 18, 'TANGO', 'TangoToken'),
+      //   [ChainId.SMARTBCH_AMBER]: new Token(ChainId.SMARTBCH_AMBER, TANGO_ADDRESS[ChainId.SMARTBCH_AMBER], 18, 'TANGO', 'TangoToken'),
+      // }
+      
+
+
     },
     [ChainId.SMARTBCH_AMBER]: {
       "0x07DE6fc05597E0E4c92C83637A8a0CA411f3a769": {
@@ -384,7 +421,7 @@ export default function Farm(): JSX.Element {
 
       const defaultReward = {
         token: 'TANGO',
-        icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129/logo.png',
+        icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xFb28a53Fb986223bFFa7E9e67B32F8b18c14aAf0/logo.png',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
         rewardPrice: +TANGOPriceUSD,
