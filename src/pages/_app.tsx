@@ -122,7 +122,7 @@ function MyApp({
           content="Trade, launch, stake, farm, invest, automate, build on the premier DeFi platform of smartBCH"
         />
         <meta key="twitter:image" name="twitter:image" content="https://app.TANGOswap.fi/icons/icon-192x192.png" />
-        <meta key="twitter:creator" name="twitter:creator" content="@TANGOswapdex" />
+        <meta key="twitter:creator" name="twitter:creator" content="@tangoswapcash" />
         <meta key="og:type" property="og:type" content="website" />
         <meta key="og:site_name" property="og:site_name" content="TANGO App" />
         <meta key="og:url" property="og:url" content="https://app.TANGOswap.fi" />

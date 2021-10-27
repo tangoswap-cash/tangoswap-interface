@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, FACTORY_ADDRESS, Pair, computePairAddress } from '@tangoswapcash/sdk'
 
-import IUniswapV2PairABI from '@TANGOswapdex/core/abi/IUniswapV2Pair.json'
+import IUniswapV2PairABI from '@tangoswapcash/core/abi/IUniswapV2Pair.json'
 import { Interface } from '@ethersproject/abi'
 import { useMemo } from 'react'
 import { useMultipleContractSingleData } from '../state/multicall/hooks'

@@ -2214,36 +2214,6 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
-"@mistswapdex/core@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@mistswapdex/core/-/core-0.0.3.tgz#147ed00265e64ba7df0697bcdbf4bde281a764ee"
-  integrity sha512-oKCoQ55YkdVMMR3CoYaYHct4XJ9pE81d3kZuNjXO9S/38XO4U0CryaXGAtYLfYrRJpGjflIWCDTPyPQ3z4uRzQ==
-  dependencies:
-    eip-712 "^0.4.3"
-    patch-package "^6.4.7"
-    postinstall-postinstall "^2.1.0"
-
-"@mistswapdex/default-token-list@0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@mistswapdex/default-token-list/-/default-token-list-0.0.15.tgz#c38c8bc67cc5b303f6ec8ed92112e15af459130a"
-  integrity sha512-7YJsgPCc+oFed/3GFLON81MUOxA+Ne4pqeZr8meoM962suMV1uMxMS1t0TIuVBZY9wTEKV4uJBywZgXAWosQng==
-  dependencies:
-    commitlint "^13.1.0"
-    lint-staged "^11.1.2"
-
-"@mistswapdex/sdk@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@mistswapdex/sdk/-/sdk-0.0.12.tgz#0b0a2224c3718e68e2765f3c0a6a245998bcbcd7"
-  integrity sha512-vBZHj3zPZXNooZodAFkDJPzs9/R2HC9+bkCCRbXYFAWDUuEWJiHxz1ERmX+UnglxeiQ+BiglESS2INJbahNgQA==
-  dependencies:
-    big.js "^6.1.0"
-    decimal.js-light "^2.5.0"
-    isomorphic-unfetch "^3.1.0"
-    jsbi "^3.1.0"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"
-
 "@napi-rs/triples@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.0.3.tgz#76d6d0c3f4d16013c61e45dfca5ff1e6c31ae53c"
@@ -2686,6 +2656,34 @@
     parse-glob "^3.0.4"
     postcss-selector-parser "^6.0.4"
     quick-lru "^5.1.1"
+
+"@tangoswapcash/core@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/core/-/core-0.0.3.tgz#b9b79bb58720a7b61dc6ffe6f00e6666421d91a7"
+  integrity sha512-cOyZV/Royxb92uJ7VN5oNU01QvwlQfm0hoB0zPB3563U2JFJ1J6i64V4zMPlp/9UwO30RcmliP/+OHyO/Cbq+A==
+  dependencies:
+    eip-712 "^0.4.3"
+
+"@tangoswapcash/default-token-list@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/default-token-list/-/default-token-list-0.0.1.tgz#211e1705a6d477c0d1cec697b4468da7499ef20d"
+  integrity sha512-4vDs+OHN29pb5+70DqTKaZjFEVgaDZXmvymVSCUUO4KndIyosOuhmfVuT0toUPQsBtSJMDmjkLJmiS51gQrCbw==
+  dependencies:
+    commitlint "^13.1.0"
+    lint-staged "^11.1.2"
+
+"@tangoswapcash/sdk@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/sdk/-/sdk-0.0.1.tgz#767b1e4479027e00113e2c9f59bee6972c466e69"
+  integrity sha512-e53rJxaVmb0PKuPaRcUzH2qiI2qAPCyZ0WPluSZEfBA2E9VLzg0rWsX/kbMzrGRyiYWFpPfzNrQAm2u/z5/2kA==
+  dependencies:
+    big.js "^6.1.0"
+    decimal.js-light "^2.5.0"
+    isomorphic-unfetch "^3.1.0"
+    jsbi "^3.1.0"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
 
 "@toruslabs/eccrypto@^1.1.7":
   version "1.1.7"
