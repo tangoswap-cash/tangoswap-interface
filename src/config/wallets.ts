@@ -103,7 +103,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
       return new WalletLinkConnector({
         url: RPC[ChainId.SMARTBCH],
         appName: 'TangoSwap',
-        appLogoUrl: 'https://raw.githubusercontent.com/TANGOswapdex/art/master/sushi/logo-256x256.png',
+        appLogoUrl: 'https://raw.githubusercontent.com/tangoswap-cash/art/master/sushi/logo-256x256.png',
       })
     },
     name: 'Coinbase Wallet',

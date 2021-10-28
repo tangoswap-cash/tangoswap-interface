@@ -18,7 +18,7 @@ import { GRAPH_HOST } from '../constants'
 import { pager } from './'
 
 export const EXCHANGE = {
-  [ChainId.SMARTBCH]: 'TANGOswapdex/exchange',
+  [ChainId.SMARTBCH]: 'tangoswap-cash/exchange',
 }
 
 export const exchange = async (chainId = ChainId.SMARTBCH, query, variables = {}) =>

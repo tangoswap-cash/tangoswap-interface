@@ -26,7 +26,7 @@ export default function useAddTokenToMetaMask(currencyToAdd: Currency | undefine
               address: token.address,
               symbol: token.symbol,
               decimals: token.decimals,
-              image: `https://raw.githubusercontent.com/TANGOswapdex/assets/master/blockchains/smartbch/assets/${token.address}/logo.png`,
+              image: `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/${token.address}/logo.png`,
             },
           },
         })

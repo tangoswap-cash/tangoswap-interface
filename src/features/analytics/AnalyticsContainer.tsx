@@ -6,7 +6,7 @@ export default function AnalyticsContainer({ children }): JSX.Element {
   return (
     <>
       <Head>
-        <title>TANGOswap Liquidity Pair (MLP) Analytics | Tango</title>
+        <title>TANGOswap Liquidity Pair (TLP) Analytics | Tango</title>
         <meta name="description" content="TANGOswap Liquidity Pair (SLP) Analytics by Tango" />
       </Head>
 

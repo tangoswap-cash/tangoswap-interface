@@ -57,7 +57,7 @@ export const portis = new PortisConnector({
 export const walletlink = new WalletLinkConnector({
   url: RPC[ChainId.SMARTBCH],
   appName: 'TangoSwap',
-  appLogoUrl: 'https://raw.githubusercontent.com/TANGOswapdex/art/master/TANGO/logo-256x256.png',
+  appLogoUrl: 'https://raw.githubusercontent.com/tangoswap-cash/art/master/TANGO/logo-256x256.png',
 })
 
 // mainnet only

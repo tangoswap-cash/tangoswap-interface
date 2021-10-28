@@ -147,7 +147,7 @@ function AppBar(): JSX.Element {
                             }}
                           >
                             <Image
-                              src="/images/tokens/xTANGO-square.jpg"
+                              src="/images/tokens/xtango-square.jpg"
                               alt="xTANGO"
                               width="38px"
                               height="38px"
@@ -193,7 +193,7 @@ function AppBar(): JSX.Element {
                             }}
                           >
                             <Image
-                              src="/images/tokens/TANGO-square.jpg"
+                              src="/images/tokens/tango-square.jpg"
                               alt="TANGO"
                               width="38px"
                               height="38px"

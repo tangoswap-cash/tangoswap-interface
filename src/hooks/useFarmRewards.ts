@@ -71,7 +71,7 @@ export default function useFarmRewards() {
 
       const defaultReward = {
         token: 'TANGO',
-        icon: 'https://raw.githubusercontent.com/TANGOswapdex/icons/master/token/sushi.jpg',
+        icon: 'https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/sushi.jpg',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
         rewardPrice: sushiPrice,
@@ -84,8 +84,8 @@ export default function useFarmRewards() {
         pool.owner.totalAllocPoint = masterChefV1TotalAllocPoint
 
         const icon = ['0', '3', '4', '8'].includes(pool.id)
-          ? `https://raw.githubusercontent.com/TANGOswapdex/icons/master/token/${pool.rewardToken.symbol.toLowerCase()}.jpg`
-          : `https://raw.githubusercontent.com/TANGOswapdex/assets/master/blockchains/smartbch/assets/${getAddress(
+          ? `https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/${pool.rewardToken.symbol.toLowerCase()}.jpg`
+          : `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/${getAddress(
               pool.rewarder.rewardToken
             )}/logo.png`
 
