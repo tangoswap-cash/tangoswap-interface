@@ -55,12 +55,12 @@ export default function Farm(): JSX.Element {
         token0: new Token(ChainId.SMARTBCH, '0x77CB87b57F54667978Eb1B199b28a0db8C8E1c0B', 18, 'EBEN', 'Green Ben'),
         token1: WBCH[ChainId.SMARTBCH],
       },
-      "0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154": {
-        farmId: 3,
-        allocPoint: 213339573,
-        token0: new Token(ChainId.SMARTBCH, '0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129', 18, 'MIST', 'MistToken'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },      
+      // "0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154": {
+      //   farmId: 3,
+      //   allocPoint: 213339573,
+      //   token0: new Token(ChainId.SMARTBCH, '0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129', 18, 'MIST', 'MistToken'),
+      //   token1: WBCH[ChainId.SMARTBCH],
+      // },
       "0x24f011f12Ea45AfaDb1D4245bA15dCAB38B43D13": {
         farmId: 4,
         allocPoint: 219428219,
@@ -254,7 +254,7 @@ export default function Farm(): JSX.Element {
       //   [ChainId.SMARTBCH]: new Token(ChainId.SMARTBCH, TANGO_ADDRESS[ChainId.SMARTBCH], 18, 'TANGO', 'TangoToken'),
       //   [ChainId.SMARTBCH_AMBER]: new Token(ChainId.SMARTBCH_AMBER, TANGO_ADDRESS[ChainId.SMARTBCH_AMBER], 18, 'TANGO', 'TangoToken'),
       // }
-      
+
 
 
     },
