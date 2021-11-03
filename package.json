@@ -55,9 +55,6 @@
     "@lingui/react": "^3.10.2",
     "@lingui/remote-loader": "^3.10.4",
     "@metamask/jazzicon": "^2.0.0",
-    "@tangoswapcash/core": "0.0.3",
-    "@tangoswapcash/default-token-list": "0.0.2",
-    "@tangoswapcash/sdk": "^0.0.2",
     "@next/bundle-analyzer": "^11.1.0",
     "@popperjs/core": "^2.9.2",
     "@ramp-network/ramp-instant-sdk": "^2.4.6",
@@ -67,6 +64,9 @@
     "@sushiswap/limit-order-pair-list": "0.2.2",
     "@sushiswap/sushi-data": "^1.0.24",
     "@tailwindcss/jit": "^0.1.18",
+    "@tangoswapcash/core": "0.0.3",
+    "@tangoswapcash/default-token-list": "0.0.2",
+    "@tangoswapcash/sdk": "^0.0.2",
     "@transak/transak-sdk": "^1.0.28",
     "@types/node": "^15.12.2",
     "@types/react": "^17.0.11",
@@ -164,6 +164,7 @@
     "not op_mini all"
   ],
   "dependencies": {
+    "@storyofams/next-password-protect": "^1.5.12",
     "patch-package": "^6.4.7",
     "postinstall-postinstall": "^2.1.0"
   }
