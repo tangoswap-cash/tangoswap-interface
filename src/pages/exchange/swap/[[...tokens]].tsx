@@ -1,12 +1,4 @@
-import {
-  ChainId,
-  Currency,
-  CurrencyAmount,
-  JSBI,
-  Token,
-  TradeType,
-  Trade as V2Trade,
-} from '@tangoswapcash/sdk'
+import { ChainId, Currency, CurrencyAmount, JSBI, Token, TradeType, Trade as V2Trade } from '@tangoswapcash/sdk'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useApproveCallback'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError } from '../../../features/exchange-v1/swap/styleds'
 import { ButtonConfirmed, ButtonError } from '../../../components/Button'
@@ -417,11 +409,7 @@ export default function Swap() {
     <Container id="swap-page" className="py-4 md:py-8 lg:py-12">
       <Head>
         <title>{i18n._(t`TANGOswap`)} | TANGOswap</title>
-        <meta
-          key="description"
-          name="description"
-          content="TANGOswap allows for swapping of SEP20 compatible tokens"
-        />
+        <meta key="description" name="description" content="TANGOswap allows for swapping of SEP20 compatible tokens" />
       </Head>
       <TokenWarningModal
         isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
