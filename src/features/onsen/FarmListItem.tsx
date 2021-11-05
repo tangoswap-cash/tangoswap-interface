@@ -83,18 +83,18 @@ const FarmListItem = ({ farm, ...rest }) => {
                   <div className="flex items-center space-x-2">
                     <div key="0" className="flex items-center">
                       <Image
-                        src="https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xFb28a53Fb986223bFFa7E9e67B32F8b18c14aAf0/logo.png"
+                        src="https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xa4ff4B493CF2a0c90B214148e08C027FC09e254b/logo.png"
                         width="30px"
                         height="30px"
                         className="rounded-md"
                         layout="fixed"
-                        alt="TANGO"
+                        alt="MONTOTO"
                       />
                     </div>
                   </div>
                   <div className="flex flex-col space-y-1">
                     <div key="0" className="text-xs md:text-sm whitespace-nowrap">
-                      {formatNumber(pendingSushi.toFixed(18))} TANGO
+                      {formatNumber(pendingSushi.toFixed(18))} MONTOTO
                     </div>
                   </div>
               </div>

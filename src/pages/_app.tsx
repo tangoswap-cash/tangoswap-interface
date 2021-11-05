@@ -95,7 +95,7 @@ function MyApp({
           name="viewport"
           content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
         />
-        <title key="title">TANGO</title>
+        <title key="title">MONTOTO</title>
 
         <meta
           key="description"
@@ -103,10 +103,10 @@ function MyApp({
           content="Trade, launch, stake, farm, invest, automate, build on the premier DeFi platform of smartBCH"
         />
 
-        <meta name="application-name" content="TANGO App" />
+        <meta name="application-name" content="MONTOTO App" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="TANGO App" />
+        <meta name="apple-mobile-web-app-title" content="MONTOTO App" />
 
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
@@ -115,7 +115,7 @@ function MyApp({
         <meta name="theme-color" content="#F338C3" />
 
         <meta key="twitter:card" name="twitter:card" content="app" />
-        <meta key="twitter:title" name="twitter:title" content="TANGO App" />
+        <meta key="twitter:title" name="twitter:title" content="MONTOTO App" />
         <meta key="twitter:url" name="twitter:url" content="https://app.TANGOswap.fi" />
         <meta
           key="twitter:description"
@@ -125,7 +125,7 @@ function MyApp({
         <meta key="twitter:image" name="twitter:image" content="https://app.TANGOswap.fi/icons/icon-192x192.png" />
         <meta key="twitter:creator" name="twitter:creator" content="@tangoswapcash" />
         <meta key="og:type" property="og:type" content="website" />
-        <meta key="og:site_name" property="og:site_name" content="TANGO App" />
+        <meta key="og:site_name" property="og:site_name" content="MONTOTO App" />
         <meta key="og:url" property="og:url" content="https://app.TANGOswap.fi" />
         <meta key="og:image" property="og:image" content="https://app.TANGOswap.fi/apple-touch-icon.png" />
         <meta

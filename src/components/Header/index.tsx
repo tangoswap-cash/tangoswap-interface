@@ -123,11 +123,11 @@ function AppBar(): JSX.Element {
                                 const params: any = {
                                   type: 'ERC20',
                                   options: {
-                                    address: '0x0907E283928Cc54C33D513b612A1C3346360453E',
+                                    address: '0x3E66c8B9DE0807c34ECA1A48B711394E4eBd85E8',
                                     symbol: 'xTANGO',
                                     decimals: 18,
                                     image:
-                                      'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x0907E283928Cc54C33D513b612A1C3346360453E/logo.png',
+                                      'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x3E66c8B9DE0807c34ECA1A48B711394E4eBd85E8/logo.png',
                                   },
                                 }
                                 library.provider
@@ -161,7 +161,7 @@ function AppBar(): JSX.Element {
 
                     {chainId && chainId in TANGO_ADDRESS && library && library.provider.isMetaMask && (
                       <>
-                        <QuestionHelper text={i18n._(t`Add TANGO to your MetaMask wallet`)}>
+                        <QuestionHelper text={i18n._(t`Add MONTOTO to your MetaMask wallet`)}>
                           <div
                             className="hidden rounded-md cursor-pointer sm:inline-flex bg-dark-900 hover:bg-dark-800 p-0.5"
                             onClick={() => {
@@ -169,10 +169,10 @@ function AppBar(): JSX.Element {
                                 type: 'ERC20',
                                 options: {
                                   address: TANGO_ADDRESS[chainId],
-                                  symbol: 'TANGO',
+                                  symbol: 'MONTOTO',
                                   decimals: 18,
                                   image:
-                                    'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xFb28a53Fb986223bFFa7E9e67B32F8b18c14aAf0/logo.png',
+                                    'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xa4ff4B493CF2a0c90B214148e08C027FC09e254b/logo.png',
                                 },
                               }
                               if (library && library.provider.isMetaMask && library.provider.request) {
@@ -183,7 +183,7 @@ function AppBar(): JSX.Element {
                                   })
                                   .then((success) => {
                                     if (success) {
-                                      console.log('Successfully added TANGO to MetaMask')
+                                      console.log('Successfully added MONTOTO to MetaMask')
                                     } else {
                                       throw new Error('Something went wrong.')
                                     }
@@ -194,7 +194,7 @@ function AppBar(): JSX.Element {
                           >
                             <Image
                               src="/images/tokens/tango-square.jpg"
-                              alt="TANGO"
+                              alt="MONTOTO"
                               width="38px"
                               height="38px"
                               objectFit="contain"
