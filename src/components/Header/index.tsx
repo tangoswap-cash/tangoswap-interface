@@ -31,13 +31,13 @@ function AppBar(): JSX.Element {
   return (
     //     // <header className="flex flex-row justify-between w-screen flex-nowrap">
     <header className="flex-shrink-0 w-full">
-      <Popover as="nav" className="z-10 w-full bg-transparent header-border-b">
+      <Popover as="nav" className="z-10 w-full bg-transparent" style={{ borderBottom: '2px solid #BB5E41' }}>
         {({ open }) => (
           <>
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <Image src="/logo.png" alt="Tango" width="32px" height="32px" />
+                  <Image src="/images/logos/tango-neon.png" alt="Tango" width="48px" height="48px" />
                   <div className="hidden sm:block sm:ml-4">
                     <div className="flex space-x-2">
                       {/* <Buy /> */}
@@ -211,7 +211,7 @@ function AppBar(): JSX.Element {
                       </div>
                     )}
 
-                    <div className="w-auto flex items-center rounded bg-dark-900 hover:bg-dark-800 p-0.5 whitespace-nowrap text-sm font-bold cursor-pointer select-none pointer-events-auto">
+                    <div className="w-auto flex items-center rounded p-0.5 whitespace-nowrap text-sm font-bold cursor-pointer select-none pointer-events-auto">
                       {account && chainId && userEthBalance && (
                         <>
                           <div className="px-3 py-2 text-primary text-bold">
@@ -284,16 +284,15 @@ function AppBar(): JSX.Element {
                   </a>
                 </Link>
 
-
                 {chainId && featureEnabled(Feature.MIGRATE, chainId) && (
-                <Link href={'/migrate'}>
-                  <a
-                    id={`migrate-nav-link`}
-                    className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                  >
-                    {i18n._(t`Migrate`)}
-                  </a>
-                </Link>
+                  <Link href={'/migrate'}>
+                    <a
+                      id={`migrate-nav-link`}
+                      className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                    >
+                      {i18n._(t`Migrate`)}
+                    </a>
+                  </Link>
                 )}
 
                 {chainId && featureEnabled(Feature.LIQUIDITY_MINING, chainId) && (

@@ -134,7 +134,7 @@ function Web3StatusInner() {
       </div>
     )
   } else {
-    return <Web3Connect style={{ paddingTop: '6px', paddingBottom: '6px' }} />
+    return <Web3Connect style={{ paddingTop: '6px', paddingBottom: '6px', backgroundColor: '#651906' }} />
   }
 }
 
