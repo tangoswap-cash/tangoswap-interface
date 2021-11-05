@@ -28,7 +28,7 @@ html {
 
 html,
 body {
-  font-family: var(--font-sans);
+  font-family: var(--app-font);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
