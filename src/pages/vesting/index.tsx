@@ -142,8 +142,8 @@ export default function Vesting() {
           <div className="relative w-full overflow-hidden rounded bg-dark-900">
             <div className="flex flex-col gap-3 p-4">
               <div className="flex flex-row justify-between">
-                <div className="font-bold text-white">{i18n._(t`Your Claimable MONTOTO this Week`)}</div>
-                <QuestionHelper text="Your Vested MONTOTO will be released each week for the next 6 months. The amount released each week is determined by your historical farming rewards. You do not need to harvest each week as unclaimed amounts from each week will continue to accrue onto the next." />
+                <div className="font-bold text-white">{i18n._(t`Your Claimable KDORNA this Week`)}</div>
+                <QuestionHelper text="Your Vested KDORNA will be released each week for the next 6 months. The amount released each week is determined by your historical farming rewards. You do not need to harvest each week as unclaimed amounts from each week will continue to accrue onto the next." />
               </div>
               {/* <div style={{ display: 'flex', alignItems: 'baseline' }}> */}
               <div className="flex flex-col items-baseline">
@@ -153,7 +153,7 @@ export default function Vesting() {
                 {account ? (
                   <div className="text-sm text-secondary">
                     {totalLocked ? (
-                      i18n._(t`Historical Total Locked: ${formatNumber(totalLocked)} MONTOTO`)
+                      i18n._(t`Historical Total Locked: ${formatNumber(totalLocked)} KDORNA`)
                     ) : (
                       <Dots>{i18n._(t`Historical Total Locked: Fetching Total`)}</Dots>
                     )}
@@ -179,7 +179,7 @@ export default function Vesting() {
                 {pendingTreasurySignature ? (
                   <Dots>{i18n._(t`Pending Treasury Transfer`)}</Dots>
                 ) : (
-                  <> {claimConfirmed ? i18n._(t`Claimed`) : i18n._(t`Claim MONTOTO`)}</>
+                  <> {claimConfirmed ? i18n._(t`Claimed`) : i18n._(t`Claim KDORNA`)}</>
                 )}
 
                 {attempting && (
@@ -195,14 +195,14 @@ export default function Vesting() {
           </div>
           <div className="relative w-full overflow-hidden rounded bg-dark-900">
             <div className="flex flex-col gap-3 p-4">
-              <div className="font-bold text-white">{i18n._(t`Things you can do with your MONTOTO`)}</div>
+              <div className="font-bold text-white">{i18n._(t`Things you can do with your KDORNA`)}</div>
               <div className="p-4 rounded bg-dark-800">
                 <Link href="/stake">
                   <a className="flex items-center justify-between gap-3">
                     <div className="flex flex-col gap-1">
-                      <div className="font-bold text-white">{i18n._(t`Stake MONTOTO for xMONTOTO`)}</div>
+                      <div className="font-bold text-white">{i18n._(t`Stake KDORNA for xKDORNA`)}</div>
                       <div className="text-sm text-secondary">
-                        {t`Gain governance rights with xMONTOTO and earn 5% APR (0.05% of
+                        {t`Gain governance rights with xKDORNA and earn 5% APR (0.05% of
                                                             all swaps from all chains)`}
                       </div>
                     </div>
@@ -218,7 +218,7 @@ export default function Vesting() {
                     <div className="flex flex-col gap-1">
                       <div className="font-bold text-white">{i18n._(t`Stack Yields with SAAVE`)}</div>
                       <div className="text-sm text-secondary">
-                        {t`Stake into xMONTOTO add collateral as axMONTOTO on Aave all in
+                        {t`Stake into xKDORNA add collateral as axKDORNA on Aave all in
                                                             one click`}
                       </div>
                     </div>
@@ -230,10 +230,10 @@ export default function Vesting() {
               </div>
               <div className="p-4 rounded bg-dark-800">
                 <div className="flex flex-col gap-1">
-                  <div className="font-bold text-white">{i18n._(t`Deposit MONTOTO into BentoBox`)}</div>
+                  <div className="font-bold text-white">{i18n._(t`Deposit KDORNA into BentoBox`)}</div>
                   <div className="text-sm text-secondary">
                     {t`(COMING SOON) Accrue automatic yield through flash loans and
-                                                            MONTOTO strategies`}
+                                                            KDORNA strategies`}
                   </div>
                 </div>
               </div>

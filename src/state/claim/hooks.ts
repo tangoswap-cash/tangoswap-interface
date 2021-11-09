@@ -127,7 +127,7 @@ export function useClaimCallback(account: string | null | undefined): {
         })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
-            summary: `Claimed ${unClaimedAmount?.toSignificant(4)} MONTOTO`,
+            summary: `Claimed ${unClaimedAmount?.toSignificant(4)} KDORNA`,
             claim: { recipient: account },
           })
           return response.hash

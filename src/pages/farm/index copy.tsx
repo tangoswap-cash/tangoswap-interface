@@ -267,7 +267,7 @@ export default function Farm(): JSX.Element {
       // "0xa331430473ABA2337698fD95a7c2fCf376DEbFb1": {
       //   farmId: 19,
       //   allocPoint: 2579629,
-      //   token0: new Token(ChainId.SMARTBCH, '0x3E66c8B9DE0807c34ECA1A48B711394E4eBd85E8', 18, 'XTANGO', 'TANGObar'),
+      //   token0: new Token(ChainId.SMARTBCH, '0xab93e9fD765A1664cE0BBfc4b6357b5427b14053', 18, 'XTANGO', 'TANGObar'),
       //   token1: WBCH[ChainId.SMARTBCH],
       // },
       // "0x1c47c2a72e86B9B488f436F7aC76ACc61e531926": {
@@ -292,7 +292,7 @@ export default function Farm(): JSX.Element {
       //   farmId: 23,
       //   allocPoint: 2516289,
       //   token0: TANGO[ChainId.SMARTBCH],
-      //   token1: new Token(ChainId.SMARTBCH, '0x3E66c8B9DE0807c34ECA1A48B711394E4eBd85E8', 18, 'XTANGO', 'TANGObar'),
+      //   token1: new Token(ChainId.SMARTBCH, '0xab93e9fD765A1664cE0BBfc4b6357b5427b14053', 18, 'XTANGO', 'TANGObar'),
       // },
       // "0x211c0d74b1213A40Bdfd61490A9893353544ea46": {
       //   farmId: 24,
@@ -549,7 +549,7 @@ export default function Farm(): JSX.Element {
 
       const defaultReward = {
         token: 'TANGO',
-        icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xa4ff4B493CF2a0c90B214148e08C027FC09e254b/logo.png',
+        icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x9dD991f7A04C34BdeD0fD20db2D49a1953681113/logo.png',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
         rewardPrice: +tangoPriceUSD,

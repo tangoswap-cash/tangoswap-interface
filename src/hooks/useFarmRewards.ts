@@ -70,7 +70,7 @@ export default function useFarmRewards() {
       const rewardPerBlock = (pool.allocPoint / pool.owner.totalAllocPoint) * sushiPerBlock
 
       const defaultReward = {
-        token: 'MONTOTO',
+        token: 'KDORNA',
         icon: 'https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/sushi.jpg',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
