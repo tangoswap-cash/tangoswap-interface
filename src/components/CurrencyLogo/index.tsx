@@ -23,9 +23,9 @@ export function getCurrencyLogoUrls(currency) {
   urls.push(`https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/${getCurrencySymbol(currency)}.jpg`)
   if (currency.chainId in BLOCKCHAIN) {
     urls.push(
-      `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/${BLOCKCHAIN[currency.chainId]}/assets/${
-        currency.address
-      }/logo.png`
+      `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/${
+        BLOCKCHAIN[currency.chainId]
+      }/assets/${currency.address}/logo.png`
     )
     urls.push(
       `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${BLOCKCHAIN[currency.chainId]}/assets/${
@@ -37,7 +37,7 @@ export function getCurrencyLogoUrls(currency) {
   return urls
 }
 
-const BitcoinCashLogo = 'https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/bch.jpg'
+const BitcoinCashLogo = '/images/logos/bch.png'
 
 const LOGO: { readonly [chainId in ChainId]?: string } = {
   [ChainId.SMARTBCH]: BitcoinCashLogo,
