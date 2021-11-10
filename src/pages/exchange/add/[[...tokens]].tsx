@@ -188,13 +188,13 @@ export default function Add() {
       const estimatedGasLimit = await estimate(...args, {
         ...(value ? { value } : {}),
         gasPrice: getGasPrice(),
-      });
+      })
 
       const response = await method(...args, {
         ...(value ? { value } : {}),
         gasLimit: calculateGasMargin(estimatedGasLimit),
         gasPrice: getGasPrice(),
-      });
+      })
 
       setAttemptingTxn(false)
 
@@ -207,7 +207,7 @@ export default function Add() {
       })
 
       setTxHash(response.hash)
-    } catch(error) {
+    } catch (error) {
       setAttemptingTxn(false)
       // we only care if the error is something _other_ than the user rejected the tx
       if (error?.code !== 4001) {
@@ -438,7 +438,7 @@ export default function Add() {
               </div>
 
               {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
-                <div className="p-1 rounded bg-dark-800">
+                <div className="rounded bg-dark-800 p-px">
                   <LiquidityPrice
                     currencies={currencies}
                     price={price}
@@ -454,7 +454,7 @@ export default function Add() {
                   {i18n._(t`Unsupported Asset`)}
                 </Button>
               ) : !account ? (
-                <Web3Connect size="lg" color="blue" className="w-full" />
+                <Web3Connect size="lg" className="w-full" style={{ backgroundColor: '#651906', color: '#E2B3B3' }} />
               ) : (
                 (approvalA === ApprovalState.NOT_APPROVED ||
                   approvalA === ApprovalState.PENDING ||
