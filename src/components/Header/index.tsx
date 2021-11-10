@@ -7,6 +7,7 @@ import Buy from '../../features/on-ramp/ramp'
 import ExternalLink from '../ExternalLink'
 import Image from 'next/image'
 import LanguageSwitch from '../LanguageSwitch'
+import TangoPrice from '../TangoPrice'
 import Link from 'next/link'
 import More from './More'
 import NavLink from '../NavLink'
@@ -211,6 +212,7 @@ function AppBar(): JSX.Element {
                       </div>
                     )}
 
+                    <TangoPrice />
                     <div className="w-auto flex items-center rounded p-0.5 whitespace-nowrap text-sm font-bold cursor-pointer select-none pointer-events-auto">
                       {account && chainId && userEthBalance && (
                         <>
