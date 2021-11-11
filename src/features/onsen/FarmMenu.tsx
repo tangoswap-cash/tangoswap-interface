@@ -17,7 +17,7 @@ const Menu = ({ positionsLength }) => {
         <NavLink
           exact
           href={`/farm?filter=portfolio`}
-          activeClassName="font-bold border-2 border-wax-flower rounded text-high-emphesis border-transparent bg-dark-800"
+          activeClassName="font-bold border border-wax-flower rounded text-high-emphesis border-transparent bg-dark-800"
         >
           <a className="flex items-center justify-between px-4 py-6 text-wax-flower font-bold border border-transparent rounded cursor-pointer bg-dark-800">
             Your Farms
@@ -37,7 +37,7 @@ const Menu = ({ positionsLength }) => {
       <NavLink
         exact
         href="/farm"
-        activeClassName="font-bold border-2 border-wax-flower rounded text-high-emphesis border-transparent bg-dark-800"
+        activeClassName="font-bold border border-wax-flower rounded text-high-emphesis border-transparent bg-dark-800"
       >
         <a className="flex items-center justify-between px-4 py-6 text-wax-flower font-bold border border-transparent rounded cursor-pointer bg-dark-800">
           {i18n._(t`All Farms`)}

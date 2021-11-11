@@ -418,7 +418,7 @@ export default function Farm(): JSX.Element {
 
       const defaultReward = {
         token: 'TANGO',
-        icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xFb28a53Fb986223bFFa7E9e67B32F8b18c14aAf0/logo.png',
+        icon: '/images/logos/tango-filled.png',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
         rewardPrice: +TANGOPriceUSD,
