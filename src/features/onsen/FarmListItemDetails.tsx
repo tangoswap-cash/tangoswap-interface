@@ -107,7 +107,7 @@ const FarmListItem = ({ farm }) => {
               </Button>
             ) : (
               <Button
-                color="blue"
+                style={{ backgroundColor: '#09A581', width: '100%' }}
                 disabled={pendingTx || !typedDepositValue || (balance && balance.lessThan(typedDepositValue))}
                 onClick={async () => {
                   setPendingTx(true)
