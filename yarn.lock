@@ -2666,25 +2666,25 @@
     postcss-selector-parser "^6.0.4"
     quick-lru "^5.1.1"
 
-"@tangoswapcash/core@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@tangoswapcash/core/-/core-0.0.7.tgz#8969773efa4bbbaf63a3072737682e6f85c579f4"
-  integrity sha512-5tOpm1bj796IhIsrollASLJ2u4Cib5X59O7Lc/hvm2nqOsMkwybFQr9qj37g5dV6JFyoIqmmOKNqwSmWW7VrHQ==
+"@tangoswapcash/core@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/core/-/core-0.0.8.tgz#3c8340b027eabd28e828ab44e1b88552f9f07bb4"
+  integrity sha512-SP+YvcHny4hanUEaZp0TjM7aG9eF23j6qHhbqL3T92ViDZpDjZq45GFH63zWrjlOgakiL+kRD+dytA/zTXUWOQ==
   dependencies:
     eip-712 "^0.4.3"
 
-"@tangoswapcash/default-token-list@0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@tangoswapcash/default-token-list/-/default-token-list-0.0.7.tgz#4fa411531c654e2e1a045199cfc1928adb4ff18c"
-  integrity sha512-RezTpnM3xpfBHm7eIFgCS/lAmJD73RVuRwryhyvCF4z40ejv67zpBXVgVYCHD+jFHs52b924ZJyzfZwGBKGwpA==
+"@tangoswapcash/default-token-list@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/default-token-list/-/default-token-list-0.0.8.tgz#db3004b4038b3aee0a357bc40a54baf5a258ace1"
+  integrity sha512-fx77Oh2/hlmj47W46tywJ3J45iB3orr5qRFidgyrI/uHFttKN5XDAk0aGe6OtA72y/aE6AJTl4gjScX4plXCjA==
   dependencies:
     commitlint "^13.1.0"
     lint-staged "^11.1.2"
 
-"@tangoswapcash/sdk@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@tangoswapcash/sdk/-/sdk-0.0.6.tgz#c9c2f501dbe08f6a1f79017610aa492f3c0df70f"
-  integrity sha512-eJLxUyfw367x4WfX1Jsmpv9+JF7Gca/feU9KqJcuifJ5CetU1oBD2jx+mdhiefcqzhh5+oFaVRGG/Y1a98vr6A==
+"@tangoswapcash/sdk@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/sdk/-/sdk-0.0.7.tgz#359976e1d172efd41f932ee38ddc134f334b94d9"
+  integrity sha512-f4belUeGoCwXDJuD45Cz4zMhyuYAvyRjq7adY5fh7VNSGj1Xaam+NQ5G9TljGvhyeB4r06aGMfa+a5D/D+cLIQ==
   dependencies:
     big.js "^6.1.0"
     decimal.js-light "^2.5.0"
