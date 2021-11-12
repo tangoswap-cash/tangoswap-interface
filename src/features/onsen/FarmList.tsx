@@ -15,9 +15,9 @@ const FarmList = ({ farms, term }) => {
 
   return items ? (
     <>
-      <div className="grid grid-cols-5 text-base font-bold text-primary">
+      <div className="grid grid-cols-5 text-wax-flower font-bold text-primary">
         <div
-          className="flex items-center col-span-2 px-4 cursor-pointer md:col-span-1"
+          className="flex items-center col-span-3 px-4 cursor-pointer md:col-span-1"
           onClick={() => requestSort('symbol')}
         >
           <div className="hover:text-high-emphesis">{i18n._(t`Pool`)}</div>
@@ -36,7 +36,8 @@ const FarmList = ({ farms, term }) => {
             ((sortConfig.direction === 'ascending' && <ChevronUpIcon width={12} height={12} />) ||
               (sortConfig.direction === 'descending' && <ChevronDownIcon width={12} height={12} />))}
         </div>
-        <div className="items-center justify-center hidden px-4 cursor-pointer md:flex hover:text-high-emphesis"
+        <div
+          className="items-center justify-center hidden px-4 cursor-pointer md:flex hover:text-high-emphesis"
           onClick={() => requestSort('allocPoint')}
         >
           {i18n._(t`Rewards`)}

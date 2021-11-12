@@ -116,7 +116,7 @@ export default function Pool() {
       <div className="p-4 space-y-4 rounded bg-dark-900">
         <div className="grid grid-flow-row gap-3">
           {!account ? (
-            <Web3Connect size="lg" color="blue" className="w-full" />
+            <Web3Connect size="lg" className="w-full" style={{ backgroundColor: '#651906', color: '#E2B3B3' }} />
           ) : v2IsLoading ? (
             <Empty>
               <Dots>{i18n._(t`Loading`)}</Dots>
@@ -146,18 +146,17 @@ export default function Pool() {
           <div className={classNames('grid gap-4', migrationSupported ? 'grid-cols-3' : 'grid-cols-2')}>
             <Button
               id="add-pool-button"
-              color="gradient"
-              className="grid items-center justify-center grid-flow-col gap-2 whitespace-nowrap"
+              className="grid items-center justify-center grid-flow-col gap-2 whitespace-nowrap bg-gradient-to-r from-opaque-red to-light-brown"
               onClick={() => router.push(`/add/${currencyId(NATIVE[chainId])}`)}
             >
               {i18n._(t`Add`)}
             </Button>
-            <Button id="add-pool-button" color="gray" onClick={() => router.push(`/find`)}>
+            <Button id="add-pool-button" style={{ background: '#312020' }} onClick={() => router.push(`/find`)}>
               {i18n._(t`Import`)}
             </Button>
 
             {migrationSupported && (
-              <Button id="create-pool-button" color="gray" onClick={() => router.push(`/migrate`)}>
+              <Button id="create-pool-button" style={{ background: '#312020' }} onClick={() => router.push(`/migrate`)}>
                 {i18n._(t`Migrate`)}
               </Button>
             )}

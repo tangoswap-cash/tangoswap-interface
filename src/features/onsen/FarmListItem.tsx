@@ -27,11 +27,11 @@ const FarmListItem = ({ farm, ...rest }) => {
           <Disclosure.Button
             className={classNames(
               open && 'rounded-b-none',
-              'w-full px-4 py-6 text-left rounded cursor-pointer select-none bg-dark-900 text-primary text-sm md:text-lg'
+              'w-full px-4 py-6 text-left rounded cursor-pointer select-none bg-dark-800 text-wax-flower text-sm md:text-lg'
             )}
           >
             <div className="grid grid-cols-5">
-              <div className="flex col-span-2 space-x-4 md:col-span-1">
+              <div className="flex col-span-3 space-x-4 md:col-span-1">
                 <DoubleLogo currency0={token0} currency1={token1} size={40} />
                 <div className="flex flex-col justify-center">
                   <div>
@@ -40,12 +40,8 @@ const FarmListItem = ({ farm, ...rest }) => {
                       {farm?.pair?.token1?.symbol}
                     </span>
                   </div>
-                  {farm?.pair?.type === PairType.SWAP && (
-                    <div className="text-xs md:text-base text-secondary">{i18n._(t`TangoSwap Farm`)}</div>
-                  )}
-                  {farm?.pair?.type === PairType.KASHI && (
-                    <div className="text-xs md:text-base text-secondary">Kashi Farm</div>
-                  )}
+                  {/* {farm?.pair?.type === PairType.SWAP && <div className="text-xs">{i18n._(t`TangoSwap Farm`)}</div>} */}
+                  {farm?.pair?.type === PairType.KASHI && <div className="text-xs">Kashi Farm</div>}
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center font-bold">{formatNumber(farm.tvl, true)}</div>
@@ -73,10 +69,8 @@ const FarmListItem = ({ farm, ...rest }) => {
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <div className="font-bold text-righttext-high-emphesis">
-                  {formatPercent(farm?.roiPerYear * 100)}
-                </div>
-                <div className="text-xs text-right md:text-base text-secondary">{i18n._(t`annualized`)}</div>
+                <div className="font-bold text-righttext-high-emphesis">{formatPercent(farm?.roiPerYear * 100)}</div>
+                <div className="text-xs text-right">{i18n._(t`annualized`)}</div>
               </div>
               {pendingSushi && pendingSushi.greaterThan(ZERO) ? (
                 <div className="flex-row items-center hidden space-x-4 font-bold md:flex">
@@ -97,7 +91,7 @@ const FarmListItem = ({ farm, ...rest }) => {
                       {formatNumber(pendingSushi.toFixed(18))} TANGO
                     </div>
                   </div>
-              </div>
+                </div>
               ) : (
                 <div className="flex-row items-center hidden space-x-4 font-bold md:flex">
                   {i18n._(t`Stake LP to Farm`)}
