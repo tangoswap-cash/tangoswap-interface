@@ -66,32 +66,32 @@ export default function Farm(): JSX.Element {
 
   const hardcodedPairs = {
     [ChainId.SMARTBCH]: {
-      '0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154': {
-        farmId: 0,
-        allocPoint: 361916384,
-        token0: TANGO[ChainId.SMARTBCH],
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x437E444365aD9ed788e8f255c908bceAd5AEA645': {
-        farmId: 1,
-        allocPoint: 86288234,
-        token0: TANGO[ChainId.SMARTBCH],
-        token1: FLEXUSD,
-      },
-      '0x80F712670d268cf2C05e7162674c7466c940eBE3': {
-        farmId: 2,
-        allocPoint: 213339573,
-        token0: new Token(ChainId.SMARTBCH, '0x77CB87b57F54667978Eb1B199b28a0db8C8E1c0B', 18, 'EBEN', 'Green Ben'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      // "0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154": {
-      //   farmId: 3,
-      //   allocPoint: 213339573,
-      //   token0: new Token(ChainId.SMARTBCH, '0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129', 18, 'MIST', 'MistToken'),
+      // '0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154': {
+      //   farmId: 0,
+      //   allocPoint: 361916384,
+      //   token0: TANGO[ChainId.SMARTBCH],
       //   token1: WBCH[ChainId.SMARTBCH],
       // },
-      '0x24f011f12Ea45AfaDb1D4245bA15dCAB38B43D13': {
-        farmId: 4,
+      // '0x437E444365aD9ed788e8f255c908bceAd5AEA645': {
+      //   farmId: 1,
+      //   allocPoint: 86288234,
+      //   token0: TANGO[ChainId.SMARTBCH],
+      //   token1: FLEXUSD,
+      // },
+      // '0x80F712670d268cf2C05e7162674c7466c940eBE3': {
+      //   farmId: 2,
+      //   allocPoint: 213339573,
+      //   token0: new Token(ChainId.SMARTBCH, '0x77CB87b57F54667978Eb1B199b28a0db8C8E1c0B', 18, 'EBEN', 'Green Ben'),
+      //   token1: WBCH[ChainId.SMARTBCH],
+      // },
+      // // "0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154": {
+      // //   farmId: 3,
+      // //   allocPoint: 213339573,
+      // //   token0: new Token(ChainId.SMARTBCH, '0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129', 18, 'MIST', 'MistToken'),
+      // //   token1: WBCH[ChainId.SMARTBCH],
+      // // },
+      '0x1A6795d77D4c562c105703f90fc7b86Ecbf84927': {
+        farmId: 0,
         allocPoint: 219428219,
         token0: FLEXUSD,
         token1: WBCH[ChainId.SMARTBCH],
