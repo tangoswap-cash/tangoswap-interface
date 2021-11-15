@@ -27,8 +27,10 @@ async function fetchChunk(
   chunk: Call[],
   blockNumber: number
 ): Promise<{ success: boolean; returnData: string }[]> {
+  console.log("updater = fetchChunk()")
   console.debug('Fetching chunk', chunk, blockNumber)
   try {
+    console.log("updater = fetchChunk() - chunk: ", chunk)
     const { returnData } = await multicall.callStatic.tryBlockAndAggregate(
       false,
       chunk.map((obj) => ({
@@ -39,6 +41,7 @@ async function fetchChunk(
       })),
       { blockTag: blockNumber }
     )
+    console.log("updater = fetchChunk() - returnData: ", returnData)
 
     if (process.env.NODE_ENV === 'development') {
       returnData.forEach(({ gasUsed, returnData, success }, i) => {
@@ -79,6 +82,7 @@ export function activeListeningKeys(
   allListeners: AppState['multicall']['callListeners'],
   chainId?: number
 ): { [callKey: string]: number } {
+  console.log("updater = activeListeningKeys()")
   if (!allListeners || !chainId) return {}
   const listeners = allListeners[chainId]
   if (!listeners) return {}
@@ -112,6 +116,7 @@ export function outdatedListeningKeys(
   chainId: number | undefined,
   latestBlockNumber: number | undefined
 ): string[] {
+  console.log("updater = outdatedListeningKeys()")
   if (!chainId || !latestBlockNumber) return []
   const results = callResults[chainId]
   // no results at all, load everything
@@ -135,6 +140,7 @@ export function outdatedListeningKeys(
 }
 
 export default function Updater(): null {
+  // console.log("updater = Updater()")
   const dispatch = useAppDispatch()
   const state = useAppSelector((state) => state.multicall)
   // wait for listeners to settle before triggering updates
@@ -158,6 +164,7 @@ export default function Updater(): null {
   )
 
   useEffect(() => {
+    console.log("updater = useEffect()")
     if (!latestBlockNumber || !chainId || !multicall2Contract) return
 
     const outdatedCallKeys: string[] = JSON.parse(serializedOutdatedCallKeys)
@@ -165,6 +172,7 @@ export default function Updater(): null {
     const calls = outdatedCallKeys.map((key) => parseCallKey(key))
 
     const chunkedCalls = chunkArray(calls)
+    console.log("chunkedCalls: ", chunkedCalls)
 
     if (cancellations.current && cancellations.current.blockNumber !== latestBlockNumber) {
       cancellations.current.cancellations.forEach((c) => c())
@@ -181,10 +189,35 @@ export default function Updater(): null {
     cancellations.current = {
       blockNumber: latestBlockNumber,
       cancellations: chunkedCalls.map((chunk, index) => {
+        // console.log("********** fetchChunk() - multicall2Contract: ", multicall2Contract);
+        // console.log("********** fetchChunk() - latestBlockNumber:  ", latestBlockNumber);
+        console.log("********** fetchChunk() - chunk:              ", chunk);
+
+        // chunk = [chunk[0]]       // Ok
+        // chunk = [chunk[1]]       // Ok
+        // chunk = [chunk[2]]       // Ok
+        // chunk = [chunk[3]]       // Ok
+        // chunk = [chunk[4]]       // Ok
+        // chunk = [chunk[5]]       // Error maybe
+        // chunk = [chunk[6]]
+        // chunk = [chunk[7]]
+        // chunk = [chunk[8]]
+        // chunk = [chunk[9]]
+        // const slicedArray = array.slice(0, n);
+
+        // chunk = chunk.slice(0, 1);
+        // chunk = chunk.slice(0, 3);
+        // chunk = chunk.slice(0, 4);
+        chunk = chunk.slice(0, 5);
+        // chunk = chunk.slice(0, 6);
+
+        console.log("********** fetchChunk() - chunk2:             ", chunk);
+
         const { cancel, promise } = retry(() => fetchChunk(multicall2Contract, chunk, latestBlockNumber), {
           n: Infinity,
           minWait: 1000,
-          maxWait: 2500,
+          // maxWait: 2500,
+          maxWait: 10000,
         })
         promise
           .then((returnData) => {

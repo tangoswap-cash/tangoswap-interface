@@ -114,6 +114,8 @@ export function useBoringHelperContract(): Contract | null {
 
 export function useMulticall2Contract() {
   const { chainId } = useActiveWeb3React()
+  // console.log("chainId:                     ", chainId)
+  // console.log("MULTICALL2_ADDRESS[chainId]: ", MULTICALL2_ADDRESS[chainId])
   return useContract(chainId && MULTICALL2_ADDRESS[chainId], MULTICALL2_ABI, false)
 }
 

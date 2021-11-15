@@ -72,12 +72,12 @@ export default function Farm(): JSX.Element {
       //   token0: TANGO[ChainId.SMARTBCH],
       //   token1: WBCH[ChainId.SMARTBCH],
       // },
-      // '0x437E444365aD9ed788e8f255c908bceAd5AEA645': {
-      //   farmId: 1,
-      //   allocPoint: 86288234,
-      //   token0: TANGO[ChainId.SMARTBCH],
-      //   token1: FLEXUSD,
-      // },
+      '0x2B796f3C3aab835f18eD517cEc624E8fE77Bbf9e': {
+        farmId: 0,
+        allocPoint: 86288234,
+        token0: TANGO[ChainId.SMARTBCH],
+        token1: FLEXUSD,
+      },
       // '0x80F712670d268cf2C05e7162674c7466c940eBE3': {
       //   farmId: 2,
       //   allocPoint: 213339573,
@@ -91,7 +91,7 @@ export default function Farm(): JSX.Element {
       // //   token1: WBCH[ChainId.SMARTBCH],
       // // },
       '0x1A6795d77D4c562c105703f90fc7b86Ecbf84927': {
-        farmId: 0,
+        farmId: 1,
         allocPoint: 219428219,
         token0: FLEXUSD,
         token1: WBCH[ChainId.SMARTBCH],
@@ -339,8 +339,10 @@ export default function Farm(): JSX.Element {
 
   // console.log(farms);
 
-  const flexUSDTangoPool = farms[1].pool
-  const bchFlexUSDPool = farms[3].pool
+  // const flexUSDTangoPool = farms[1].pool
+  // const bchFlexUSDPool = farms[3].pool
+  const flexUSDTangoPool = farms[0].pool
+  const bchFlexUSDPool = farms[1].pool
   let bchPriceUSD = 0
   let TANGOPriceUSD = 0
   if (bchFlexUSDPool.reserves) {

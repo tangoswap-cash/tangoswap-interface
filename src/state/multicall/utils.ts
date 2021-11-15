@@ -5,6 +5,7 @@ export interface Call {
 }
 
 export function toCallKey(call: Call): string {
+  // console.log("toCallKey: call: ", call)
   let key = `${call.address}-${call.callData}`
   if (call.gasRequired) {
     if (!Number.isSafeInteger(call.gasRequired)) {
