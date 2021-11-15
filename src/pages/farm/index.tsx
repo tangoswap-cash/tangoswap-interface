@@ -64,6 +64,10 @@ export default function Farm(): JSX.Element {
   // LP for 0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129-0xC41C680c60309d4646379eD62020c534eB67b6f4 is 0x0663B29E3CAa8F2DB0313eA8B3E942a0431429cf
 
 
+
+  // BCH-FlexUSD: 		  0x6ab2cA37fCec2B166424e619cfAd78e71e1d60b5
+	// Montoto-FlexUSD:		0xa9557d60585A8cE276b31673D441b21aD6B8FAC3
+
   const hardcodedPairs = {
     [ChainId.SMARTBCH]: {
       // '0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154': {
@@ -72,7 +76,7 @@ export default function Farm(): JSX.Element {
       //   token0: TANGO[ChainId.SMARTBCH],
       //   token1: WBCH[ChainId.SMARTBCH],
       // },
-      '0x2B796f3C3aab835f18eD517cEc624E8fE77Bbf9e': {
+      '0xa9557d60585A8cE276b31673D441b21aD6B8FAC3': {
         farmId: 0,
         allocPoint: 86288234,
         token0: TANGO[ChainId.SMARTBCH],
@@ -90,7 +94,7 @@ export default function Farm(): JSX.Element {
       // //   token0: new Token(ChainId.SMARTBCH, '0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129', 18, 'MIST', 'MistToken'),
       // //   token1: WBCH[ChainId.SMARTBCH],
       // // },
-      '0x1A6795d77D4c562c105703f90fc7b86Ecbf84927': {
+      '0x6ab2cA37fCec2B166424e619cfAd78e71e1d60b5': {
         farmId: 1,
         allocPoint: 219428219,
         token0: FLEXUSD,
@@ -189,7 +193,7 @@ export default function Farm(): JSX.Element {
       // "0xa331430473ABA2337698fD95a7c2fCf376DEbFb1": {
       //   farmId: 19,
       //   allocPoint: 2579629,
-      //   token0: new Token(ChainId.SMARTBCH, '0x3E66c8B9DE0807c34ECA1A48B711394E4eBd85E8', 18, 'XTANGO', 'TANGObar'),
+      //   token0: new Token(ChainId.SMARTBCH, '0x084d40C7B7a7cf35cd47a4351bcB869e4187f690', 18, 'XTANGO', 'TANGObar'),
       //   token1: WBCH[ChainId.SMARTBCH],
       // },
       // "0x1c47c2a72e86B9B488f436F7aC76ACc61e531926": {
@@ -214,7 +218,7 @@ export default function Farm(): JSX.Element {
       //   farmId: 23,
       //   allocPoint: 2516289,
       //   token0: TANGO[ChainId.SMARTBCH],
-      //   token1: new Token(ChainId.SMARTBCH, '0x3E66c8B9DE0807c34ECA1A48B711394E4eBd85E8', 18, 'XTANGO', 'TANGObar'),
+      //   token1: new Token(ChainId.SMARTBCH, '0x084d40C7B7a7cf35cd47a4351bcB869e4187f690', 18, 'XTANGO', 'TANGObar'),
       // },
       // "0x211c0d74b1213A40Bdfd61490A9893353544ea46": {
       //   farmId: 24,
