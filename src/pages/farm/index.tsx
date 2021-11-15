@@ -77,7 +77,7 @@ export default function Farm(): JSX.Element {
       //   token1: WBCH[ChainId.SMARTBCH],
       // },
       '0xa9557d60585A8cE276b31673D441b21aD6B8FAC3': {
-        farmId: 0,
+        farmId: 1,
         allocPoint: 86288234,
         token0: TANGO[ChainId.SMARTBCH],
         token1: FLEXUSD,
@@ -95,7 +95,7 @@ export default function Farm(): JSX.Element {
       // //   token1: WBCH[ChainId.SMARTBCH],
       // // },
       '0x6ab2cA37fCec2B166424e619cfAd78e71e1d60b5': {
-        farmId: 1,
+        farmId: 0,
         allocPoint: 219428219,
         token0: FLEXUSD,
         token1: WBCH[ChainId.SMARTBCH],

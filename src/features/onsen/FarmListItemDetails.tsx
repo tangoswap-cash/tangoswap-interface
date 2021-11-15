@@ -112,6 +112,8 @@ const FarmListItem = ({ farm }) => {
                 onClick={async () => {
                   setPendingTx(true)
                   try {
+                    console.log("farm.id:                  ", farm.id);
+                    console.log("liquidityToken?.decimals: ", liquidityToken?.decimals);
                     // KMP decimals depend on asset, SLP is always 18
                     const tx = await deposit(farm.id, depositValue.toBigNumber(liquidityToken?.decimals))
 
