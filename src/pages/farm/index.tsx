@@ -64,6 +64,10 @@ export default function Farm(): JSX.Element {
   // LP for 0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129-0xC41C680c60309d4646379eD62020c534eB67b6f4 is 0x0663B29E3CAa8F2DB0313eA8B3E942a0431429cf
 
 
+
+  // BCH-FlexUSD: 		  0x6ab2cA37fCec2B166424e619cfAd78e71e1d60b5
+	// Montoto-FlexUSD:		0xa9557d60585A8cE276b31673D441b21aD6B8FAC3
+
   const hardcodedPairs = {
     [ChainId.SMARTBCH]: {
       // '0x674A71E69fe8D5cCff6fdcF9F1Fa4262Aa14b154': {
@@ -90,7 +94,7 @@ export default function Farm(): JSX.Element {
       // //   token0: new Token(ChainId.SMARTBCH, '0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129', 18, 'MIST', 'MistToken'),
       // //   token1: WBCH[ChainId.SMARTBCH],
       // // },
-      '0x1A6795d77D4c562c105703f90fc7b86Ecbf84927': {
+      '0x6ab2cA37fCec2B166424e619cfAd78e71e1d60b5': {
         farmId: 0,
         allocPoint: 219428219,
         token0: FLEXUSD,
