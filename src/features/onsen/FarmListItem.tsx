@@ -83,7 +83,7 @@ const FarmListItem = ({ farm, ...rest }) => {
                   <div className="flex items-center space-x-2">
                     <div key="0" className="flex items-center">
                       <Image
-                        src="https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xa4ff4B493CF2a0c90B214148e08C027FC09e254b/logo.png"
+                        src="https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xCCdF53f6ff719bb54678265083ACF9402754B24D/logo.png"
                         width="30px"
                         height="30px"
                         className="rounded-md"

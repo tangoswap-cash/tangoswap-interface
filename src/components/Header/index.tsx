@@ -123,11 +123,11 @@ function AppBar(): JSX.Element {
                                 const params: any = {
                                   type: 'ERC20',
                                   options: {
-                                    address: '0x3E66c8B9DE0807c34ECA1A48B711394E4eBd85E8',
+                                    address: '0x084d40C7B7a7cf35cd47a4351bcB869e4187f690',
                                     symbol: 'xTANGO',
                                     decimals: 18,
                                     image:
-                                      'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x3E66c8B9DE0807c34ECA1A48B711394E4eBd85E8/logo.png',
+                                      'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x084d40C7B7a7cf35cd47a4351bcB869e4187f690/logo.png',
                                   },
                                 }
                                 library.provider
@@ -172,7 +172,7 @@ function AppBar(): JSX.Element {
                                   symbol: 'MONTOTO',
                                   decimals: 18,
                                   image:
-                                    'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xa4ff4B493CF2a0c90B214148e08C027FC09e254b/logo.png',
+                                    'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xCCdF53f6ff719bb54678265083ACF9402754B24D/logo.png',
                                 },
                               }
                               if (library && library.provider.isMetaMask && library.provider.request) {
