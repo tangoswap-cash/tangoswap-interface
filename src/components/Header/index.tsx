@@ -7,6 +7,7 @@ import Buy from '../../features/on-ramp/ramp'
 import ExternalLink from '../ExternalLink'
 import Image from 'next/image'
 import LanguageSwitch from '../LanguageSwitch'
+import TangoPrice from '../TangoPrice'
 import Link from 'next/link'
 import More from './More'
 import NavLink from '../NavLink'
@@ -111,13 +112,13 @@ function AppBar(): JSX.Element {
                   </div>
                 </div>
 
-                <div className="fixed bottom-0 left-0 z-10 flex flex-row items-center justify-center w-full p-4 lg:w-auto bg-dark-1000 lg:relative lg:p-0 lg:bg-transparent">
+                <div className="fixed bottom-0 left-0 z-10 flex flex-row items-center justify-center w-full p-4 lg:w-auto bg-dark-900 lg:relative lg:p-0 lg:bg-transparent">
                   <div className="flex items-center justify-between w-full space-x-2 sm:justify-end">
                     {chainId && [ChainId.SMARTBCH].includes(chainId) && library && library.provider.isMetaMask && (
                       <>
                         <QuestionHelper text={i18n._(t`Add xTANGO to your MetaMask wallet`)}>
                           <div
-                            className="hidden p-0.5 rounded-md cursor-pointer sm:inline-flex bg-dark-900 hover:bg-dark-800"
+                            className="hidden p-0.5 rounded-md cursor-pointer sm:inline-flex bg-dark-900"
                             onClick={() => {
                               if (library && library.provider.isMetaMask && library.provider.request) {
                                 const params: any = {
@@ -147,7 +148,7 @@ function AppBar(): JSX.Element {
                             }}
                           >
                             <Image
-                              src="/images/tokens/xtango-square.jpg"
+                              src="/images/logos/tango-filled-light.png"
                               alt="xTANGO"
                               width="38px"
                               height="38px"
@@ -163,7 +164,7 @@ function AppBar(): JSX.Element {
                       <>
                         <QuestionHelper text={i18n._(t`Add MONTOTO to your MetaMask wallet`)}>
                           <div
-                            className="hidden rounded-md cursor-pointer sm:inline-flex bg-dark-900 hover:bg-dark-800 p-0.5"
+                            className="hidden rounded-md cursor-pointer sm:inline-flex bg-dark-900 p-0.5"
                             onClick={() => {
                               const params: any = {
                                 type: 'ERC20',
@@ -193,7 +194,7 @@ function AppBar(): JSX.Element {
                             }}
                           >
                             <Image
-                              src="/images/tokens/tango-square.jpg"
+                              src="/images/logos/tango-filled.png"
                               alt="MONTOTO"
                               width="38px"
                               height="38px"
@@ -205,20 +206,22 @@ function AppBar(): JSX.Element {
                       </>
                     )}
 
-                    {library && library.provider.isMetaMask && (
+                    {/* {library && library.provider.isMetaMask && (
                       <div className="hidden sm:inline-block">
                         <Web3Network />
                       </div>
-                    )}
+                    )} */}
+
+                    {/* <TangoPrice /> */}
 
                     <div className="w-auto flex items-center rounded p-0.5 whitespace-nowrap text-sm font-bold cursor-pointer select-none pointer-events-auto">
-                      {account && chainId && userEthBalance && (
+                      {/* {account && chainId && userEthBalance && (
                         <>
                           <div className="px-3 py-2 text-primary text-bold">
                             {userEthBalance?.toSignificant(4)} {NATIVE[chainId].symbol}
                           </div>
                         </>
-                      )}
+                      )} */}
                       <Web3Status />
                     </div>
                     <div className="hidden md:block">
