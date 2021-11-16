@@ -36,6 +36,7 @@ const FarmListItem = ({ farm, ...rest }) => {
                 <div className="flex flex-col justify-center">
                   <div>
                     <span className="font-bold">{farm?.pair?.token0?.symbol}</span>/
+                    {(farm?.pair?.token0?.symbol?.length > 5 || farm?.pair?.token1?.symbol?.length > 5) && <br />}
                     <span className={farm?.pair?.type === PairType.KASHI ? 'font-thin' : 'font-bold'}>
                       {farm?.pair?.token1?.symbol}
                     </span>
