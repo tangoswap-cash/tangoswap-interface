@@ -22,12 +22,12 @@ const items = (i18n: I18n) => [
     href: 'https://github.com/tangoswap-cash',
     external: true,
   },
-  {
-    name: i18n._(t`Discord`),
-    description: i18n._(t`Join the community on Discord.`),
-    href: 'https://discord.gg/xFTnQEzu9T',
-    external: true,
-  },
+  // {
+  //   name: i18n._(t`Discord`),
+  //   description: i18n._(t`Join the community on Discord.`),
+  //   href: 'https://discord.gg/xFTnQEzu9T',
+  //   external: true,
+  // },
   {
     name: i18n._(t`Telegram`),
     description: i18n._(t`Join the community on Telegram.`),
