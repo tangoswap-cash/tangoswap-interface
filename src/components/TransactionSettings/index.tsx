@@ -100,7 +100,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             )}
           />
         </div>
-        <div className="flex items-center space-x-2 bg-dark-800 py-3 px-2 rounded">
+        <div className="flex items-center space-x-2">
           <div
             className={classNames(
               !!slippageError
@@ -108,9 +108,9 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                 : tooLow || tooHigh
                 ? 'border-yellow'
                 : userSlippageTolerance !== 'auto'
-                ? 'border-transparent'
+                ? 'border-blue'
                 : 'border-transparent',
-              'border p-2 rounded bg-dark-900'
+              'border p-2 rounded bg-dark-800'
             )}
             tabIndex={-1}
           >
@@ -142,7 +142,6 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
           </div>
           <Button
             size="sm"
-            className={userSlippageTolerance === 'auto' ? 'bg-dark-900' : undefined}
             color={userSlippageTolerance === 'auto' ? 'blue' : 'gray'}
             variant={userSlippageTolerance === 'auto' ? 'filled' : 'outlined'}
             onClick={() => {

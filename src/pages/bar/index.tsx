@@ -50,11 +50,11 @@ const activeTabStyle = `${tabStyle} text-high-emphesis font-bold bg-dark-900`
 const inactiveTabStyle = `${tabStyle} text-secondary`
 
 const buttonStyle =
-  'flex justify-center items-center w-full h-14 rounded font-bold md:font-medium md:text-lg mt-5 text-sm focus:outline-none focus:ring bg-brown'
-const buttonStyleEnabled = `${buttonStyle} text-high-emphesis hover:opacity-90`
+  'flex justify-center items-center w-full h-14 rounded font-bold md:font-medium md:text-lg mt-5 text-sm focus:outline-none focus:ring'
+const buttonStyleEnabled = `${buttonStyle} text-high-emphesis bg-gradient-to-r from-pink-red to-light-brown hover:opacity-90`
 const buttonStyleInsufficientFunds = `${buttonStyleEnabled} opacity-60`
-const buttonStyleDisabled = `${buttonStyle} text-secondary bg-dark-700 opacity-60`
-const buttonStyleConnectWallet = `${buttonStyle} text-high-emphesis hover:bg-opacity-90`
+const buttonStyleDisabled = `${buttonStyle} text-secondary bg-dark-700`
+const buttonStyleConnectWallet = `${buttonStyle} text-high-emphesis bg-cyan-blue hover:bg-opacity-90`
 
 // const fetcher = (query) => request('http://127.0.0.1:8000/subgraphs/name/TANGOswap/bar', query)
 
@@ -69,7 +69,7 @@ export default function Stake() {
   const { enter, leave } = useSushiBar()
 
   // const { data } = useSWR(`{bar(id: "${XTANGO[chainId].address}") {ratio, totalSupply}}`, fetcher)
-  const data = null
+  const data = null;
 
   const xSushiPerSushi = parseFloat(data?.bar?.ratio)
 
@@ -190,14 +190,14 @@ export default function Stake() {
         <div className="flex justify-center mb-6">
           <div className="flex flex-col w-full max-w-xl mt-auto mb-2">
             <div className="flex max-w-lg">
-              <div className="self-end mb-3 text-lg font-bold md:text-xl text-high-emphesis md:mb-7">
+              <div className="self-end mb-3 text-lg font-bold md:text-2xl text-high-emphesis md:mb-7">
                 {i18n._(t`Maximize yield by staking TANGO for xTANGO`)}
               </div>
               {/* <div className="self-start pl-6 pr-3 mb-1 min-w-max md:hidden">
                                 <img src={XSushiSignSmall} alt="xTANGO sign" />
                             </div> */}
             </div>
-            <div className="max-w-lg pr-3 mb-2 text-sm leading-5 md:text-base md:mb-4 md:pr-0">
+            <div className="max-w-lg pr-3 mb-2 text-sm leading-5 text-gray-500 md:text-base md:mb-4 md:pr-0">
               {i18n._(t`For every swap on the exchange on every chain, 0.05% of the swap fees are distributed as TANGO
                                 proportional to your share of the TangoBar. When your TANGO is staked into the TangoBar, you receive
                                 xTANGO in return.
@@ -293,7 +293,8 @@ export default function Stake() {
                   <div className="border-gradient-r-pink-red-light-brown-dark-pink-red border-transparent border-solid border rounded-3xl px-4 md:px-3.5 py-1.5 md:py-0.5 text-high-emphesis text-xs font-medium md:text-base md:font-normal">
                     {`1 xTANGO = ${xSushiPerSushi.toFixed(4)} TANGO`}
                   </div>
-                  */}
+                  */
+                  }
                 </div>
 
                 <StyledNumericalInput
@@ -336,7 +337,7 @@ export default function Stake() {
                         <p className="text-base font-bold">{formattedBalance}</p>
                       </div>
                       <button
-                        className="px-2 py-1 ml-3 text-xs font-bold border pointer-events-auto focus:outline-none focus:ring hover:bg-opacity-40 md:bg-wax-flower md:bg-opacity-30 border-secondary md:border-wax-flower rounded-2xl md:py-1 md:px-3 md:ml-4 md:text-sm md:font-normal md:text-wax-flower"
+                        className="px-2 py-1 ml-3 text-xs font-bold border pointer-events-auto focus:outline-none focus:ring hover:bg-opacity-40 md:bg-cyan-blue md:bg-opacity-30 border-secondary md:border-cyan-blue rounded-2xl md:py-1 md:px-3 md:ml-4 md:text-sm md:font-normal md:text-cyan-blue"
                         onClick={handleClickMax}
                       >
                         {i18n._(t`MAX`)}
@@ -389,13 +390,13 @@ export default function Stake() {
             <div className="flex flex-col w-full px-4 pt-6 pb-5 rounded bg-dark-900 md:px-8 md:pt-7 md:pb-9">
               <div className="flex flex-wrap">
                 <div className="flex flex-col flex-grow md:mb-14">
-                  <p className="mb-3 text-wax-flower text-lg font-bold md:text-xl md:font-medium text-high-emphesis">
+                  <p className="mb-3 text-lg font-bold md:text-2xl md:font-medium text-high-emphesis">
                     {i18n._(t`Balance`)}
                   </p>
                   <div className="flex items-center space-x-4">
                     <Image
                       className="max-w-10 md:max-w-16 -ml-1 mr-1 md:mr-2 -mb-1.5 rounded"
-                      src="/images/logos/tango-filled-light.png"
+                      src="/images/tokens/xtango-square.jpg"
                       alt="xTANGO"
                       width={64}
                       height={64}
@@ -411,7 +412,7 @@ export default function Stake() {
 
                 <div className="flex flex-col flex-grow">
                   <div className="flex mb-3 ml-8 flex-nowrap md:ml-0">
-                    <p className="text-lg text-wax-flower font-bold md:text-xl md:font-medium text-high-emphesis">
+                    <p className="text-lg font-bold md:text-2xl md:font-medium text-high-emphesis">
                       {i18n._(t`Unstaked`)}
                     </p>
                     {/* <img className="w-4 ml-2 cursor-pointer" src={MoreInfoSymbol} alt={'more info'} /> */}
@@ -419,7 +420,7 @@ export default function Stake() {
                   <div className="flex items-center ml-8 space-x-4 md:ml-0">
                     <Image
                       className="max-w-10 md:max-w-16 -ml-1 mr-1 md:mr-2 -mb-1.5 rounded"
-                      src="/images/logos/tango-filled.png"
+                      src="/images/tokens/tango-square.jpg"
                       alt="TANGO"
                       width={64}
                       height={64}
