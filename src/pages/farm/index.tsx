@@ -363,8 +363,8 @@ export default function Farm(): JSX.Element {
 
   // const flexUSDTangoPool = farms[1].pool
   // const bchFlexUSDPool = farms[3].pool
-  const flexUSDTangoPool = farms[0].pool
-  const bchFlexUSDPool = farms[1].pool
+  const flexUSDTangoPool = farms[1].pool
+  const bchFlexUSDPool = farms[0].pool
   let bchPriceUSD = 0
   let TANGOPriceUSD = 0
   if (bchFlexUSDPool.reserves) {
@@ -373,6 +373,9 @@ export default function Farm(): JSX.Element {
   if (flexUSDTangoPool.reserves) {
     TANGOPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
   }
+
+  // console.log("bchPriceUSD:    ", bchPriceUSD);
+  // console.log("TANGOPriceUSD:  ", TANGOPriceUSD);
 
   let v2PairsBalances = {};
   let fetchingV2PairBalances = false;
@@ -472,7 +475,7 @@ export default function Farm(): JSX.Element {
 
       const defaultReward = {
         token: 'MONTOTO',
-        icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xFb28a53Fb986223bFFa7E9e67B32F8b18c14aAf0/logo.png',
+        icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xCCdF53f6ff719bb54678265083ACF9402754B24D/logo.png',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
         rewardPrice: +TANGOPriceUSD,
@@ -494,6 +497,12 @@ export default function Farm(): JSX.Element {
     const roiPerDay = roiPerBlock * blocksPerDay
 
     const roiPerYear = roiPerDay * 365
+
+    // console.log("rewards (1):       ", rewards)
+    // console.log("roiPerBlock (1):   ", roiPerBlock)
+    // console.log("blocksPerDay (1):  ", blocksPerDay)
+    // console.log("roiPerDay (1):     ", roiPerDay)
+    // console.log("roiPerYear (1):    ", roiPerYear)
 
     const position = positions.find((position) => position.id === pool.id && position.chef === pool.chef)
 

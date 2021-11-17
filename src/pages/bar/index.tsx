@@ -73,6 +73,7 @@ export default function Stake() {
   // // const { data } = useSWR(`{bar(id: "${XTANGO[chainId].address}") {ratio, totalSupply}}`, fetcher)
   // const { data } = useSWR(`{bar(id: "0xc41c680c60309d4646379ed62020c534eb67b6f4") {ratio, totalSupply}}`, fetcher)
   const data = null;
+  // const { data } = useSWR(`{bar(id: "0x084d40C7B7a7cf35cd47a4351bcB869e4187f690") {ratio, totalSupply}}`, fetcher)
 
   const xSushiPerSushi = parseFloat(data?.bar?.ratio)
 
@@ -288,14 +289,14 @@ export default function Stake() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between w-full mt-6">
+                {/* <div className="flex items-center justify-between w-full mt-6">
                   <p className="font-bold text-large md:text-2xl text-high-emphesis">
                     {activeTab === 0 ? i18n._(t`Stake MONTOTO`) : i18n._(t`Unstake`)}
                   </p>
                   <div className="border-gradient-r-pink-red-light-brown-dark-pink-red border-transparent border-solid border rounded-3xl px-4 md:px-3.5 py-1.5 md:py-0.5 text-high-emphesis text-xs font-medium md:text-base md:font-normal">
                     {`1 xMONTOTO = ${xSushiPerSushi.toFixed(4)} MONTOTO`}
                   </div>
-                </div>
+                </div> */}
 
                 <StyledNumericalInput
                   value={input}
