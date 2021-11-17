@@ -337,7 +337,7 @@ export default function Stake() {
                         <p className="text-base font-bold">{formattedBalance}</p>
                       </div>
                       <button
-                        className="px-2 py-1 ml-3 text-xs font-bold border pointer-events-auto focus:outline-none focus:ring hover:bg-opacity-40 md:bg-cyan-blue md:bg-opacity-30 border-secondary md:border-cyan-blue rounded-2xl md:py-1 md:px-3 md:ml-4 md:text-sm md:font-normal md:text-cyan-blue"
+                        className="px-2 py-1 ml-3 text-xs font-bold border pointer-events-auto focus:outline-none hover:bg-opacity-40 md:bg-cyan-blue md:bg-opacity-30 border-secondary md:border-cyan-blue rounded-2xl md:py-1 md:px-3 md:ml-4 md:text-sm md:font-normal md:text-cyan-blue"
                         onClick={handleClickMax}
                       >
                         {i18n._(t`MAX`)}
