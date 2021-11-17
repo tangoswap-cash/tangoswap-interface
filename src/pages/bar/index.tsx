@@ -224,7 +224,7 @@ export default function Stake() {
         </div>
         <div className="flex flex-col justify-center md:flex-row">
           <div className="flex flex-col w-full max-w-xl mx-auto mb-4 md:m-0">
-            <div className="mb-4">
+            {/* <div className="mb-4">
               {
               <div className="flex items-center justify-between w-full h-24 max-w-xl p-4 rounded md:pl-5 md:pr-7 bg-light-yellow bg-opacity-40">
                 <div className="flex flex-col">
@@ -247,7 +247,7 @@ export default function Stake() {
                     </a>
                   </div>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col"> */}
                   {/*
                   <p className="mb-1 text-lg font-bold text-right text-high-emphesis md:text-3xl">
                     {`${apr ? apr.toFixed(2) + '%' : i18n._(t`Loading...`)}`}
@@ -256,10 +256,10 @@ export default function Stake() {
                     {i18n._(t`Yesterday's APR`)}
                   </p>
                   */}
-                </div>
+                {/* </div>
               </div>
               }
-            </div>
+            </div> */}
             <div>
               <TransactionFailedModal isOpen={modalOpen} onDismiss={() => setModalOpen(false)} />
               <div className="w-full max-w-xl px-3 pt-2 pb-6 rounded bg-dark-900 md:pb-9 md:pt-4 md:px-8">
