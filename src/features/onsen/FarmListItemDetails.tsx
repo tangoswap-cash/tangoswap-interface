@@ -107,7 +107,7 @@ const FarmListItem = ({ farm }) => {
               </Button>
             ) : (
               <Button
-                style={{ backgroundColor: '#09A581', width: '100%' }}
+                color="blue"
                 disabled={pendingTx || !typedDepositValue || (balance && balance.lessThan(typedDepositValue))}
                 onClick={async () => {
                   setPendingTx(true)
@@ -134,17 +134,7 @@ const FarmListItem = ({ farm }) => {
             {account && (
               <div className="pr-4 mb-2 text-sm text-right cursor-pointer text-secondary">
                 {i18n._(t`Your Staked`)}: {formatNumber(amount?.toSignificant(6)) ?? 0} {farm.type}
-                {amount && farm.pool
-                  ? `(${formatPercent(
-                      Math.min(
-                        (Number.parseFloat(amount?.toFixed()) / Number.parseFloat(farm.pool.totalSupply.toFixed())) *
-                          100,
-                        100
-                      )
-                    ).toString()} ` +
-                    i18n._(t`of pool`) +
-                    `)`
-                  : ''}
+                {amount && farm.pool ? `(${formatPercent(Math.min(Number.parseFloat(amount?.toFixed()) / Number.parseFloat(farm.pool.totalSupply.toFixed()) * 100, 100)).toString()} ` + i18n._(t`of pool`) + `)` : ''}
               </div>
             )}
             <div className="relative flex items-center w-full mb-4">
@@ -158,7 +148,7 @@ const FarmListItem = ({ farm }) => {
               {account && (
                 <Button
                   variant="outlined"
-                  style={{ backgroundColor: '#651906', width: '100%' }}
+                  color="pink"
                   size="xs"
                   onClick={() => {
                     if (!amount.equalTo(ZERO)) {
@@ -172,7 +162,7 @@ const FarmListItem = ({ farm }) => {
               )}
             </div>
             <Button
-              style={{ backgroundColor: '#651906', width: '100%' }}
+              color="pink"
               className="border-0"
               disabled={pendingTx || !typedWithdrawValue || amount.lessThan(typedWithdrawValue)}
               onClick={async () => {
@@ -211,10 +201,9 @@ const FarmListItem = ({ farm }) => {
                 setPendingTx(false)
               }}
             >
-              {i18n._(t`Harvest`) +
-                ` ${formatNumber(pendingSushi.toFixed(18))} TANGO ${
-                  farm.rewards.length > 1 ? `& ${formatNumber(reward)} ${farm.rewards[1].token}` : ''
-                }`}
+              {i18n._(t`Harvest`) + ` ${formatNumber(pendingSushi.toFixed(18))} TANGO ${
+                farm.rewards.length > 1 ? `& ${formatNumber(reward)} ${farm.rewards[1].token}` : ''
+              }`}
             </Button>
           </div>
         )}

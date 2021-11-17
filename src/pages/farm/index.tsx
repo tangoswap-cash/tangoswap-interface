@@ -279,20 +279,27 @@ export default function Farm(): JSX.Element {
       //   token1: WBCH[ChainId.SMARTBCH],
       // },
 
+
+
+
+
       // export const TANGO: ChainTokenMap = {
       //   [ChainId.SMARTBCH]: new Token(ChainId.SMARTBCH, TANGO_ADDRESS[ChainId.SMARTBCH], 18, 'TANGO', 'TangoToken'),
       //   [ChainId.SMARTBCH_AMBER]: new Token(ChainId.SMARTBCH_AMBER, TANGO_ADDRESS[ChainId.SMARTBCH_AMBER], 18, 'TANGO', 'TangoToken'),
       // }
+
+
+
     },
     [ChainId.SMARTBCH_AMBER]: {
-      '0x07DE6fc05597E0E4c92C83637A8a0CA411f3a769': {
+      "0x07DE6fc05597E0E4c92C83637A8a0CA411f3a769": {
         farmId: 0,
         allocPoint: 1000,
         token0: WBCH[ChainId.SMARTBCH_AMBER],
         token1: new Token(ChainId.SMARTBCH_AMBER, '0xC6F80cF669Ab9e4BE07B78032b4821ed5612A9ce', 18, 'sc', 'testcoin2'),
       },
-    },
-  }
+    }
+  };
 
   const kashiPairs = [] // unused
   const swapPairs = []
@@ -301,9 +308,9 @@ export default function Farm(): JSX.Element {
   for (const [pairAddress, pair] of Object.entries(hardcodedPairs[chainId])) {
     swapPairs.push({
       id: pairAddress,
-      reserveUSD: '100000',
-      totalSupply: '1000',
-      timestamp: '1599830986',
+      reserveUSD: "100000",
+      totalSupply: "1000",
+      timestamp: "1599830986",
       token0: {
         id: pair.token0.address,
         name: pair.token0.name,
@@ -322,15 +329,15 @@ export default function Farm(): JSX.Element {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       pool: usePool(pairAddress),
       allocPoint: pair.allocPoint,
-      balance: '1000000000000000000',
+      balance: "1000000000000000000",
       chef: 0,
       id: pair.farmId,
       pendingSushi: undefined,
       pending: 0,
       owner: {
         id: MASTERCHEF_ADDRESS[chainId],
-        sushiPerBlock: '100000000000000000000',
-        totalAllocPoint: '999949643',
+        sushiPerBlock: "100000000000000000000",
+        totalAllocPoint: "999949643"
       },
       userCount: 1,
     }
@@ -338,7 +345,7 @@ export default function Farm(): JSX.Element {
     f.pendingSushi = usePendingSushi(f)
     f.pending = Number.parseFloat(f.pendingSushi?.toFixed())
 
-    farms.push(f)
+    farms.push(f);
   }
 
   // console.log(farms);
@@ -350,64 +357,65 @@ export default function Farm(): JSX.Element {
   let bchPriceUSD = 0
   let TANGOPriceUSD = 0
   if (bchFlexUSDPool.reserves) {
-    bchPriceUSD =
-      Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed())
+    bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
   }
   if (flexUSDTangoPool.reserves) {
-    TANGOPriceUSD =
-      1 /
-      (Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) /
-        Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
+    TANGOPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
   }
 
-  let v2PairsBalances = {}
-  let fetchingV2PairBalances = false
+  let v2PairsBalances = {};
+  let fetchingV2PairBalances = false;
 
-  for (let i = 0; i < farms.length; i += 8) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [partial_v2PairsBalances, partial_fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
-      MASTERCHEF_ADDRESS[chainId],
-      farms.slice(i, Math.min(i + 8, farms.length)).map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token'))
-    )
+  for (let i=0; i<farms.length; i+=8) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [partial_v2PairsBalances, partial_fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
+        MASTERCHEF_ADDRESS[chainId],
+        farms.slice(i, Math.min(i+8, farms.length)).map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token'))
+      )
 
-    v2PairsBalances = {
-      ...v2PairsBalances,
-      ...partial_v2PairsBalances,
-    }
+      v2PairsBalances = {
+        ...v2PairsBalances,
+        ...partial_v2PairsBalances,
+      };
 
-    if (partial_fetchingV2PairBalances) {
-      fetchingV2PairBalances = true
-    }
+      if (partial_fetchingV2PairBalances) {
+        fetchingV2PairBalances = true;
+      }
   }
-  if (!fetchingV2PairBalances) {
-    for (let i = 0; i < farms.length; ++i) {
+  if (! fetchingV2PairBalances) {
+    for (let i=0; i<farms.length; ++i) {
       if (v2PairsBalances.hasOwnProperty(farms[i].pair) && farms[i].pool.totalSupply) {
-        const totalSupply = Number.parseFloat(farms[i].pool.totalSupply.toFixed())
-        const chefBalance = Number.parseFloat(v2PairsBalances[farms[i].pair].toFixed())
+        const totalSupply = Number.parseFloat(farms[i].pool.totalSupply.toFixed());
+        const chefBalance = Number.parseFloat(v2PairsBalances[farms[i].pair].toFixed());
 
-        let tvl = 0
+        let tvl = 0;
         if (farms[i].pool.token0 === TANGO[chainId].address) {
-          const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed())
-          tvl = (reserve / totalSupply) * chefBalance * TANGOPriceUSD * 2
-        } else if (farms[i].pool.token1 === TANGO[chainId].address) {
-          const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed())
-          tvl = (reserve / totalSupply) * chefBalance * TANGOPriceUSD * 2
-        } else if (farms[i].pool.token0 === FLEXUSD.address) {
-          const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed())
-          tvl = (reserve / totalSupply) * chefBalance * 2
-        } else if (farms[i].pool.token1 === FLEXUSD.address) {
-          const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed())
-          tvl = (reserve / totalSupply) * chefBalance * 2
-        } else if (farms[i].pool.token0 === WBCH[chainId].address) {
-          const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed())
-          tvl = (reserve / totalSupply) * chefBalance * bchPriceUSD * 2
-        } else if (farms[i].pool.token1 === WBCH[chainId].address) {
-          const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed())
-          tvl = (reserve / totalSupply) * chefBalance * bchPriceUSD * 2
+          const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed());
+          tvl = reserve / totalSupply * chefBalance * TANGOPriceUSD * 2;
         }
-        farms[i].tvl = tvl
+        else if (farms[i].pool.token1 === TANGO[chainId].address) {
+          const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed());
+          tvl = reserve / totalSupply * chefBalance * TANGOPriceUSD * 2;
+        }
+        else if (farms[i].pool.token0 === FLEXUSD.address) {
+          const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed());
+          tvl = reserve / totalSupply * chefBalance * 2;
+        }
+        else if (farms[i].pool.token1 === FLEXUSD.address) {
+          const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed());
+          tvl = reserve / totalSupply * chefBalance * 2;
+        }
+        else if (farms[i].pool.token0 === WBCH[chainId].address) {
+          const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed());
+          tvl = reserve / totalSupply * chefBalance * bchPriceUSD * 2;
+        }
+        else if (farms[i].pool.token1 === WBCH[chainId].address) {
+          const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed());
+          tvl = reserve / totalSupply * chefBalance * bchPriceUSD * 2;
+        }
+        farms[i].tvl = tvl;
       } else {
-        farms[i].tvl = '0'
+        farms[i].tvl = "0";
       }
     }
   }
@@ -415,7 +423,7 @@ export default function Farm(): JSX.Element {
   const positions = usePositions(chainId)
 
   // const averageBlockTime = useAverageBlockTime()
-  const averageBlockTime = 6
+  const averageBlockTime = 6;
 
   // const masterChefV1TotalAllocPoint = useMasterChefV1TotalAllocPoint()
 
@@ -453,7 +461,7 @@ export default function Farm(): JSX.Element {
 
       const defaultReward = {
         token: 'MONTOTO',
-        icon: '/images/logos/tango-filled.png',
+        icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xFb28a53Fb986223bFFa7E9e67B32F8b18c14aAf0/logo.png',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
         rewardPrice: +TANGOPriceUSD,
@@ -466,12 +474,11 @@ export default function Farm(): JSX.Element {
 
     const rewards = getRewards()
 
-    const balance = Number(pool.balance / 1e18)
+    const balance = Number(pool.balance / 1e18);
 
-    const roiPerBlock =
-      rewards.reduce((previousValue, currentValue) => {
-        return previousValue + currentValue.rewardPerBlock * currentValue.rewardPrice
-      }, 0) / pool.tvl
+    const roiPerBlock = rewards.reduce((previousValue, currentValue) => {
+      return previousValue + currentValue.rewardPerBlock * currentValue.rewardPrice
+    }, 0) / pool.tvl
 
     const roiPerDay = roiPerBlock * blocksPerDay
 
@@ -498,7 +505,7 @@ export default function Farm(): JSX.Element {
     portfolio: (farm) => farm.pending !== 0,
     sushi: (farm) => farm.pair.type === PairType.SWAP && farm.allocPoint !== '0',
     kashi: (farm) => farm.pair.type === PairType.KASHI && farm.allocPoint !== '0',
-    '2x': (farm) => farm.chef === Chef.MASTERCHEF_V2 && farm.allocPoint !== '0',
+    '2x': (farm) => (farm.chef === Chef.MASTERCHEF_V2) && farm.allocPoint !== '0',
   }
 
   const data = farms
@@ -538,13 +545,13 @@ export default function Farm(): JSX.Element {
           term={term}
           inputProps={{
             className:
-              'relative w-full bg-dark-800 border border-transparent focus:border-wax-flower rounded placeholder-secondary focus:placeholder-wax-flower font-bold text-wax-flower px-6 py-3.5',
+              'relative w-full bg-transparent border border-transparent focus:border-gradient-r-blue-pink-dark-900 rounded placeholder-secondary focus:placeholder-primary font-bold text-base px-6 py-3.5',
           }}
         />
 
         <div className="flex items-center text-lg font-bold text-high-emphesis whitespace-nowrap">
-          Farms&nbsp;&nbsp;
-          <div className="w-full h-0 font-bold bg-light-brown border border-b-0 border-transparent rounded"></div>
+          Farms{' '}
+          <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
 
         <FarmList farms={result} term={term} />

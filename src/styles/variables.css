@@ -1,15 +1,6 @@
 :root {
     --primary: #130303;
-    --text-primary: #DFDFDF;
-    --app-font: "Montserrat Regular"; 
+    --text-primary: #BFBFBF;
+    --font-sans: "DM Sans", -apple-system, system-ui, BlinkMacSystemFont, 'Helvetica Neue', 'Helvetica', sans-serif;
     --scrollbar-width: 14px;
-}
-
-@font-face {
-    font-family: 'Montserrat Regular';
-    src: url('/fonts/montserrat-regular.woff2') format('woff2'),
-      url('/fonts/montserrat-regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
 }
