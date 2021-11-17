@@ -109,7 +109,7 @@ function AppBar(): JSX.Element {
                           </a>
                         </NavLink>
                       )}
-                      {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
+                      {/* {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
                         <ExternalLink
                           id={`analytics-nav-link`}
                           href={ANALYTICS_URL[chainId] || 'https://analytics.mistswap.fi'}
@@ -117,7 +117,7 @@ function AppBar(): JSX.Element {
                         >
                           {i18n._(t`Analytics`)}
                         </ExternalLink>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </div>
@@ -296,7 +296,7 @@ function AppBar(): JSX.Element {
                   </Link>
                 )}
 
-                {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
+                {/* {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
                   <ExternalLink
                     id={`analytics-nav-link`}
                     href={ANALYTICS_URL[chainId] || 'https://analytics.TANGOswap.fi'}
@@ -304,7 +304,7 @@ function AppBar(): JSX.Element {
                   >
                     {i18n._(t`Analytics`)}
                   </ExternalLink>
-                )}
+                )} */}
               </div>
             </Popover.Panel>
           </>
