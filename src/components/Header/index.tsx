@@ -37,7 +37,7 @@ function AppBar(): JSX.Element {
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <Image src="/logo.png" alt="Tango" width="32px" height="32px" />
+                  <Image src="/logo.png" alt="Tango" width="48px" height="48px" />
                   <div className="hidden sm:block sm:ml-4">
                     <div className="flex space-x-2">
                       {/* <Buy /> */}
@@ -117,7 +117,7 @@ function AppBar(): JSX.Element {
                       <>
                         <QuestionHelper text={i18n._(t`Add xTANGO to your MetaMask wallet`)}>
                           <div
-                            className="hidden p-0.5 rounded-md cursor-pointer sm:inline-flex bg-dark-900 hover:bg-dark-800"
+                            className="hidden p-0.5 rounded-md cursor-pointer sm:inline-flex"
                             onClick={() => {
                               if (library && library.provider.isMetaMask && library.provider.request) {
                                 const params: any = {
@@ -147,7 +147,7 @@ function AppBar(): JSX.Element {
                             }}
                           >
                             <Image
-                              src="/images/tokens/xtango-square.jpg"
+                              src="/images/tokens/xtango-square.png"
                               alt="xTANGO"
                               width="38px"
                               height="38px"
@@ -163,7 +163,7 @@ function AppBar(): JSX.Element {
                       <>
                         <QuestionHelper text={i18n._(t`Add TANGO to your MetaMask wallet`)}>
                           <div
-                            className="hidden rounded-md cursor-pointer sm:inline-flex bg-dark-900 hover:bg-dark-800 p-0.5"
+                            className="hidden rounded-md cursor-pointer sm:inline-flex p-0.5"
                             onClick={() => {
                               const params: any = {
                                 type: 'ERC20',
@@ -193,7 +193,7 @@ function AppBar(): JSX.Element {
                             }}
                           >
                             <Image
-                              src="/images/tokens/tango-square.jpg"
+                              src="/images/tokens/tango-square.png"
                               alt="TANGO"
                               width="38px"
                               height="38px"
