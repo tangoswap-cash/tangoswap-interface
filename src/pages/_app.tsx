@@ -28,7 +28,6 @@ import { nanoid } from '@reduxjs/toolkit'
 import { remoteLoader } from '@lingui/remote-loader'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { withPasswordProtect } from '@storyofams/next-password-protect'
 
 const Web3ProviderNetwork = dynamic(() => import('../components/Web3ProviderNetwork'), { ssr: false })
 
@@ -164,11 +163,4 @@ function MyApp({
   )
 }
 
-/**
- * IMPORTANT! Remove HOC withPasswordProtect when site goes to prod
- * export default MyApp
- * also remove the import { withPasswordProtect } from '@storyofams/next-password-protect'
- * directories /pages/api/login - /pages/api/passwordcheck
- * and "@storyofams/next-password-protect": "^1.5.12", dependecy
- */
-export default withPasswordProtect(MyApp, { loginApiUrl: '/api/login' })
+export default MyApp

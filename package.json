@@ -164,7 +164,6 @@
     "not op_mini all"
   ],
   "dependencies": {
-    "@storyofams/next-password-protect": "^1.5.12",
     "patch-package": "^6.4.7",
     "postinstall-postinstall": "^2.1.0"
   }
