@@ -89,7 +89,7 @@ const FarmListItem = ({ farm, ...rest }) => {
                   </div>
                   <div className="flex flex-col space-y-1">
                     <div key="0" className="text-xs md:text-sm">
-                      {formatNumber(pendingSushi.toFixed(18))} MIST
+                      {formatNumber(pendingSushi.toFixed(18))} TANGO
                     </div>
                   </div>
               </div>
