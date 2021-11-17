@@ -2,6 +2,7 @@ import '../bootstrap'
 import '../styles/index.css'
 
 import * as plurals from 'make-plural/plurals'
+import * as gtag from './../functions/matomo'
 
 import { Fragment, FunctionComponent } from 'react'
 import { NextComponentType, NextPageContext } from 'next'
@@ -50,31 +51,44 @@ function MyApp({
     Provider: FunctionComponent
   }
 }) {
-  const { pathname, query, locale } = useRouter()
+  const router = useRouter()
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      gtag.pageview(url)
+    }
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events])
+
 
   useEffect(() => {
     async function load(locale) {
       i18n.loadLocaleData(locale, { plurals: plurals[locale.split('_')[0]] })
 
-      try {
-        // Load messages from AWS, use q session param to get latest version from cache
-        const resp = await fetch(`https://d3l928w2mi7nub.cloudfront.net/${locale}.json?q=${sessionId}`)
-        const remoteMessages = await resp.json()
+      // FIXME: we can't upload locale files to aws right now, so fallback to use local files instead.
+      // try {
+      //   // Load messages from AWS, use q session param to get latest version from cache
+      //   const resp = await fetch(`https://d3l928w2mi7nub.cloudfront.net/${locale}.json?q=${sessionId}`)
+      //   const remoteMessages = await resp.json()
 
-        const messages = remoteLoader({ messages: remoteMessages, format: 'minimal' })
-        i18n.load(locale, messages)
-      } catch {
-        // Load fallback messages
-        const { messages } = await import(`@lingui/loader!./../../locale/${locale}.json?raw-lingui`)
-        i18n.load(locale, messages)
-      }
+      //   const messages = remoteLoader({ messages: remoteMessages, format: 'minimal' })
+      //   i18n.load(locale, messages)
+      // } catch {
+
+      // Load fallback messages
+      const { messages } = await import(`@lingui/loader!./../../locale/${locale}.json?raw-lingui`)
+      i18n.load(locale, messages)
+
+      // }
 
       i18n.activate(locale)
     }
 
-    load(locale)
+    load(router.locale)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale])
+  }, [router.locale])
 
   // Allows for conditionally setting a provider to be hoisted per page
   const Provider = Component.Provider || Fragment
