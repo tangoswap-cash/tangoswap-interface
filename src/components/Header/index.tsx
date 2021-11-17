@@ -39,7 +39,7 @@ function AppBar(): JSX.Element {
             <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <Image src="/logo.png" alt="Tango" width="32px" height="32px" />
+                  <Image src="/logo.png" alt="Tango" width="48px" height="48px" />
                   <div className="hidden sm:block sm:ml-4">
                     <div className="flex space-x-2">
                       {/* <Buy /> */}
@@ -127,7 +127,7 @@ function AppBar(): JSX.Element {
                     {chainId && [ChainId.SMARTBCH].includes(chainId) && library && library.provider.isMetaMask && (
                       <>
                         <AddToken
-                          imageProps={{src: "/images/tokens/xtango-square.jpg", alt: "xTANGO"}}
+                          imageProps={{src: "/images/tokens/xtango-square.png", alt: "xTANGO"}}
                           text={i18n._(t`Add xTANGO to your MetaMask wallet`)}
                           metamaskProps={{
                             address: '0x0907E283928Cc54C33D513b612A1C3346360453E',
@@ -141,7 +141,7 @@ function AppBar(): JSX.Element {
                     {chainId && chainId in TANGO_ADDRESS && library && library.provider.isMetaMask && (
                       <>
                         <AddToken
-                          imageProps={{src: "/images/tokens/tango-square.jpg", alt: "TANGO"}}
+                          imageProps={{src: "/images/tokens/tango-square.png", alt: "TANGO"}}
                           text={i18n._(t`Add TANGO to your MetaMask wallet`)}
                           metamaskProps={{
                             address: TANGO_ADDRESS[chainId],
