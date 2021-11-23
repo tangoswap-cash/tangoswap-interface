@@ -62,7 +62,7 @@ export default function Farm(): JSX.Element {
       },
       "0x4b773a2ea30C6A77564E4FaE60204e7Bc0a81A90": {
         farmId: 2,
-        allocPoint: 419999999,
+        allocPoint: 509999999,
         token0: TANGO[ChainId.SMARTBCH],
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -80,13 +80,13 @@ export default function Farm(): JSX.Element {
       },
       "0x5b860757a77c62Dca833542e8E4650AEE777a08F": {
         farmId: 5,
-        allocPoint: 89999999,
+        allocPoint: 44999999,
         token0: new Token(ChainId.SMARTBCH, '0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129', 18, 'MIST', 'MistToken'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xd12C1De8740406438eb84Dde44cd0839F48211aa": {
         farmId: 6,
-        allocPoint: 89999999,
+        allocPoint: 44999999,
         token0: new Token(ChainId.SMARTBCH, '0x77CB87b57F54667978Eb1B199b28a0db8C8E1c0B', 18, 'EBEN', 'Green Ben'),
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -190,7 +190,7 @@ export default function Farm(): JSX.Element {
       pending: 0,
       owner: {
         id: MASTERCHEF_ADDRESS[chainId],
-        sushiPerBlock: "100000000000000000000",     //TODO(tango)
+        sushiPerBlock: "100000000000000000000",
         totalAllocPoint: "999999984"
       },
       userCount: 1,
@@ -207,12 +207,12 @@ export default function Farm(): JSX.Element {
   const flexUSDTangoPool = farms[1].pool;
   const bchFlexUSDPool = farms[3].pool;
   let bchPriceUSD = 0;
-  let TANGOPriceUSD = 0;
+  let tangoPriceUSD = 0;
   if (bchFlexUSDPool.reserves) {
     bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
   }
   if (flexUSDTangoPool.reserves) {
-    TANGOPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
+    tangoPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
   }
 
   let v2PairsBalances = {};
@@ -243,11 +243,11 @@ export default function Farm(): JSX.Element {
         let tvl = 0;
         if (farms[i].pool.token0 === TANGO[chainId].address) {
           const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed());
-          tvl = reserve / totalSupply * chefBalance * TANGOPriceUSD * 2;
+          tvl = reserve / totalSupply * chefBalance * tangoPriceUSD * 2;
         }
         else if (farms[i].pool.token1 === TANGO[chainId].address) {
           const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed());
-          tvl = reserve / totalSupply * chefBalance * TANGOPriceUSD * 2;
+          tvl = reserve / totalSupply * chefBalance * tangoPriceUSD * 2;
         }
         else if (farms[i].pool.token0 === FLEXUSD.address) {
           const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed());
@@ -316,7 +316,7 @@ export default function Farm(): JSX.Element {
         icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png',
         rewardPerBlock,
         rewardPerDay: rewardPerBlock * blocksPerDay,
-        rewardPrice: +TANGOPriceUSD,
+        rewardPrice: +tangoPriceUSD,
       }
 
       const defaultRewards = [defaultReward]

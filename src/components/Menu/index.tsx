@@ -12,18 +12,18 @@ const items = (i18n: I18n) => [
   {
     name: i18n._(t`Docs`),
     description: i18n._(t`Documentation for users of TANGO.`),
-    href: 'https://docs.TANGOswap.fi',
+    href: 'https://docs.tangoswap.cash',
   },
   {
     name: i18n._(t`Open Source`),
     description: i18n._(t`TANGO is a supporter of Open Source.`),
     href: 'https://github.com/tangoswap-cash',
   },
-  {
-    name: i18n._(t`Discord`),
-    description: i18n._(t`Join the community on Discord.`),
-    href: 'https://discord.gg/xFTnQEzu9T',
-  },
+  // {
+  //   name: i18n._(t`Discord`),
+  //   description: i18n._(t`Join the community on Discord.`),
+  //   href: 'https://discord.gg/xFTnQEzu9T',
+  // },
   {
     name: i18n._(t`Telegram`),
     description: i18n._(t`Join the community on Telegram.`),
