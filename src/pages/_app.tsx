@@ -2,6 +2,7 @@ import '../bootstrap'
 import '../styles/index.css'
 
 import * as plurals from 'make-plural/plurals'
+import * as gtag from './../functions/matomo'
 
 import { Fragment, FunctionComponent } from 'react'
 import { NextComponentType, NextPageContext } from 'next'
@@ -28,7 +29,6 @@ import { nanoid } from '@reduxjs/toolkit'
 import { remoteLoader } from '@lingui/remote-loader'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { withPasswordProtect } from '@storyofams/next-password-protect'
 
 const Web3ProviderNetwork = dynamic(() => import('../components/Web3ProviderNetwork'), { ssr: false })
 
@@ -50,31 +50,44 @@ function MyApp({
     Provider: FunctionComponent
   }
 }) {
-  const { pathname, query, locale } = useRouter()
+  const router = useRouter()
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      gtag.pageview(url)
+    }
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router.events])
+
 
   useEffect(() => {
     async function load(locale) {
       i18n.loadLocaleData(locale, { plurals: plurals[locale.split('_')[0]] })
 
-      try {
-        // Load messages from AWS, use q session param to get latest version from cache
-        const resp = await fetch(`https://d3l928w2mi7nub.cloudfront.net/${locale}.json?q=${sessionId}`)
-        const remoteMessages = await resp.json()
+      // FIXME: we can't upload locale files to aws right now, so fallback to use local files instead.
+      // try {
+      //   // Load messages from AWS, use q session param to get latest version from cache
+      //   const resp = await fetch(`https://d3l928w2mi7nub.cloudfront.net/${locale}.json?q=${sessionId}`)
+      //   const remoteMessages = await resp.json()
 
-        const messages = remoteLoader({ messages: remoteMessages, format: 'minimal' })
-        i18n.load(locale, messages)
-      } catch {
-        // Load fallback messages
-        const { messages } = await import(`@lingui/loader!./../../locale/${locale}.json?raw-lingui`)
-        i18n.load(locale, messages)
-      }
+      //   const messages = remoteLoader({ messages: remoteMessages, format: 'minimal' })
+      //   i18n.load(locale, messages)
+      // } catch {
+
+      // Load fallback messages
+      const { messages } = await import(`@lingui/loader!./../../locale/${locale}.json?raw-lingui`)
+      i18n.load(locale, messages)
+
+      // }
 
       i18n.activate(locale)
     }
 
-    load(locale)
+    load(router.locale)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale])
+  }, [router.locale])
 
   // Allows for conditionally setting a provider to be hoisted per page
   const Provider = Component.Provider || Fragment
@@ -116,18 +129,18 @@ function MyApp({
 
         <meta key="twitter:card" name="twitter:card" content="app" />
         <meta key="twitter:title" name="twitter:title" content="TANGO App" />
-        <meta key="twitter:url" name="twitter:url" content="https://app.TANGOswap.fi" />
+        <meta key="twitter:url" name="twitter:url" content="https://tangoswap.cash" />
         <meta
           key="twitter:description"
           name="twitter:description"
           content="Trade, launch, stake, farm, invest, automate, build on the premier DeFi platform of smartBCH"
         />
-        <meta key="twitter:image" name="twitter:image" content="https://app.TANGOswap.fi/icons/icon-192x192.png" />
+        <meta key="twitter:image" name="twitter:image" content="https://tangoswap.cash/icons/icon-192x192.png" />
         <meta key="twitter:creator" name="twitter:creator" content="@tangoswapcash" />
         <meta key="og:type" property="og:type" content="website" />
         <meta key="og:site_name" property="og:site_name" content="TANGO App" />
-        <meta key="og:url" property="og:url" content="https://app.TANGOswap.fi" />
-        <meta key="og:image" property="og:image" content="https://app.TANGOswap.fi/apple-touch-icon.png" />
+        <meta key="og:url" property="og:url" content="https://tangoswap.cash" />
+        <meta key="og:image" property="og:image" content="https://tangoswap.cash/apple-touch-icon.png" />
         <meta
           key="og:description"
           property="og:description"
@@ -164,11 +177,4 @@ function MyApp({
   )
 }
 
-/**
- * IMPORTANT! Remove HOC withPasswordProtect when site goes to prod
- * export default MyApp
- * also remove the import { withPasswordProtect } from '@storyofams/next-password-protect'
- * directories /pages/api/login - /pages/api/passwordcheck
- * and "@storyofams/next-password-protect": "^1.5.12", dependecy
- */
-export default withPasswordProtect(MyApp, { loginApiUrl: '/api/login' })
+export default MyApp

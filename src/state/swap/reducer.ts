@@ -1,6 +1,7 @@
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 
 import { createReducer } from '@reduxjs/toolkit'
+import { ChainId, TANGO_ADDRESS } from '@tangoswapcash/sdk'
 
 export interface SwapState {
   readonly independentField: Field
@@ -15,14 +16,14 @@ export interface SwapState {
   readonly recipient: string | null
 }
 
-const initialState: SwapState = {
+export const initialState: SwapState = {
   independentField: Field.INPUT,
   typedValue: '',
   [Field.INPUT]: {
-    currencyId: '',
+    currencyId: 'BCH',
   },
   [Field.OUTPUT]: {
-    currencyId: '',
+    currencyId: TANGO_ADDRESS[ChainId.SMARTBCH],
   },
   recipient: null,
 }
