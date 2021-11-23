@@ -18,6 +18,8 @@ import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../hooks/useActiveWeb3React'
 import { useETHBalances } from '../../state/wallet/hooks'
 import { useLingui } from '@lingui/react'
+import { isMobile } from 'react-device-detect'
+import AddToken from '../AddToken'
 
 // import { ExternalLink, NavLink } from "./Link";
 // import { ReactComponent as Burger } from "../assets/images/burger.svg";
@@ -107,6 +109,15 @@ function AppBar(): JSX.Element {
                           </a>
                         </NavLink>
                       )}
+                      {/* {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
+                        <ExternalLink
+                          id={`analytics-nav-link`}
+                          href={ANALYTICS_URL[chainId] || 'https://analytics.mistswap.fi'}
+                          className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                        >
+                          {i18n._(t`Analytics`)}
+                        </ExternalLink>
+                      )} */}
                     </div>
                   </div>
                 </div>
@@ -115,93 +126,29 @@ function AppBar(): JSX.Element {
                   <div className="flex items-center justify-between w-full space-x-2 sm:justify-end">
                     {chainId && [ChainId.SMARTBCH].includes(chainId) && library && library.provider.isMetaMask && (
                       <>
-                        <QuestionHelper text={i18n._(t`Add xTANGO to your MetaMask wallet`)}>
-                          <div
-                            className="hidden p-0.5 rounded-md cursor-pointer sm:inline-flex"
-                            onClick={() => {
-                              if (library && library.provider.isMetaMask && library.provider.request) {
-                                const params: any = {
-                                  type: 'ERC20',
-                                  options: {
-                                    address: '0x0907E283928Cc54C33D513b612A1C3346360453E',
-                                    symbol: 'xTANGO',
-                                    decimals: 18,
-                                    image:
-                                      'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x0907E283928Cc54C33D513b612A1C3346360453E/logo.png',
-                                  },
-                                }
-                                library.provider
-                                  .request({
-                                    method: 'wallet_watchAsset',
-                                    params,
-                                  })
-                                  .then((success) => {
-                                    if (success) {
-                                      console.log('Successfully added xTANGO to MetaMask')
-                                    } else {
-                                      throw new Error('Something went wrong.')
-                                    }
-                                  })
-                                  .catch(console.error)
-                              }
-                            }}
-                          >
-                            <Image
-                              src="/images/tokens/xtango-square.png"
-                              alt="xTANGO"
-                              width="38px"
-                              height="38px"
-                              objectFit="contain"
-                              className="rounded-md"
-                            />
-                          </div>
-                        </QuestionHelper>
+                        <AddToken
+                          imageProps={{src: "/images/tokens/xtango-square.png", alt: "xTANGO"}}
+                          text={i18n._(t`Add xTANGO to your MetaMask wallet`)}
+                          metamaskProps={{
+                            address: '0x0907E283928Cc54C33D513b612A1C3346360453E',
+                            symbol: 'xTANGO',
+                            decimals: 18,
+                            image: 'https://raw.githubusercontent.com/tangoswap-interface/assets/master/blockchains/smartbch/assets/0x0907E283928Cc54C33D513b612A1C3346360453E/logo.png',
+                          }} />
                       </>
                     )}
 
                     {chainId && chainId in TANGO_ADDRESS && library && library.provider.isMetaMask && (
                       <>
-                        <QuestionHelper text={i18n._(t`Add TANGO to your MetaMask wallet`)}>
-                          <div
-                            className="hidden rounded-md cursor-pointer sm:inline-flex p-0.5"
-                            onClick={() => {
-                              const params: any = {
-                                type: 'ERC20',
-                                options: {
-                                  address: TANGO_ADDRESS[chainId],
-                                  symbol: 'TANGO',
-                                  decimals: 18,
-                                  image:
-                                    'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0xFb28a53Fb986223bFFa7E9e67B32F8b18c14aAf0/logo.png',
-                                },
-                              }
-                              if (library && library.provider.isMetaMask && library.provider.request) {
-                                library.provider
-                                  .request({
-                                    method: 'wallet_watchAsset',
-                                    params,
-                                  })
-                                  .then((success) => {
-                                    if (success) {
-                                      console.log('Successfully added TANGO to MetaMask')
-                                    } else {
-                                      throw new Error('Something went wrong.')
-                                    }
-                                  })
-                                  .catch(console.error)
-                              }
-                            }}
-                          >
-                            <Image
-                              src="/images/tokens/tango-square.png"
-                              alt="TANGO"
-                              width="38px"
-                              height="38px"
-                              objectFit="contain"
-                              className="rounded-md"
-                            />
-                          </div>
-                        </QuestionHelper>
+                        <AddToken
+                          imageProps={{src: "/images/tokens/tango-square.png", alt: "TANGO"}}
+                          text={i18n._(t`Add TANGO to your MetaMask wallet`)}
+                          metamaskProps={{
+                            address: TANGO_ADDRESS[chainId],
+                            symbol: 'TANGO',
+                            decimals: 18,
+                            image: 'https://raw.githubusercontent.com/tangoswap-interface/assets/master/blockchains/smartbch/assets/0xFb28a53Fb986223bFFa7E9e67B32F8b18c14aAf0/logo.png',
+                          }} />
                       </>
                     )}
 
@@ -221,13 +168,21 @@ function AppBar(): JSX.Element {
                       )}
                       <Web3Status />
                     </div>
-                    <div className="hidden md:block">
+                    <div className="hidden md:block sm:block">
                       <LanguageSwitch />
                     </div>
                     <More />
                   </div>
                 </div>
                 <div className="flex -mr-2 sm:hidden">
+                  {/* Mobile language switch */}
+                  {isMobile && (
+                    <>
+                      <div className="inline-flex items-center">
+                        <LanguageSwitch />
+                      </div>
+                    </>
+                  )}
                   {/* Mobile menu button */}
                   <Popover.Button className="inline-flex items-center justify-center p-2 rounded-md text-primary hover:text-high-emphesis focus:outline-none">
                     <span className="sr-only">{i18n._(t`Open main menu`)}</span>
@@ -341,7 +296,7 @@ function AppBar(): JSX.Element {
                   </Link>
                 )}
 
-                {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
+                {/* {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
                   <ExternalLink
                     id={`analytics-nav-link`}
                     href={ANALYTICS_URL[chainId] || 'https://analytics.TANGOswap.fi'}
@@ -349,7 +304,7 @@ function AppBar(): JSX.Element {
                   >
                     {i18n._(t`Analytics`)}
                   </ExternalLink>
-                )}
+                )} */}
               </div>
             </Popover.Panel>
           </>
