@@ -130,10 +130,10 @@ function AppBar(): JSX.Element {
                           imageProps={{src: "/images/tokens/xtango-square.png", alt: "xTANGO"}}
                           text={i18n._(t`Add xTANGO to your MetaMask wallet`)}
                           metamaskProps={{
-                            address: '0x0907E283928Cc54C33D513b612A1C3346360453E',
+                            address: '0x98Ff640323C059d8C4CB846976973FEEB0E068aA',
                             symbol: 'xTANGO',
                             decimals: 18,
-                            image: 'https://raw.githubusercontent.com/tangoswap-interface/assets/master/blockchains/smartbch/assets/0x0907E283928Cc54C33D513b612A1C3346360453E/logo.png',
+                            image: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x98Ff640323C059d8C4CB846976973FEEB0E068aA/logo.png',
                           }} />
                       </>
                     )}
@@ -147,7 +147,7 @@ function AppBar(): JSX.Element {
                             address: TANGO_ADDRESS[chainId],
                             symbol: 'TANGO',
                             decimals: 18,
-                            image: 'https://raw.githubusercontent.com/tangoswap-interface/assets/master/blockchains/smartbch/assets/0xFb28a53Fb986223bFFa7E9e67B32F8b18c14aAf0/logo.png',
+                            image: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png',
                           }} />
                       </>
                     )}

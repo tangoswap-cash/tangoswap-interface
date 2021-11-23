@@ -292,9 +292,9 @@ export default function Stake() {
                   <p className="font-bold text-large md:text-2xl text-high-emphesis">
                     {activeTab === 0 ? i18n._(t`Stake TANGO`) : i18n._(t`Unstake`)}
                   </p>
-                  <div className="border-gradient-r-pink-red-light-brown-dark-pink-red border-transparent border-solid border rounded-3xl px-4 md:px-3.5 py-1.5 md:py-0.5 text-high-emphesis text-xs font-medium md:text-base md:font-normal">
+                  {/* <div className="border-gradient-r-pink-red-light-brown-dark-pink-red border-transparent border-solid border rounded-3xl px-4 md:px-3.5 py-1.5 md:py-0.5 text-high-emphesis text-xs font-medium md:text-base md:font-normal">
                     {`1 xTANGO = ${xSushiPerSushi.toFixed(4)} TANGO`}
-                  </div>
+                  </div> */}
                 </div>
 
                 <StyledNumericalInput
