@@ -29,7 +29,6 @@ import { nanoid } from '@reduxjs/toolkit'
 import { remoteLoader } from '@lingui/remote-loader'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { withPasswordProtect } from '@storyofams/next-password-protect'
 
 const Web3ProviderNetwork = dynamic(() => import('../components/Web3ProviderNetwork'), { ssr: false })
 
@@ -130,18 +129,18 @@ function MyApp({
 
         <meta key="twitter:card" name="twitter:card" content="app" />
         <meta key="twitter:title" name="twitter:title" content="TANGO App" />
-        <meta key="twitter:url" name="twitter:url" content="https://app.TANGOswap.fi" />
+        <meta key="twitter:url" name="twitter:url" content="https://tangoswap.cash" />
         <meta
           key="twitter:description"
           name="twitter:description"
           content="Trade, launch, stake, farm, invest, automate, build on the premier DeFi platform of smartBCH"
         />
-        <meta key="twitter:image" name="twitter:image" content="https://app.TANGOswap.fi/icons/icon-192x192.png" />
+        <meta key="twitter:image" name="twitter:image" content="https://tangoswap.cash/icons/icon-192x192.png" />
         <meta key="twitter:creator" name="twitter:creator" content="@tangoswapcash" />
         <meta key="og:type" property="og:type" content="website" />
         <meta key="og:site_name" property="og:site_name" content="TANGO App" />
-        <meta key="og:url" property="og:url" content="https://app.TANGOswap.fi" />
-        <meta key="og:image" property="og:image" content="https://app.TANGOswap.fi/apple-touch-icon.png" />
+        <meta key="og:url" property="og:url" content="https://tangoswap.cash" />
+        <meta key="og:image" property="og:image" content="https://tangoswap.cash/apple-touch-icon.png" />
         <meta
           key="og:description"
           property="og:description"
@@ -178,11 +177,4 @@ function MyApp({
   )
 }
 
-/**
- * IMPORTANT! Remove HOC withPasswordProtect when site goes to prod
- * export default MyApp
- * also remove the import { withPasswordProtect } from '@storyofams/next-password-protect'
- * directories /pages/api/login - /pages/api/passwordcheck
- * and "@storyofams/next-password-protect": "^1.5.12", dependecy
- */
-export default withPasswordProtect(MyApp, { loginApiUrl: '/api/login' })
+export default MyApp
