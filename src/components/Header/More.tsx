@@ -13,7 +13,7 @@ const items = (i18n: I18n) => [
   {
     name: i18n._(t`Docs`),
     description: i18n._(t`Documentation for users of TANGO.`),
-    href: 'https://docs.TANGOswap.fi',
+    href: 'https://docs.tangoswap.cash',
     external: true,
   },
   {
