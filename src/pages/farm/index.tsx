@@ -56,7 +56,7 @@ export default function Farm(): JSX.Element {
       },
       "0xf8534BB9603c501Bbe16deF7D08D941F0241855b": {
         farmId: 1,
-        allocPoint: 112499999,
+        allocPoint: 127499999,
         token0: TANGO[ChainId.SMARTBCH],
         token1: FLEXUSD,
       },
@@ -80,19 +80,19 @@ export default function Farm(): JSX.Element {
       },
       "0x5b860757a77c62Dca833542e8E4650AEE777a08F": {
         farmId: 5,
-        allocPoint: 11249999,
+        allocPoint: 4999999,
         token0: new Token(ChainId.SMARTBCH, '0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129', 18, 'MIST', 'MistToken'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xd12C1De8740406438eb84Dde44cd0839F48211aa": {
         farmId: 6,
-        allocPoint: 11249999,
+        allocPoint: 4999999,
         token0: new Token(ChainId.SMARTBCH, '0x77CB87b57F54667978Eb1B199b28a0db8C8E1c0B', 18, 'EBEN', 'Green Ben'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xa790208A8C49e586a3F2145aD2c9096d6072E1F3": {
         farmId: 7,
-        allocPoint: 4999999,
+        allocPoint: 2499999,
         token0: new Token(ChainId.SMARTBCH, '0xc8E09AEdB3c949a875e1FD571dC4b3E48FB221f0', 18, 'MILK', 'Milk'),
         token1: WBCH[ChainId.SMARTBCH],
       },
