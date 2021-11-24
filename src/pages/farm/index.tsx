@@ -56,7 +56,7 @@ export default function Farm(): JSX.Element {
       },
       "0xf8534BB9603c501Bbe16deF7D08D941F0241855b": {
         farmId: 1,
-        allocPoint: 127499999,
+        allocPoint: 171699999,
         token0: TANGO[ChainId.SMARTBCH],
         token1: FLEXUSD,
       },
@@ -68,7 +68,7 @@ export default function Farm(): JSX.Element {
       },
       "0xA15F8102AB4723A4D1554363c0c8AFF471F16E21": {
         farmId: 3,
-        allocPoint: 294999999,
+        allocPoint: 250749999,
         token0: FLEXUSD,
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -191,7 +191,7 @@ export default function Farm(): JSX.Element {
       owner: {
         id: MASTERCHEF_ADDRESS[chainId],
         sushiPerBlock: "100000000000000000000",
-        totalAllocPoint: "999999984"
+        totalAllocPoint: "999949984"
       },
       userCount: 1,
     }
