@@ -1,12 +1,4 @@
-import {
-  ChainId,
-  Currency,
-  CurrencyAmount,
-  JSBI,
-  Token,
-  TradeType,
-  Trade as V2Trade,
-} from '@tangoswapcash/sdk'
+import { ChainId, Currency, CurrencyAmount, JSBI, Token, TradeType, Trade as V2Trade } from '@tangoswapcash/sdk'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useApproveCallback'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError } from '../../../features/exchange-v1/swap/styleds'
 import { ButtonConfirmed, ButtonError } from '../../../components/Button'
@@ -418,11 +410,7 @@ export default function Swap() {
       <Head>
         <title>{i18n._(t`TANGOswap`)} | TANGOswap</title>
         {/* <title>{GetRateText({price: trade?.executionPrice, showInverted}) || i18n._(t`TANGOswap`)} | TANGOswap</title> */}
-        <meta
-          key="description"
-          name="description"
-          content="TANGOswap allows for swapping of SEP20 compatible tokens"
-        />
+        <meta key="description" name="description" content="TANGOswap allows for swapping of SEP20 compatible tokens" />
       </Head>
       <TokenWarningModal
         isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
@@ -693,6 +681,15 @@ export default function Swap() {
           )}
         </div>
       </DoubleGlowShadow>
+
+      <div className="w-full border-1 border-pink py-3 mt-6 text-center border border-pink rounded">
+        <h2 className="font-bold text-2xl">Tango Smart Swap Coming Soon!</h2>
+        <p className="font-bold w-10/12 mx-auto mt-2">
+          Every time you make a swap in TangoSwap.Cash our aggregator will bring you the best exchange rate using the
+          liquidity of any DEX in SmartBCH.
+        </p>
+        <p></p>
+      </div>
     </Container>
   )
 }
