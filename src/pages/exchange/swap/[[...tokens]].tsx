@@ -1,11 +1,11 @@
-import { 
+import {
   ChainId,
   Currency,
   CurrencyAmount,
   JSBI,
   Token,
   TradeType,
-  Trade as V2Trade
+  Trade as V2Trade,
 } from '@tangoswapcash/sdk'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useApproveCallback'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError } from '../../../features/exchange-v1/swap/styleds'
