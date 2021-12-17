@@ -1,11 +1,11 @@
 import { 
-  ChainId, 
-  Currency, 
-  CurrencyAmount, 
-  JSBI, 
-  Token, 
-  TradeType, 
-  Trade as V2Trade 
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  Token,
+  TradeType,
+  Trade as V2Trade
 } from '@tangoswapcash/sdk'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../../hooks/useApproveCallback'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError } from '../../../features/exchange-v1/swap/styleds'
@@ -418,10 +418,10 @@ export default function Swap() {
       <Head>
         <title>{i18n._(t`TANGOswap`)} | TANGOswap</title>
         {/* <title>{GetRateText({price: trade?.executionPrice, showInverted}) || i18n._(t`TANGOswap`)} | TANGOswap</title> */}
-        <meta 
-          key="description" 
-          name="description" 
-          content="TANGOswap allows for swapping of SEP20 compatible tokens" 
+        <meta
+          key="description"
+          name="description"
+          content="TANGOswap allows for swapping of SEP20 compatible tokens"
         />
       </Head>
       <TokenWarningModal
