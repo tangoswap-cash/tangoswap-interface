@@ -135,8 +135,7 @@ function AppBar(): JSX.Element {
                             address: '0x98Ff640323C059d8C4CB846976973FEEB0E068aA',
                             symbol: 'xTANGO',
                             decimals: 18,
-                            image:
-                              'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x98Ff640323C059d8C4CB846976973FEEB0E068aA/logo.png',
+                            image: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x98Ff640323C059d8C4CB846976973FEEB0E068aA/logo.png',
                           }} />
                       </>
                     )}
@@ -150,8 +149,7 @@ function AppBar(): JSX.Element {
                             address: TANGO_ADDRESS[chainId],
                             symbol: 'TANGO',
                             decimals: 18,
-                            image:
-                              'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png',
+                            image: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png',
                           }} />
                       </>
                     )}
@@ -243,6 +241,7 @@ function AppBar(): JSX.Element {
                   </a>
                 </Link>
 
+                
                 {chainId && featureEnabled(Feature.MIGRATE, chainId) && (
                 <Link href={'/migrate'}>
                   <a
