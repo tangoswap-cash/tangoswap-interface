@@ -241,7 +241,7 @@ function AppBar(): JSX.Element {
                   </a>
                 </Link>
 
-                
+
                 {chainId && featureEnabled(Feature.MIGRATE, chainId) && (
                 <Link href={'/migrate'}>
                   <a
