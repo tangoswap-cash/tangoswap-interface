@@ -20,6 +20,7 @@ import { useETHBalances } from '../../state/wallet/hooks'
 import { useLingui } from '@lingui/react'
 import { isMobile } from 'react-device-detect'
 import AddToken from '../AddToken'
+import TangoPrice from '../TangoPrice'
 
 // import { ExternalLink, NavLink } from "./Link";
 // import { ReactComponent as Burger } from "../assets/images/burger.svg";
@@ -40,6 +41,7 @@ function AppBar(): JSX.Element {
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Image src="/logo.png" alt="Tango" width="48px" height="48px" />
+                  <TangoPrice />
                   <div className="hidden sm:block sm:ml-4">
                     <div className="flex space-x-2">
                       {/* <Buy /> */}
