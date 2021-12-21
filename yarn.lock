@@ -2664,10 +2664,10 @@
   dependencies:
     eip-712 "^0.4.3"
 
-"@tangoswapcash/default-token-list@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@tangoswapcash/default-token-list/-/default-token-list-0.0.12.tgz#de590a2abb41d332b98d739be038b4030c9adf52"
-  integrity sha512-DibxtwMW7Eq24rLDD6BxEYDAdxnrZXChGQqdcPnPjK5gI5ch9SEtnDRTH8DX81jFKI21PljWrfCsRr11915ioA==
+"@tangoswapcash/default-token-list@0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/default-token-list/-/default-token-list-0.0.13.tgz#80b646a31c28bf81a01b9c312baeffd6848b7b3e"
+  integrity sha512-O3v/dG3oD7aZsJLHIplvXfcewlZnMqMUTPlL79rNKN7AhG5MtWDaCyqlMZ21s4zcFh9e13yQpHyK58q1G9kHnw==
   dependencies:
     commitlint "^13.1.0"
     lint-staged "^11.1.2"
