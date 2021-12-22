@@ -695,10 +695,10 @@ export default function Swap() {
       </DoubleGlowShadow>
 
       <div className="w-full border-1 border-pink py-3 mt-6 text-center border border-pink rounded">
-        <h2 className="font-bold text-2xl">Tango TheSwap Coming Soon!</h2>
+        <h2 className="font-bold text-2xl">Tango SmartSwap Coming Soon!</h2>
         <p className="font-bold w-10/12 mx-auto mt-2">
           Every time you make a swap in TangoSwap.Cash our aggregator will bring you the best exchange rate using the
-          liquidity of any DEX in SmartBCH.
+          liquidity of all SmartBCH DEXes.
         </p>
         <p></p>
       </div>
