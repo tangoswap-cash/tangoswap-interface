@@ -229,7 +229,7 @@ export default function Farm(): JSX.Element {
 
   const kashiPairs = [] // unused
   const swapPairs = []
-  const farms = []
+  let farms = []
 
   for (const [pairAddress, pair] of Object.entries(hardcodedPairs[chainId])) {
     swapPairs.push({
@@ -241,11 +241,13 @@ export default function Farm(): JSX.Element {
         id: pair.token0.address,
         name: pair.token0.name,
         symbol: pair.token0.symbol,
+        decimals: pair.token0.decimals
       },
       token1: {
         id: pair.token1.address,
         name: pair.token1.name,
         symbol: pair.token1.symbol,
+        decimals: pair.token1.decimals
       },
     })
 
@@ -287,25 +289,11 @@ export default function Farm(): JSX.Element {
     tangoPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
   }
 
-  let v2PairsBalances = {};
-  let fetchingV2PairBalances = false;
+  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
+    MASTERCHEF_ADDRESS[chainId],
+    farms.map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token')),
+  )
 
-  for (let i=0; i<farms.length; i+=8) {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const [partial_v2PairsBalances, partial_fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
-        MASTERCHEF_ADDRESS[chainId],
-        farms.slice(i, Math.min(i+8, farms.length)).map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token'))
-      )
-
-      v2PairsBalances = {
-        ...v2PairsBalances,
-        ...partial_v2PairsBalances,
-      };
-
-      if (partial_fetchingV2PairBalances) {
-        fetchingV2PairBalances = true;
-      }
-  }
   if (! fetchingV2PairBalances) {
     for (let i=0; i<farms.length; ++i) {
       if (v2PairsBalances.hasOwnProperty(farms[i].pair) && farms[i].pool.totalSupply) {
@@ -338,8 +326,10 @@ export default function Farm(): JSX.Element {
           tvl = reserve / totalSupply * chefBalance * bchPriceUSD * 2;
         }
         farms[i].tvl = tvl;
+        farms[i].chefBalance = chefBalance;
       } else {
         farms[i].tvl = "0";
+        farms[i].chefBalance = 0;
       }
     }
   }
@@ -425,12 +415,12 @@ export default function Farm(): JSX.Element {
   }
 
   const FILTER = {
-    all: (farm) => farm.allocPoint !== '0',
+    all: (farm) => farm.allocPoint !== 0,
     portfolio: (farm) => farm.pending !== 0,
-    past: (farm) => farm.allocPoint === '0',
-    sushi: (farm) => farm.pair.type === PairType.SWAP && farm.allocPoint !== '0',
-    kashi: (farm) => farm.pair.type === PairType.KASHI && farm.allocPoint !== '0',
-    '2x': (farm) => (farm.chef === Chef.MASTERCHEF_V2) && farm.allocPoint !== '0',
+    past: (farm) => farm.allocPoint === 0,
+    // sushi: (farm) => farm.pair.type === PairType.SWAP && farm.allocPoint !== '0',
+    // kashi: (farm) => farm.pair.type === PairType.KASHI && farm.allocPoint !== '0',
+    // '2x': (farm) => (farm.chef === Chef.MASTERCHEF_V2) && farm.allocPoint !== '0',
   }
 
   const data = farms
@@ -461,7 +451,7 @@ export default function Farm(): JSX.Element {
         <title>Farm | Tango</title>
         <meta key="description" name="description" content="Farm TANGO" />
       </Head>
-      <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')} style={{ maxHeight: '40rem' }}>
+      <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>
         <Menu positionsLength={positions.length} />
       </div>
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
