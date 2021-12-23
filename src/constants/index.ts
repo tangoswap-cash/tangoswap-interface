@@ -52,7 +52,7 @@ export const BLOCKED_ADDRESSES: string[] = [
 ]
 
 export const ANALYTICS_URL: { [chainId in ChainId]?: string } = {
-  // [ChainId.SMARTBCH]: 'https://analytics.TANGOswap.fi',
+  // [ChainId.SMARTBCH]: 'https://analytics.tangoswap.cash',
 }
 
 export const EIP_1559_ACTIVATION_BLOCK: { [chainId in ChainId]?: number } = {}

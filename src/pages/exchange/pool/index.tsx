@@ -123,7 +123,7 @@ export default function Pool() {
             <>
               {/* <div className="flex items-center justify-center">
                   <ExternalLink
-                    href={"https://analytics.TANGOswap.fi/user/" + account}
+                    href={"https://analytics.tangoswap.cash/user/" + account}
                   >
                     Account analytics and accrued fees <span> ↗</span>
                   </ExternalLink>
