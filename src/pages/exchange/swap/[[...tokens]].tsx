@@ -413,6 +413,19 @@ export default function Swap() {
   //   }
   // }, [chainId, previousChainId, router]);
 
+  const [refreshingPrice, setRefreshingPrice] = useState(false)
+  const refreshPrice = () => { 
+      if(formattedAmounts[Field.INPUT] || formattedAmounts[Field.OUTPUT]){ 
+        setRefreshingPrice(true)
+        setTimeout(() => {
+          independentField === Field.INPUT 
+          ? handleTypeInput(formattedAmounts[Field.INPUT])
+          : handleTypeOutput(formattedAmounts[Field.OUTPUT])
+          setRefreshingPrice(false)
+        }, 700);
+      }
+  }
+
   return (
     <Container id="swap-page" className="py-4 md:py-8 lg:py-12">
       <Head>
@@ -435,6 +448,8 @@ export default function Swap() {
             input={currencies[Field.INPUT]}
             output={currencies[Field.OUTPUT]}
             allowedSlippage={allowedSlippage}
+            refreshPrice={refreshPrice}
+            refreshingPrice={refreshingPrice}
           />
 
           <ConfirmSwapModal
@@ -451,7 +466,7 @@ export default function Swap() {
             onDismiss={handleConfirmDismiss}
             minerBribe={doArcher ? archerETHTip : undefined}
           />
-          <div>
+          <div className={refreshingPrice ? "opacity-40 pointer-events-none" : undefined}>
             <CurrencyInputPanel
               // priceImpact={priceImpact}
               label={
