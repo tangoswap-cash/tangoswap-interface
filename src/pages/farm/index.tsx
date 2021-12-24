@@ -220,13 +220,13 @@ export default function Farm(): JSX.Element {
         farmId: 28,
         allocPoint: 26999999,
         token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
-        token1: FLEXUSD,
+        token1: WBCH[ChainId.SMARTBCH],
       },
       // "0x018005da1a5C886Fb48eB18Eda0849a26B99DA80": {
       //   farmId: 29,
       //   allocPoint: 999999,
       //   token0: new Token(ChainId.SMARTBCH, '0x77d4b6e44a53bbda9a1d156b32bb53a2d099e53d', 18, '1BCH', '1BCH'),
-      //   token1: FLEXUSD,
+      //   token1: WBCH[ChainId.SMARTBCH],
       // },
     },
     [ChainId.SMARTBCH_AMBER]: {
