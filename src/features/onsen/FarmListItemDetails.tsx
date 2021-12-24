@@ -1,5 +1,5 @@
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
-import { ChainId, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS, Token, ZERO } from '@tangoswapcash/sdk'
+import { ChainId, CurrencyAmount, JSBI, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS, Token, ZERO } from '@tangoswapcash/sdk'
 import { Chef, PairType } from './enum'
 import { Disclosure, Transition } from '@headlessui/react'
 import React, { useState } from 'react'
@@ -8,7 +8,7 @@ import { usePendingSushi, useUserInfo } from './hooks'
 import Button from '../../components/Button'
 import Dots from '../../components/Dots'
 import Input from '../../components/Input'
-import { formatNumber, formatPercent } from '../../functions'
+import { formatCurrencyAmount, formatNumber, formatPercent } from '../../functions'
 import { getAddress } from '@ethersproject/address'
 import { t } from '@lingui/macro'
 import { tryParseAmount } from '../../functions/parse'
@@ -18,9 +18,14 @@ import useMasterChef from './useMasterChef'
 import usePendingReward from './usePendingReward'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { useTransactionAdder } from '../../state/transactions/hooks'
+import { BigNumber } from '@ethersproject/bignumber'
+import { isMobile } from 'react-device-detect'
+import { useRouter } from 'next/router'
 
 const FarmListItem = ({ farm }) => {
   const { i18n } = useLingui()
+
+  const router = useRouter()
 
   const { account, chainId } = useActiveWeb3React()
   const [pendingTx, setPendingTx] = useState(false)
@@ -61,6 +66,14 @@ const FarmListItem = ({ farm }) => {
 
   const { deposit, withdraw, harvest } = useMasterChef(farm.chef)
 
+  const poolFraction = (Number.parseFloat(amount?.toFixed()) / farm.chefBalance) || 0
+  const token0Reserve = farm.pool.reserves ? (farm.pool.reserves.reserve0 as BigNumber).toString() : 0
+  const token0Amount = CurrencyAmount.fromRawAmount(farm.pair.token0, JSBI.BigInt(token0Reserve)).multiply(Math.round(poolFraction * 1e8)).divide(1e8)
+  const token1Reserve = farm.pool.reserves ? (farm.pool.reserves.reserve1 as BigNumber).toString() : 0
+  const token1Amount = CurrencyAmount.fromRawAmount(farm.pair.token1, JSBI.BigInt(token1Reserve)).multiply(Math.round(poolFraction * 1e8)).divide(1e8)
+  const token0Name = farm.pool.token0 === farm.pair.token0.id ? farm.pair.token0.symbol : farm.pair.token1.symbol
+  const token1Name = farm.pool.token1 === farm.pair.token1.id ? farm.pair.token1.symbol : farm.pair.token0.symbol
+
   return (
     <Transition
       show={true}
@@ -72,11 +85,26 @@ const FarmListItem = ({ farm }) => {
       leaveTo="opacity-0"
     >
       <Disclosure.Panel className="flex flex-col w-full border-t-0 rounded rounded-t-none bg-dark-800" static>
-        <div className="grid grid-cols-2 gap-4 p-4">
+        <div className="px-4 pb-4 pt-4">
+          <Button
+            color="gradient"
+            onClick={async () => {
+              router.push(`/add/${farm.pair.token0.id}/${farm.pair.token1.id}`)
+            }}
+          >
+            {i18n._(t`Get ${farm.pair.token0.symbol}/${farm.pair.token1.symbol} LP tokens for staking`)}
+          </Button>
+        </div>
+        <div className="grid grid-cols-2 gap-4 p-4 pt-0">
           <div className="col-span-2 text-center md:col-span-1">
             {account && (
-              <div className="pr-4 mb-2 text-sm text-right cursor-pointer text-secondary">
-                {i18n._(t`Wallet Balance`)}: {formatNumber(balance?.toSignificant(6) ?? 0)} {farm.type}
+              <div>
+                <div className="pr-4 mb-2 text-sm text-right cursor-pointer text-secondary">
+                  {i18n._(t`Wallet Balance`)}: {formatNumber(balance?.toSignificant(6) ?? 0)} {farm.type}
+                </div>
+                {!isMobile && (<div className="pr-4 mb-2 text-sm text-right cursor-pointer text-secondary">
+                  &nbsp;
+                </div>)}
               </div>
             )}
             <div className="relative flex items-center w-full mb-4">
@@ -101,8 +129,8 @@ const FarmListItem = ({ farm }) => {
                 </Button>
               )}
             </div>
-            {approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING ? (
-              <Button color="blue" disabled={approvalState === ApprovalState.PENDING} onClick={approve}>
+            {approvalState !== ApprovalState.APPROVED ? (
+              <Button color="blue" disabled={approvalState === ApprovalState.PENDING || approvalState === ApprovalState.UNKNOWN} onClick={approve}>
                 {approvalState === ApprovalState.PENDING ? <Dots>Approving </Dots> : 'Approve'}
               </Button>
             ) : (
@@ -130,9 +158,14 @@ const FarmListItem = ({ farm }) => {
           </div>
           <div className="col-span-2 text-center md:col-span-1">
             {account && (
-              <div className="pr-4 mb-2 text-sm text-right cursor-pointer text-secondary">
-                {i18n._(t`Your Staked`)}: {formatNumber(amount?.toSignificant(6)) ?? 0} {farm.type}
-                {amount && farm.pool ? `(${formatPercent(Math.min(Number.parseFloat(amount?.toFixed()) / Number.parseFloat(farm.pool.totalSupply.toFixed()) * 100, 100)).toString()} ` + i18n._(t`of pool`) + `)` : ''}
+              <div>
+                <div className="pr-4 mb-2 text-sm text-right cursor-pointer text-secondary">
+                  {i18n._(t`Your Staked`)}: {formatNumber(amount?.toSignificant(6)) ?? 0} {farm.type}
+                  {amount && farm.pool ? `(${formatPercent(Math.min(Number.parseFloat(amount?.toFixed()) / farm.chefBalance * 100, 100)).toString()} ` + i18n._(t`of pool`) + `)` : ''}
+                </div>
+                <div className="pr-4 mb-2 text-sm text-right cursor-pointer text-secondary">
+                  {token0Amount.toFixed(token0Amount.currency.decimals > 2 ? 2 : undefined)} {token0Name} + {token1Amount.toFixed(token1Amount.currency.decimals > 2 ? 2 : undefined)} {token1Name} ({formatNumber(poolFraction * farm.tvl, true)})
+                </div>
               </div>
             )}
             <div className="relative flex items-center w-full mb-4">
@@ -162,7 +195,7 @@ const FarmListItem = ({ farm }) => {
             <Button
               color="pink"
               className="border-0"
-              disabled={pendingTx || !typedWithdrawValue || amount.lessThan(typedWithdrawValue)}
+              disabled={pendingTx || !typedWithdrawValue || (amount && (amount.lessThan(typedWithdrawValue) || amount.equalTo(0)))}
               onClick={async () => {
                 setPendingTx(true)
                 try {

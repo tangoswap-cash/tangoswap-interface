@@ -57,7 +57,7 @@ const buttonStyleDisabled = `${buttonStyle} text-secondary bg-dark-700`
 const buttonStyleConnectWallet = `${buttonStyle} text-high-emphesis bg-cyan-blue hover:bg-opacity-90`
 
 // TODO(tango): change this
-// const fetcher = (query) => request('https://thegraph.mistswap.fi/subgraphs/name/mistswap/bar', query)
+// const fetcher = (query) => request('https://thegraph.tangoswap.cash/subgraphs/name/tangoswap/bar', query)
 
 export default function Stake() {
   const { i18n } = useLingui()
