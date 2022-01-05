@@ -277,7 +277,9 @@ export default function Farm(): JSX.Element {
       owner: {
         id: MASTERCHEF_ADDRESS[chainId],
         sushiPerBlock: "10000000000000000000",
-        totalAllocPoint: "999949984"
+        totalAllocPoint: "998949985"
+        // totalAllocPoint: "999949984"   //TODO: re-enable with 1BCH farm
+
       },
       userCount: 1,
     }

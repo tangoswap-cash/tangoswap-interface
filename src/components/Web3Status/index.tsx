@@ -47,7 +47,7 @@ function StatusIcon({ connector }: { connector: AbstractConnector }) {
   } else if (connector.constructor.name === 'WalletConnectConnector') {
     return (
       <IconWrapper size={16}>
-        <Image src="/images/wallets/wallet-connect.png" alt={'Wallet Connect'} width="16px" height="16px" />
+        <Image src="/images/wallets/wallet-connect.svg" alt={'Wallet Connect'} width="16px" height="16px" />
       </IconWrapper>
     )
   } else if (connector.constructor.name === 'LatticeConnector') {
@@ -125,7 +125,7 @@ function Web3StatusInner() {
             <div className="pr-2">
               {pending?.length} {i18n._(t`Pending`)}
             </div>{' '}
-            <Loader stroke="white" />
+            <Loader />
           </div>
         ) : (
           <div className="mr-2">{ENSName || shortenAddress(account)}</div>
