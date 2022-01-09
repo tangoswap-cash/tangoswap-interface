@@ -222,12 +222,18 @@ export default function Farm(): JSX.Element {
         token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
         token1: WBCH[ChainId.SMARTBCH],
       },
-      // "0x018005da1a5C886Fb48eB18Eda0849a26B99DA80": {
-      //   farmId: 29,
-      //   allocPoint: 999999,
-      //   token0: new Token(ChainId.SMARTBCH, '0x77d4b6e44a53bbda9a1d156b32bb53a2d099e53d', 18, '1BCH', '1BCH'),
-      //   token1: WBCH[ChainId.SMARTBCH],
-      // },
+      "0x018005da1a5C886Fb48eB18Eda0849a26B99DA80": {
+        farmId: 29,
+        allocPoint: 999999,
+        token0: new Token(ChainId.SMARTBCH, '0x77d4b6e44a53bbda9a1d156b32bb53a2d099e53d', 18, '1BCH', '1BCH'),
+        token1: WBCH[ChainId.SMARTBCH],
+      },
+      "0x864c0090D955D947D809CF315E17665Bf9e3b6aB": {
+        farmId: 30,
+        allocPoint: 9999998,
+        token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
+        token1: TANGO[ChainId.SMARTBCH],
+      },
     },
     [ChainId.SMARTBCH_AMBER]: {
       "0x07DE6fc05597E0E4c92C83637A8a0CA411f3a769": {
@@ -277,8 +283,7 @@ export default function Farm(): JSX.Element {
       owner: {
         id: MASTERCHEF_ADDRESS[chainId],
         sushiPerBlock: "10000000000000000000",
-        totalAllocPoint: "998949985"
-        // totalAllocPoint: "999949984"   //TODO: re-enable with 1BCH farm
+        totalAllocPoint: "999949984"
 
       },
       userCount: 1,
