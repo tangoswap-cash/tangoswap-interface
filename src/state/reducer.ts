@@ -7,6 +7,8 @@ import lists from './lists/reducer'
 import mint from './mint/reducer'
 import multicall from './multicall/reducer'
 import swap from './swap/reducer'
+import smartSwap from './smart-swap/reducer'
+
 import transactions from './transactions/reducer'
 import user from './user/reducer'
 
@@ -15,6 +17,7 @@ const reducer = combineReducers({
   user,
   transactions,
   swap,
+  smartSwap,
   mint,
   burn,
   multicall,

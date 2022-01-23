@@ -41,6 +41,7 @@ import MASTERCHEF_ABI from '../constants/abis/masterchef.json'
 import MASTERCHEF_V2_ABI from '../constants/abis/masterchef-v2.json'
 import MULTICALL2_ABI from '../constants/abis/multicall2.json'
 import ROUTER_ABI from '../constants/abis/router.json'
+import SMARTSWAP_ABI from '../constants/abis/smart-swap.json'
 import SUSHI_ABI from '../constants/abis/sushi.json'
 import SUSHIROLL_ABI from "@tangoswapcash/core/abi/SushiRoll.json";
 import WBCH_ABI from '../constants/abis/weth.json'
@@ -48,6 +49,12 @@ import ZENKO_ABI from '../constants/abis/zenko.json'
 import { getContract } from '../functions/contract'
 import { useActiveWeb3React } from './useActiveWeb3React'
 import { useMemo } from 'react'
+
+//TODO: move to the SDK project
+export const AGGREGATOR_ADDRESS = {
+  [ChainId.SMARTBCH]: '',
+}
+
 
 export function useEIP2612Contract(tokenAddress?: string): Contract | null {
   return useContract(tokenAddress, EIP_2612_ABI, false)
@@ -140,6 +147,11 @@ export function useFactoryContract(): Contract | null {
 export function useRouterContract(useArcher = false, withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
   return useContract(chainId && ROUTER_ADDRESS[chainId], ROUTER_ABI, withSignerIfPossible)
+}
+
+export function useSmartSwapContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId && AGGREGATOR_ADDRESS[chainId], SMARTSWAP_ABI, withSignerIfPossible)
 }
 
 export function useSushiBarContract(withSignerIfPossible?: boolean): Contract | null {

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from '../../state/user/hooks'
+import { useSetUserFeePercent, useSetUserSlippageTolerance, useUserFeePercent ,useUserSlippageTolerance, useUserTransactionTTL } from '../../state/user/hooks'
 
 import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants'
 import { Percent } from '@tangoswapcash/sdk'
@@ -16,18 +16,26 @@ enum SlippageError {
   RiskyHigh = 'RiskyHigh',
 }
 
+enum FeePercentError {
+  InvalidInput = 'InvalidInput',
+  RiskyLow = 'RiskyLow',
+  RiskyHigh = 'RiskyHigh',
+}
+
 enum DeadlineError {
   InvalidInput = 'InvalidInput',
 }
 
-export interface TransactionSettingsProps {
-  placeholderSlippage?: Percent // varies according to the context in which the settings dialog is placed
+export interface TransactionSettingsSmartProps {
+  placeholderSlippage?: Percent     // varies according to the context in which the settings dialog is placed
+  placeholderFeePercent?: Percent   // varies according to the context in which the settings dialog is placed
 }
 
-export default function TransactionSettings({ placeholderSlippage }: TransactionSettingsProps) {
+export default function TransactionSettingsSmart(
+  { placeholderSlippage, placeholderFeePercent }: TransactionSettingsSmartProps
+) {
 
-  console.log("**************** TransactionSettings ********************");
-
+  console.log("**************** TransactionSettingsSmart ********************");
   const { i18n } = useLingui()
 
   const inputRef = useRef<HTMLInputElement>()
@@ -35,10 +43,16 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
   const userSlippageTolerance = useUserSlippageTolerance()
   const setUserSlippageTolerance = useSetUserSlippageTolerance()
 
+  const userFeePercent = useUserFeePercent()
+  const setUserFeePercent = useSetUserFeePercent()
+
   const [deadline, setDeadline] = useUserTransactionTTL()
 
   const [slippageInput, setSlippageInput] = useState('')
   const [slippageError, setSlippageError] = useState<SlippageError | false>(false)
+
+  const [feePercentInput, setFeePercentInput] = useState('')
+  const [feePercentError, setFeePercentError] = useState<FeePercentError | false>(false)
 
   const [deadlineInput, setDeadlineInput] = useState('')
   const [deadlineError, setDeadlineError] = useState<DeadlineError | false>(false)
@@ -64,8 +78,32 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
     }
   }
 
-  const tooLow = userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(5, 10_000))
-  const tooHigh = userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(1, 100))
+  function parseFeePercentInput(value: string) {
+    // populate what the user typed and clear the error
+    setSlippageInput(value)
+    setSlippageError(false)
+
+    if (value.length === 0) {
+      setUserFeePercent('auto')
+    } else {
+      const parsed = Math.floor(Number.parseFloat(value) * 100)
+
+      if (!Number.isInteger(parsed) || parsed < 0 || parsed > 5000) {
+        setUserFeePercent('auto')
+        if (value !== '.') {
+          setSlippageError(SlippageError.InvalidInput)
+        }
+      } else {
+        setUserFeePercent(new Percent(parsed, 10_000))
+      }
+    }
+  }
+
+  const slippageTooLow = userSlippageTolerance !== 'auto' && userSlippageTolerance.lessThan(new Percent(5, 10_000))
+  const slippageTooHigh = userSlippageTolerance !== 'auto' && userSlippageTolerance.greaterThan(new Percent(1, 100))
+
+  const feePercentTooLow = userFeePercent !== 'auto' && userFeePercent.lessThan(new Percent(5, 10_000))
+  const feePercentTooHigh = userFeePercent !== 'auto' && userFeePercent.greaterThan(new Percent(1, 100))
 
   function parseCustomDeadline(value: string) {
     // populate what the user typed and clear the error
@@ -108,7 +146,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             className={classNames(
               !!slippageError
                 ? 'border-red'
-                : tooLow || tooHigh
+                : slippageTooLow || slippageTooHigh
                 ? 'border-yellow'
                 : userSlippageTolerance !== 'auto'
                 ? 'border-blue'
@@ -118,7 +156,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             tabIndex={-1}
           >
             <div className="flex items-center justify-between gap-1">
-              {tooLow || tooHigh ? (
+              {slippageTooLow || slippageTooHigh ? (
                 <span className="hidden sm:inline text-yellow" role="img" aria-label="warning">
                   ⚠️
                 </span>
@@ -154,7 +192,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             {i18n._(t`Auto`)}
           </Button>
         </div>
-        {slippageError || tooLow || tooHigh ? (
+        {slippageError || slippageTooLow || slippageTooHigh ? (
           <Typography
             className={classNames(
               slippageError === SlippageError.InvalidInput ? 'text-red' : 'text-yellow',
@@ -166,6 +204,88 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
               {slippageError === SlippageError.InvalidInput
                 ? i18n._(t`Enter a valid slippage percentage`)
                 : slippageError === SlippageError.RiskyLow
+                ? i18n._(t`Your transaction may fail`)
+                : i18n._(t`Your transaction may be frontrun`)}
+            </div>
+          </Typography>
+        ) : null}
+      </div>
+
+      <div className="grid gap-2">
+        <div className="flex items-center">
+          <Typography variant="sm" className="text-high-emphesis">
+            {i18n._(t`Fee`)}
+          </Typography>
+
+          <QuestionHelper
+            text={i18n._(
+              t`Your transaction will revert 23if the price changes unfavorably by more than this percentage.`
+            )}
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <div
+            className={classNames(
+              !!feePercentError
+                ? 'border-red'
+                : feePercentTooLow || feePercentTooHigh
+                ? 'border-yellow'
+                : userFeePercent !== 'auto'
+                ? 'border-blue'
+                : 'border-transparent',
+              'border p-2 rounded bg-dark-800'
+            )}
+            tabIndex={-1}
+          >
+            <div className="flex items-center justify-between gap-1">
+              {feePercentTooLow || feePercentTooHigh ? (
+                <span className="hidden sm:inline text-yellow" role="img" aria-label="warning">
+                  ⚠️
+                </span>
+              ) : null}
+              <input
+                className={classNames(feePercentError ? 'text-red' : '', 'bg-transparent placeholder-low-emphesis')}
+                placeholder={placeholderFeePercent?.toFixed(2)}
+                value={
+                  feePercentInput.length > 0
+                    ? feePercentInput
+                    : userFeePercent === 'auto'
+                    ? ''
+                    : userFeePercent.toFixed(2)
+                }
+                onChange={(e) => parseFeePercentInput(e.target.value)}
+                onBlur={() => {
+                  setFeePercentInput('')
+                  setFeePercentError(false)
+                }}
+                color={feePercentError ? 'red' : ''}
+              />
+              %
+            </div>
+          </div>
+          <Button
+            size="sm"
+            color={userFeePercent === 'auto' ? 'blue' : 'gray'}
+            variant={userFeePercent === 'auto' ? 'filled' : 'outlined'}
+            onClick={() => {
+              parseFeePercentInput('')
+            }}
+          >
+            {i18n._(t`Auto`)}
+          </Button>
+        </div>
+        {feePercentError || feePercentTooLow || feePercentTooHigh ? (
+          <Typography
+            className={classNames(
+              feePercentError === FeePercentError.InvalidInput ? 'text-red' : 'text-yellow',
+              'font-medium flex items-center space-x-2'
+            )}
+            variant="sm"
+          >
+            <div>
+              {feePercentError === FeePercentError.InvalidInput
+                ? i18n._(t`Enter a valid fee percentage`)
+                : feePercentError === FeePercentError.RiskyLow
                 ? i18n._(t`Your transaction may fail`)
                 : i18n._(t`Your transaction may be frontrun`)}
             </div>

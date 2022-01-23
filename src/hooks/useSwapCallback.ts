@@ -9,6 +9,8 @@ import {
   Router,
   TradeType,
   Trade as V2Trade,
+  Fraction,
+  ONE
 } from '@tangoswapcash/sdk'
 import { arrayify, hexlify, splitSignature } from '@ethersproject/bytes'
 import { isAddress, isZero } from '../functions/validate'
@@ -89,6 +91,36 @@ export function useSwapCallArguments(
   const argentWalletContract = useArgentWalletContract()
 
   const [archerETHTip] = useUserArcherETHTip()
+
+  const tmp1 = new Fraction(ONE)
+    .add(allowedSlippage)
+    // .quotient
+
+  const tmp2 = new Fraction(ONE)
+    .add(allowedSlippage)
+    .invert()
+    // .quotient
+
+  if (trade && trade.outputAmount) {
+    console.log("trade.outputAmount.quotient: ", trade.outputAmount.quotient.toString());
+    // const tmp3 = new Fraction(ONE)
+    //   .add(allowedSlippage)
+    //   .invert()
+    //   .multiply(trade.outputAmount.quotient).quotient
+
+    const tmp3 = new Fraction(ONE)
+      .add(allowedSlippage)
+      .invert()
+      .multiply(trade.outputAmount.quotient)
+
+    console.log("tmp3: ", tmp3.toFixed(10));
+  }
+
+
+  console.log("allowedSlippage: ", allowedSlippage.toFixed(10));
+  console.log("tmp1: ", tmp1.toFixed(10));
+  console.log("tmp2: ", tmp2.toFixed(10));
+
 
   return useMemo(() => {
     if (!trade || !recipient || !library || !account || !chainId || !deadline) return []

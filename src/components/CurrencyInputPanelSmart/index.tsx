@@ -16,7 +16,7 @@ import { useActiveWeb3React } from '../../hooks/useActiveWeb3React'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useLingui } from '@lingui/react'
 
-interface CurrencyInputPanelProps {
+interface CurrencyInputPanelSmartProps {
   value?: string
   onUserInput?: (value: string) => void
   onMax?: () => void
@@ -36,10 +36,9 @@ interface CurrencyInputPanelProps {
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
   customBalanceText?: string
-  readOnly?: boolean
 }
 
-export default function CurrencyInputPanel({
+export default function CurrencyInputPanelSmart({
   value,
   onUserInput,
   onMax,
@@ -59,8 +58,7 @@ export default function CurrencyInputPanel({
   hideInput = false,
   locked = false,
   customBalanceText,
-  readOnly = false,
-}: CurrencyInputPanelProps) {
+}: CurrencyInputPanelSmartProps) {
   const { i18n } = useLingui()
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
@@ -157,7 +155,6 @@ export default function CurrencyInputPanel({
                 onUserInput={(val) => {
                   onUserInput(val)
                 }}
-                readOnly={readOnly}
               />
               {!hideBalance && currency && selectedCurrencyBalance ? (
                 <div className="flex flex-col">

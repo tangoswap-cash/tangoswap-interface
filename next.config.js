@@ -93,6 +93,14 @@ const nextConfig = {
         destination: '/exchange/swap/:token*',
       },
       {
+        source: '/smart-swap',
+        destination: '/exchange/smart-swap',
+      },
+      {
+        source: '/smart-swap/:token*',
+        destination: '/exchange/smart-swap/:token*',
+      },
+      {
         source: '/pool',
         destination: '/exchange/pool',
       },

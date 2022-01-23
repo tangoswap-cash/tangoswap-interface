@@ -20,9 +20,16 @@ export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('u
 export const updateUserSingleHopOnly = createAction<{
   userSingleHopOnly: boolean
 }>('user/updateUserSingleHopOnly')
+
 export const updateUserSlippageTolerance = createAction<{
   userSlippageTolerance: number | 'auto'
 }>('user/updateUserSlippageTolerance')
+
+export const updateUserFeePercent = createAction<{
+  userFeePercent: number | 'auto'
+}>('user/updateUserFeePercent')
+
+
 export const updateUserDeadline = createAction<{ userDeadline: number }>('user/updateUserDeadline')
 export const addSerializedToken = createAction<{
   serializedToken: SerializedToken

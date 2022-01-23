@@ -4,7 +4,7 @@ import { RefreshIcon } from '@heroicons/react/outline'
 import Gas from '../../components/Gas'
 import MyOrders from '../exchange-v1/limit-order/MyOrders'
 import NavLink from '../../components/NavLink'
-import Settings from '../../components/Settings'
+import Settings from '../../components/SettingsSmart'
 import { currencyId } from '../../functions'
 import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../hooks'
@@ -25,11 +25,12 @@ interface ExchangeHeaderProps {
   input?: Currency
   output?: Currency
   allowedSlippage?: Percent
+  feePercent?: Percent
   refreshPrice?: () => void;
   refreshingPrice?: boolean;
 }
 
-const ExchangeHeader: FC<ExchangeHeaderProps> = ({ input, output, allowedSlippage, refreshPrice, refreshingPrice }) => {
+const ExchangeHeader: FC<ExchangeHeaderProps> = ({ input, output, allowedSlippage, feePercent, refreshPrice, refreshingPrice }) => {
   const { i18n } = useLingui()
   const { chainId } = useActiveWeb3React()
   const router = useRouter()
@@ -108,6 +109,10 @@ const ExchangeHeader: FC<ExchangeHeaderProps> = ({ input, output, allowedSlippag
           }
           <div className="relative flex items-center w-full h-full rounded hover:bg-dark-800">
             <Settings placeholderSlippage={allowedSlippage} />
+          </div>
+
+          <div className="relative flex items-center w-full h-full rounded hover:bg-dark-800">
+            <Settings placeholderFeePercent={feePercent} />
           </div>
         </div>
       </div>
