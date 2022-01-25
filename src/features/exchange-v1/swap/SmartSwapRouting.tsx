@@ -12,6 +12,8 @@ interface SmartSwapRoutingsProps {
 
 const SmartSwapRouting: FC<SmartSwapRoutingsProps> = ({ inputCurrency, outputCurrency, distribution }) => {
   const [routingOpen, setRoutingOpen] = useState(false); 
+  const parsedDistribution = distribution?.map(item => item?.toString()); 
+  const steps = parsedDistribution.filter(element => element !== "0").length; 
 
   return (
     <>
@@ -24,10 +26,11 @@ const SmartSwapRouting: FC<SmartSwapRoutingsProps> = ({ inputCurrency, outputCur
         <Typography variant="sm" className="select-none">
           Route
         </Typography>
-        <div>
+        <div className="flex items-center text-sm font-medium select-none">
+          {`${steps} step${steps > 1 ? 's' : ''}`} 
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            className="h-4 w-4" 
+            className="h-4 w-4 ml-3" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
@@ -36,7 +39,7 @@ const SmartSwapRouting: FC<SmartSwapRoutingsProps> = ({ inputCurrency, outputCur
           </svg>
         </div>
       </div>
-      <RoutingModal isOpen={routingOpen} setIsOpen={setRoutingOpen} inputCurrency={inputCurrency} outputCurrency={outputCurrency} distribution={distribution} />
+      <RoutingModal isOpen={routingOpen} setIsOpen={setRoutingOpen} inputCurrency={inputCurrency} outputCurrency={outputCurrency} distribution={parsedDistribution} />
     </>
   )
 }

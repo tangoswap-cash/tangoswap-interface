@@ -45,12 +45,11 @@ interface RoutingModalProps {
   setIsOpen: (value: boolean) => void; 
   inputCurrency: Currency; 
   outputCurrency: Currency; 
-  distribution: any[]; 
+  distribution: string[]; 
 }
 
 const RoutingModal: FC<RoutingModalProps> = ({ isOpen, setIsOpen, inputCurrency, outputCurrency, distribution }) => {
-  const parsedDistribution = distribution?.map(item => item?.toString()); 
-  const routingDistribution = groupBy(getDistribution(parsedDistribution), "currency");
+  const routingDistribution = groupBy(getDistribution(distribution), "currency");
 
   return (
     <Modal isOpen={isOpen} onDismiss={() => setIsOpen(false)} maxWidth={700}>

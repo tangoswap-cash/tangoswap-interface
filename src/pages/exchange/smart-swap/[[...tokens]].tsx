@@ -492,6 +492,8 @@ export default function Swap() {
                   className="z-10 -mt-6 -mb-6 rounded-full"
                   onClick={() => {
                     setApprovalSubmitted(false) // reset 2 step UI for approvals
+                    handleTypeInput("") // clear input value
+                    handleTypeOutput("") // clear output value
                     onSwitchTokens()
                   }}
                 >
