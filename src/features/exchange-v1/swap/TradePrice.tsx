@@ -25,7 +25,7 @@ export default function TradePrice({ price, showInverted, setShowInverted, class
       onClick={flipPrice}
       title={text}
       className={classNames(
-        'flex justify-between w-full px-5 py-1 cursor-pointer rounded-b-md text-secondary hover:text-primary',
+        'flex justify-between w-full px-5 py-1 cursor-pointer rounded-md text-secondary hover:text-primary',
         className
       )}
     >

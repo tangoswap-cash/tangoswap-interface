@@ -10,8 +10,8 @@ import { useSmartSwapContract } from './useContract'
 // import { useArgentWalletContract } from './useArgentWalletContract'
 import { useSingleCallResult } from '../state/multicall/hooks'
 
-const PARTS = 10
-const FLAGS = 0
+export const PARTS = 10
+export const FLAGS = 0
 
 interface GetExpectedReturnCallData {
   address: string
