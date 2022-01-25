@@ -51,6 +51,7 @@ import ProgressSteps from '../../../components/ProgressSteps'
 import SwapHeader from '../../../features/trade/Header'
 import TokenWarningModal from '../../../modals/TokenWarningModal'
 import { default as TradePrice, GetRateText } from '../../../features/exchange-v1/swap/TradePrice'
+import SmartSwapRouting from "../../../features/exchange-v1/swap/SmartSwapRouting"
 import Typography from '../../../components/Typography'
 import UnsupportedCurrencyFooter from '../../../features/exchange-v1/swap/UnsupportedCurrencyFooter'
 import Web3Connect from '../../../components/Web3Connect'
@@ -491,6 +492,8 @@ export default function Swap() {
                   className="z-10 -mt-6 -mb-6 rounded-full"
                   onClick={() => {
                     setApprovalSubmitted(false) // reset 2 step UI for approvals
+                    handleTypeInput("") // clear input value
+                    handleTypeOutput("") // clear output value
                     onSwitchTokens()
                   }}
                 >
@@ -552,6 +555,7 @@ export default function Swap() {
                     setShowInverted={setShowInverted}
                     className="bg-dark-900"
                   />
+                  <SmartSwapRouting outputCurrency={currencies[Field.OUTPUT]} inputCurrency={currencies[Field.INPUT]} distribution={trade?.distribution}/>
                 </div>
               )}
             </div>
