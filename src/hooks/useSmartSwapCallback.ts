@@ -30,6 +30,8 @@ import useENS from './useENS'
 import { useMemo } from 'react'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import useTransactionDeadline from './useTransactionDeadline'
+import { isLength } from 'lodash'
+import { from } from 'node-vibrant'
 
 export enum SwapCallbackState {
   INVALID,
@@ -59,6 +61,21 @@ interface FailedCall extends SwapCallEstimate {
 
 export type EstimatedSwapCall = SuccessfulCall | FailedCall
 
+// function toWeiBase(percent: Percent, decimals: number) : BigNumber {
+//   const numerator = BigNumber.from(percent.numerator.toString()).mul('1'.padEnd(decimals + 1, '0'));
+//   const denominator = BigNumber.from(percent.denominator.toString());
+//   const quotient = numerator.div(denominator);
+//   return quotient;
+// }
+
+// function toWeiBase10(percent: Percent, decimals: number) {
+//   return toWeiBase(percent, decimals).toString();
+// }
+
+// function toWeiBase16(percent: Percent, decimals: number) {
+//   return toWeiBase(percent, decimals).toHexString();
+// }
+
 /**
  * Returns the swap calls that can be used to make the trade
  * @param trade trade to execute
@@ -80,6 +97,7 @@ export function useSmartSwapCallArguments(
   const factoryContract = useFactoryContract()
 
   const argentWalletContract = useArgentWalletContract()
+  console.log("********** feePercent: ", feePercent.toFixed(10))
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId || !deadline) return []
@@ -92,6 +110,9 @@ export function useSmartSwapCallArguments(
       const etherOut = trade.outputAmount.currency.isNative
       // the aggregator does not support both ether in and out
       // invariant(!(etherIn && etherOut), 'ETHER_IN_OUT')
+
+      // console.log(`***** feePercent: ${toWeiBase10(feePercent, 18)}`);
+      // console.log(`***** feePercent: ${toWeiBase16(feePercent, 18)}`);
 
       swapMethods.push(
         Aggregator.swapCallParameters(trade, {
@@ -115,6 +136,13 @@ export function useSmartSwapCallArguments(
               ],
             ]),
             value: '0x0',
+          }
+        } else {
+          // console.log({ methodName, args })
+          return {
+            address: smartSwapContract.address,
+            calldata: smartSwapContract.interface.encodeFunctionData(methodName, args),
+            value,
           }
         }
       })
@@ -204,10 +232,10 @@ export function useSmartSwapCallback(
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId) {
-      console.log("trade:   ", trade);
-      console.log("library: ", library);
-      console.log("account: ", account);
-      console.log("chainId: ", chainId);
+      // console.log("trade:   ", trade);
+      // console.log("library: ", library);
+      // console.log("account: ", account);
+      // console.log("chainId: ", chainId);
       return {
         state: SwapCallbackState.INVALID,
         callback: null,

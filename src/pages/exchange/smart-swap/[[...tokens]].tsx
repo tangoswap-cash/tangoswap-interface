@@ -144,6 +144,9 @@ export default function Swap() {
   const { address: recipientAddress } = useENSAddress(recipient)
 
   const trade = showWrap ? undefined : smartTrade
+  // console.log("***** trade(0): ", trade)
+  // console.log("***** smartTrade(0): ", smartTrade)
+  // console.log("***** showWrap(0): ", showWrap)
 
   const parsedAmounts = useMemo(
     () =>
@@ -166,8 +169,8 @@ export default function Swap() {
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSmartSwapActionHandlers()
 
   const isValid = !swapInputError
-  console.log("isValid:        ", isValid)
-  console.log("swapInputError: ", swapInputError)
+  // console.log("isValid:        ", isValid)
+  // console.log("swapInputError: ", swapInputError)
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const handleTypeInput = useCallback(
@@ -213,7 +216,9 @@ export default function Swap() {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
-  // check whether the user has approved the router on the input token
+  // console.log("***** trade(1): ", trade)
+
+  // check whether the user has approved the aggregator on the input token
   const [approvalState, approveCallback] = useApproveCallbackFromTradeSmart(trade, allowedSlippage, feePercent, doArcher)
 
   const signatureData = undefined
@@ -264,7 +269,8 @@ export default function Swap() {
     // doArcher ? ttl : undefined
   )
 
-  console.log("swapCallbackError: ", swapCallbackError)
+  // console.log("***** swapCallbackError: ", swapCallbackError)
+  // console.log("***** !swapCallbackError: ", !swapCallbackError)
 
   const [singleHopOnly] = useUserSingleHopOnly()
 
@@ -340,6 +346,12 @@ export default function Swap() {
       approvalState === ApprovalState.PENDING ||
       (approvalSubmitted && approvalState === ApprovalState.APPROVED))
       // && !(priceImpactSeverity > 3 && !isExpertMode)
+
+  // console.log("***** showApproveFlow:   ", showApproveFlow)
+  // console.log("***** !isArgentWallet:   ", !isArgentWallet)
+  // console.log("***** swapInputError:   ", swapInputError)
+  // console.log("***** !swapInputError:   ", !swapInputError)
+
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({
@@ -668,11 +680,12 @@ export default function Swap() {
                 }}
                 id="swap-button"
                 disabled={!isValid || !!swapCallbackError}
-                error={isValid && !swapCallbackError}
+                // error={isValid && !swapCallbackError}
+                error={false}
               >
                 {swapInputError
                   ? swapInputError
-                  : i18n._(t`Swap XXX`)}
+                  : i18n._(t`Swap`)}
               </ButtonError>
             )}
             {showApproveFlow && (

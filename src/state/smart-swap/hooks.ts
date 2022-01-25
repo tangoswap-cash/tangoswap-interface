@@ -43,7 +43,7 @@ import {
 import { useSmartTrade } from '../../hooks/useSmartTrades'
 
 import { ParsedQs } from 'qs'
-import { SwapState } from './reducer'
+import { SmartSwapState } from './reducer'
 import { t } from '@lingui/macro'
 import { tryParseAmount } from '../../functions/parse'
 import { useActiveWeb3React } from '../../hooks/useActiveWeb3React'
@@ -189,7 +189,6 @@ export function useDerivedSmartSwapInfo(doArcher = false): {
     {parts: undefined},
     {flags: undefined})
 
-
   const allowedSlippage = useSmartSwapSlippageTolerance(trade)
   const feePercent = useSmartSwapFeePercent(trade)
 
@@ -201,6 +200,7 @@ export function useDerivedSmartSwapInfo(doArcher = false): {
   }
 
   const swapCalls = useSmartSwapCallArguments(trade, allowedSlippage, feePercent, undefined) //, doArcher)
+  console.log("swapCalls: ", swapCalls);
 
   const [, setUserETHTip] = useUserArcherETHTip()
   const [userGasEstimate, setUserGasEstimate] = useUserArcherGasEstimate()
@@ -322,11 +322,11 @@ function validatedRecipient(recipient: any): string | null {
   return null
 }
 
-export function defaultSwapState(): SwapState {
+export function defaultSwapState(): SmartSwapState {
   return queryParametersToSwapState(initialState);
 }
 
-export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId = ChainId.SMARTBCH): SwapState {
+export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId = ChainId.SMARTBCH): SmartSwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
   const eth = 'BCH'

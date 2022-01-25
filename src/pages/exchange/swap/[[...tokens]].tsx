@@ -343,6 +343,12 @@ export default function Swap() {
       (approvalSubmitted && approvalState === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > 3 && !isExpertMode)
 
+  console.log("***** showApproveFlow:   ", showApproveFlow)
+  console.log("***** !isArgentWallet:   ", !isArgentWallet)
+  console.log("***** swapInputError:   ", swapInputError)
+  console.log("***** !swapInputError:   ", !swapInputError)
+
+
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({
       showConfirm: false,
@@ -414,11 +420,11 @@ export default function Swap() {
   // }, [chainId, previousChainId, router]);
 
   const [refreshingPrice, setRefreshingPrice] = useState(false)
-  const refreshPrice = () => { 
-      if(formattedAmounts[Field.INPUT] || formattedAmounts[Field.OUTPUT]){ 
+  const refreshPrice = () => {
+      if(formattedAmounts[Field.INPUT] || formattedAmounts[Field.OUTPUT]){
         setRefreshingPrice(true)
         setTimeout(() => {
-          independentField === Field.INPUT 
+          independentField === Field.INPUT
           ? handleTypeInput(formattedAmounts[Field.INPUT])
           : handleTypeOutput(formattedAmounts[Field.OUTPUT])
           setRefreshingPrice(false)

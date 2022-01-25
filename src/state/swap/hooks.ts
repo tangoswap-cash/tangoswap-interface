@@ -224,6 +224,7 @@ export function useDerivedSwapInfo(doArcher = false): {
   }
 
   const swapCalls = useSwapCallArguments(v2Trade, allowedSlippage, to, undefined, doArcher)
+  console.log("swapCalls: ", swapCalls)
 
   const [, setUserETHTip] = useUserArcherETHTip()
   const [userGasEstimate, setUserGasEstimate] = useUserArcherGasEstimate()
