@@ -36,6 +36,7 @@ interface CurrencyInputPanelProps {
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
   customBalanceText?: string
+  readOnly?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -58,6 +59,7 @@ export default function CurrencyInputPanel({
   hideInput = false,
   locked = false,
   customBalanceText,
+  readOnly = false,
 }: CurrencyInputPanelProps) {
   const { i18n } = useLingui()
   const [modalOpen, setModalOpen] = useState(false)
@@ -155,6 +157,7 @@ export default function CurrencyInputPanel({
                 onUserInput={(val) => {
                   onUserInput(val)
                 }}
+                readOnly={readOnly}
               />
               {!hideBalance && currency && selectedCurrencyBalance ? (
                 <div className="flex flex-col">

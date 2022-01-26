@@ -1,5 +1,5 @@
 import { createStore, Store } from 'redux'
-import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
+import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, INITIAL_FEE_PERCENT } from '../../constants'
 import { updateVersion } from '../global/actions'
 import reducer, { initialState, UserState } from './reducer'
 
@@ -29,5 +29,15 @@ describe('swap reducer', () => {
       expect(store.getState().userDeadline).toEqual(DEFAULT_DEADLINE_FROM_NOW)
       expect(store.getState().userSlippageTolerance).toEqual(INITIAL_ALLOWED_SLIPPAGE)
     })
+
+    it('sets fee percent', () => {
+      store = createStore(reducer, {
+        ...initialState,
+        userFeePercent: undefined,
+      } as any)
+      store.dispatch(updateVersion())
+      expect(store.getState().userFeePercent).toEqual(INITIAL_FEE_PERCENT)
+    })
+
   })
 })

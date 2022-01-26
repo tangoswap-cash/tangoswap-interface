@@ -1,11 +1,15 @@
 import {
+  AGGREGATOR_ADDRESS,
+  ChainId,
   Currency,
   CurrencyAmount,
   Percent,
   ROUTER_ADDRESS,
   TradeType,
   Trade as V2Trade,
+  TradeSmart,
 } from '@tangoswapcash/sdk'
+
 import { useCallback, useMemo } from 'react'
 import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
 
@@ -121,6 +125,30 @@ export function useApproveCallbackFromTrade(
       ? trade instanceof V2Trade
         ? !doArcher
           ? ROUTER_ADDRESS[chainId]
+          : undefined
+        : undefined
+      : undefined
+  )
+}
+
+// wraps useApproveCallback in the context of a smart swap
+export function useApproveCallbackFromTradeSmart(
+  trade: TradeSmart<Currency, Currency> | undefined,
+  allowedSlippage: Percent,
+  feePercent: Percent,
+  doArcher: boolean = false
+) {
+  const { chainId } = useActiveWeb3React()
+  const amountToApprove = useMemo(
+    () => (trade && trade.inputAmount.currency.isToken ? trade.maximumAmountIn(allowedSlippage, feePercent) : undefined),
+    [trade, allowedSlippage, feePercent]
+  )
+  return useApproveCallback(
+    amountToApprove,
+    chainId
+      ? trade instanceof TradeSmart
+        ? !doArcher
+          ? AGGREGATOR_ADDRESS[chainId]
           : undefined
         : undefined
       : undefined

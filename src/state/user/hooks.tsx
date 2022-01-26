@@ -19,6 +19,7 @@ import {
   updateUserExpertMode,
   updateUserSingleHopOnly,
   updateUserSlippageTolerance,
+  updateUserFeePercent
 } from './actions'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from '../hooks'
@@ -410,5 +411,65 @@ export function useUserSlippageToleranceWithDefault(defaultSlippageTolerance: Pe
   return useMemo(
     () => (allowedSlippage === 'auto' ? defaultSlippageTolerance : allowedSlippage),
     [allowedSlippage, defaultSlippageTolerance]
+  )
+}
+
+
+/**
+ * Return the user's fee percent, from the redux store, and a function to update the fee percent
+ */
+ export function useUserFeePercent(): Percent | 'auto' {
+  let userFeePercent = useAppSelector((state) => {
+    return state.user.userFeePercent
+  })
+
+  if ( ! userFeePercent) {
+    userFeePercent = 5;
+  }
+
+  return useMemo(
+    () => {
+      return userFeePercent === 'auto' ? 'auto' : new Percent(userFeePercent, 10_000)
+    },
+    [userFeePercent]
+  )
+
+  // return useMemo(
+  //   () => (userFeePercent === 'auto' ? 'auto' : new Percent(userFeePercent, 10_000)),
+  //   [userFeePercent]
+  // )
+}
+
+/**
+ * Same as above but replaces the auto with a default value
+ * @param defaultFeePercent the default value to replace auto with
+ */
+ export function useUserFeePercentWithDefault(defaultFeePercent: Percent): Percent {
+  const allowedSlippage = useUserFeePercent()
+  return useMemo(
+    () => (allowedSlippage === 'auto' ? defaultFeePercent : allowedSlippage),
+    [allowedSlippage, defaultFeePercent]
+  )
+}
+
+export function useSetUserFeePercent(): (feePercent: Percent | 'auto') => void {
+  const dispatch = useAppDispatch()
+
+  return useCallback(
+    (userFeePercent: Percent | 'auto') => {
+      let value: 'auto' | number
+      try {
+        value =
+          userFeePercent === 'auto' ? 'auto' : JSBI.toNumber(userFeePercent.multiply(10_000).quotient)
+      } catch (error) {
+        value = 'auto'
+      }
+      dispatch(
+        updateUserFeePercent({
+          userFeePercent: value,
+        })
+      )
+    },
+    [dispatch]
   )
 }

@@ -1,4 +1,5 @@
 import {
+  AGGREGATOR_ADDRESS,
   BAR_ADDRESS,
   BENTOBOX_ADDRESS,
   BORING_HELPER_ADDRESS,
@@ -41,6 +42,7 @@ import MASTERCHEF_ABI from '../constants/abis/masterchef.json'
 import MASTERCHEF_V2_ABI from '../constants/abis/masterchef-v2.json'
 import MULTICALL2_ABI from '../constants/abis/multicall2.json'
 import ROUTER_ABI from '../constants/abis/router.json'
+import SMARTSWAP_ABI from '../constants/abis/smart-swap.json'
 import SUSHI_ABI from '../constants/abis/sushi.json'
 import SUSHIROLL_ABI from "@tangoswapcash/core/abi/SushiRoll.json";
 import WBCH_ABI from '../constants/abis/weth.json'
@@ -140,6 +142,11 @@ export function useFactoryContract(): Contract | null {
 export function useRouterContract(useArcher = false, withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
   return useContract(chainId && ROUTER_ADDRESS[chainId], ROUTER_ABI, withSignerIfPossible)
+}
+
+export function useSmartSwapContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId && AGGREGATOR_ADDRESS[chainId], SMARTSWAP_ABI, withSignerIfPossible)
 }
 
 export function useSushiBarContract(withSignerIfPossible?: boolean): Contract | null {

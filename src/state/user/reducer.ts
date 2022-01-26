@@ -1,5 +1,5 @@
 import { DEFAULT_ARCHER_ETH_TIP, DEFAULT_ARCHER_GAS_ESTIMATE, DEFAULT_ARCHER_GAS_PRICES } from '../../config/archer'
-import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
+import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE, INITIAL_FEE_PERCENT } from '../../constants'
 import {
   SerializedPair,
   SerializedToken,
@@ -20,6 +20,7 @@ import {
   updateUserExpertMode,
   updateUserSingleHopOnly,
   updateUserSlippageTolerance,
+  //updateUserFeePercent,
 } from './actions'
 
 import { createReducer } from '@reduxjs/toolkit'
@@ -41,6 +42,9 @@ export interface UserState {
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number | 'auto'
+
+  // user defined fee percent in bips, used in all txns
+  // userFeePercent: number | 'auto'
 
   // deadline set by user in minutes, used in all txns
   userDeadline: number
@@ -79,6 +83,7 @@ export const initialState: UserState = {
   userExpertMode: false,
   userSingleHopOnly: false,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
+  //userFeePercent: INITIAL_FEE_PERCENT,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   tokens: {},
   pairs: {},
@@ -99,6 +104,10 @@ export default createReducer(initialState, (builder) =>
       if (typeof state.userSlippageTolerance !== 'number') {
         state.userSlippageTolerance = INITIAL_ALLOWED_SLIPPAGE
       }
+
+      // if (typeof state.userFeePercent !== 'number') {
+      //   state.userFeePercent = INITIAL_FEE_PERCENT
+      // }
 
       // deadline isnt being tracked in local storage, reset to default
       // noinspection SuspiciousTypeOfGuard
@@ -128,6 +137,10 @@ export default createReducer(initialState, (builder) =>
       state.userSlippageTolerance = action.payload.userSlippageTolerance
       state.timestamp = currentTimestamp()
     })
+    // .addCase(updateUserFeePercent, (state, action) => {
+    //   state.userFeePercent = action.payload.userFeePercent
+    //   state.timestamp = currentTimestamp()
+    // })
     .addCase(updateUserDeadline, (state, action) => {
       state.userDeadline = action.payload.userDeadline
       state.timestamp = currentTimestamp()

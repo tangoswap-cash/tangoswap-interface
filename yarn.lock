@@ -2664,18 +2664,18 @@
   dependencies:
     eip-712 "^0.4.3"
 
-"@tangoswapcash/default-token-list@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@tangoswapcash/default-token-list/-/default-token-list-0.0.14.tgz#21f52b49c4b202e9d7c7657d97693fe265ddde96"
-  integrity sha512-i4eGwJFPcTjkm+OSvZ6+W24LtsWLvhj1wkF6sF6pCYmKQrrCcZZAp04++t/o49Xmry+Y+A9maTFBuw2g5HwE6g==
+"@tangoswapcash/default-token-list@0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/default-token-list/-/default-token-list-0.0.15.tgz#5898e6a01dbaed8ce0e359a51628e4e3bd06c091"
+  integrity sha512-cQ9tQaTSZg546TXOId9p5YWf92wnnb7pKQTJqbLPKwivWZezJQPIGqX4JdRt8coL9dIWxMzDHPqsdFkydZW5Kg==
   dependencies:
     commitlint "^13.1.0"
     lint-staged "^11.1.2"
 
-"@tangoswapcash/sdk@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@tangoswapcash/sdk/-/sdk-0.0.10.tgz#512f4eaae7225e16046f1276c6a4fdcd2c5a5b7d"
-  integrity sha512-4i7pGjyHqafqnrbLq3pqjDKE28xtZRDhMXl45AEiyn9dL9PYtrpLMhCWA+/R7gR+SZwfD2gcyBZAhGPbQQNzmg==
+"@tangoswapcash/sdk@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/sdk/-/sdk-0.0.17.tgz#33e16938bff108eb496db23cf7e9dfb1156fe031"
+  integrity sha512-vYwR4i2brnSsVEfWXmuij1CrI0OAROPj6k1dNrQJ/dMPW3NsAibHpUsCqN7VIYsRPUZ8nRxOpCBAllLG6L03Ug==
   dependencies:
     big.js "^6.1.0"
     decimal.js-light "^2.5.0"

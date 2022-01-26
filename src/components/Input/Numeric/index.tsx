@@ -51,6 +51,7 @@ export const Input = React.memo(
           'relative font-bold outline-none border-none flex-auto overflow-hidden overflow-ellipsis placeholder-low-emphesis focus:placeholder-primary',
           className
         )}
+        // readOnly={true}
       />
     )
   }

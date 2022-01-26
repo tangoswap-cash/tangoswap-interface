@@ -414,11 +414,11 @@ export default function Swap() {
   // }, [chainId, previousChainId, router]);
 
   const [refreshingPrice, setRefreshingPrice] = useState(false)
-  const refreshPrice = () => { 
-      if(formattedAmounts[Field.INPUT] || formattedAmounts[Field.OUTPUT]){ 
+  const refreshPrice = () => {
+      if(formattedAmounts[Field.INPUT] || formattedAmounts[Field.OUTPUT]){
         setRefreshingPrice(true)
         setTimeout(() => {
-          independentField === Field.INPUT 
+          independentField === Field.INPUT
           ? handleTypeInput(formattedAmounts[Field.INPUT])
           : handleTypeOutput(formattedAmounts[Field.OUTPUT])
           setRefreshingPrice(false)
@@ -708,15 +708,6 @@ export default function Swap() {
           )}
         </div>
       </DoubleGlowShadow>
-
-      <div className="w-full border-1 border-pink py-3 mt-6 text-center border border-pink rounded">
-        <h2 className="font-bold text-2xl">Tango SmartSwap Coming Soon!</h2>
-        <p className="font-bold w-10/12 mx-auto mt-2">
-          Every time you make a swap in TangoSwap.Cash our aggregator will bring you the best exchange rate using the
-          liquidity of all SmartBCH DEXes.
-        </p>
-        <p></p>
-      </div>
     </Container>
   )
 }

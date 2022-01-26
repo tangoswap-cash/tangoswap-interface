@@ -9,6 +9,8 @@ import {
   Router,
   TradeType,
   Trade as V2Trade,
+  Fraction,
+  ONE
 } from '@tangoswapcash/sdk'
 import { arrayify, hexlify, splitSignature } from '@ethersproject/bytes'
 import { isAddress, isZero } from '../functions/validate'
@@ -233,8 +235,6 @@ export function useSwapCallback(
   const useArcher = archerRelayDeadline !== undefined
 
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName, signatureData, useArcher)
-
-  // console.log({ swapCalls, trade })
 
   const addTransaction = useTransactionAdder()
 
