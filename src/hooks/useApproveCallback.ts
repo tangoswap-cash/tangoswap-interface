@@ -1,4 +1,5 @@
 import {
+  AGGREGATOR_ADDRESS,
   ChainId,
   Currency,
   CurrencyAmount,
@@ -128,12 +129,6 @@ export function useApproveCallbackFromTrade(
         : undefined
       : undefined
   )
-}
-
-
-//TODO: move to the SDK project
-export const AGGREGATOR_ADDRESS = {
-  [ChainId.SMARTBCH]: '',
 }
 
 // wraps useApproveCallback in the context of a smart swap

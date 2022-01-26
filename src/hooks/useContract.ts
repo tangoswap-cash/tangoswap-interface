@@ -1,4 +1,5 @@
 import {
+  AGGREGATOR_ADDRESS,
   BAR_ADDRESS,
   BENTOBOX_ADDRESS,
   BORING_HELPER_ADDRESS,
@@ -49,12 +50,6 @@ import ZENKO_ABI from '../constants/abis/zenko.json'
 import { getContract } from '../functions/contract'
 import { useActiveWeb3React } from './useActiveWeb3React'
 import { useMemo } from 'react'
-
-//TODO: move to the SDK project
-export const AGGREGATOR_ADDRESS = {
-  [ChainId.SMARTBCH]: '',
-}
-
 
 export function useEIP2612Contract(tokenAddress?: string): Contract | null {
   return useContract(tokenAddress, EIP_2612_ABI, false)

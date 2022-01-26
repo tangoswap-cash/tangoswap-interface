@@ -148,8 +148,6 @@ export function useUserSlippageTolerance(): Percent | 'auto' {
     return state.user.userSlippageTolerance
   })
 
-  console.log("*********** useUserSlippageTolerance - userSlippageTolerance: ", userSlippageTolerance);
-
   return useMemo(
     () => (userSlippageTolerance === 'auto' ? 'auto' : new Percent(userSlippageTolerance, 10_000)),
     [userSlippageTolerance]
@@ -425,7 +423,7 @@ export function useUserSlippageToleranceWithDefault(defaultSlippageTolerance: Pe
     return state.user.userFeePercent
   })
 
-  console.log("userFeePercent: ", userFeePercent);
+  // console.log("userFeePercent: ", userFeePercent);
 
   if ( ! userFeePercent) {
     userFeePercent = 5;
@@ -433,7 +431,7 @@ export function useUserSlippageToleranceWithDefault(defaultSlippageTolerance: Pe
 
   return useMemo(
     () => {
-      console.log("userFeePercent: ", userFeePercent);
+      // console.log("userFeePercent: ", userFeePercent);
       return userFeePercent === 'auto' ? 'auto' : new Percent(userFeePercent, 10_000)
     },
     [userFeePercent]

@@ -23,12 +23,12 @@ export function AdvancedSmartSwapDetails({ trade, allowedSlippage, feePercent, m
 
   const { chainId } = useActiveWeb3React()
 
-  const parsedDistribution = trade?.distribution?.map(item => item?.toString()); 
-  const steps = parsedDistribution.filter(element => element !== "0").length; 
+  const parsedDistribution = trade?.distribution?.map(item => item?.toString());
+  const steps = parsedDistribution.filter(element => element !== "0").length;
 
   return !trade ? null : (
     <div className="flex flex-col space-y-2">
-      
+
       <RowBetween>
         <RowFixed>
           <div className="text-sm text-secondary">{i18n._(t`Route`)}</div>
@@ -36,7 +36,7 @@ export function AdvancedSmartSwapDetails({ trade, allowedSlippage, feePercent, m
         </RowFixed>
         <RowFixed>
           <div className="text-sm font-bold text-high-emphesis">
-            {`${steps} step${steps > 1 ? 's' : ''}`} 
+            {`${steps} step${steps > 1 ? 's' : ''}`}
           </div>
         </RowFixed>
         {/* <SwapRoute trade={trade} /> */}
@@ -70,8 +70,8 @@ export function AdvancedSmartSwapDetails({ trade, allowedSlippage, feePercent, m
 
       <RowBetween>
         <RowFixed>
-          <div className="text-sm text-secondary">{i18n._(t`Fee percent`)}</div>
-          <QuestionHelper text={i18n._(t`Fee percent...`)} />
+          <div className="text-sm text-secondary">{i18n._(t`SmartSwap fee`)}</div>
+          <QuestionHelper text={i18n._(t`SmartSwap fee...`)} />
         </RowFixed>
         <div className="text-sm font-bold text-high-emphesis">{feePercent.toFixed(2)}%</div>
       </RowBetween>

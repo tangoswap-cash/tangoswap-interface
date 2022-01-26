@@ -343,12 +343,6 @@ export default function Swap() {
       (approvalSubmitted && approvalState === ApprovalState.APPROVED)) &&
     !(priceImpactSeverity > 3 && !isExpertMode)
 
-  console.log("***** showApproveFlow:   ", showApproveFlow)
-  console.log("***** !isArgentWallet:   ", !isArgentWallet)
-  console.log("***** swapInputError:   ", swapInputError)
-  console.log("***** !swapInputError:   ", !swapInputError)
-
-
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({
       showConfirm: false,
@@ -714,15 +708,6 @@ export default function Swap() {
           )}
         </div>
       </DoubleGlowShadow>
-
-      <div className="w-full border-1 border-pink py-3 mt-6 text-center border border-pink rounded">
-        <h2 className="font-bold text-2xl">Tango SmartSwap Coming Soon!</h2>
-        <p className="font-bold w-10/12 mx-auto mt-2">
-          Every time you make a swap in TangoSwap.Cash our aggregator will bring you the best exchange rate using the
-          liquidity of all SmartBCH DEXes.
-        </p>
-        <p></p>
-      </div>
     </Container>
   )
 }

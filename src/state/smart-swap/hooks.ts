@@ -200,7 +200,6 @@ export function useDerivedSmartSwapInfo(doArcher = false): {
   }
 
   const swapCalls = useSmartSwapCallArguments(trade, allowedSlippage, feePercent, undefined) //, doArcher)
-  console.log("swapCalls: ", swapCalls);
 
   const [, setUserETHTip] = useUserArcherETHTip()
   const [userGasEstimate, setUserGasEstimate] = useUserArcherGasEstimate()

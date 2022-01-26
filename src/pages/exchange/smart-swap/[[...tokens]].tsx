@@ -348,12 +348,6 @@ export default function Swap() {
       (approvalSubmitted && approvalState === ApprovalState.APPROVED))
       // && !(priceImpactSeverity > 3 && !isExpertMode)
 
-  // console.log("***** showApproveFlow:   ", showApproveFlow)
-  // console.log("***** !isArgentWallet:   ", !isArgentWallet)
-  // console.log("***** swapInputError:   ", swapInputError)
-  // console.log("***** !swapInputError:   ", !swapInputError)
-
-
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({
       showConfirm: false,

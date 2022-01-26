@@ -30,8 +30,6 @@ import useENS from './useENS'
 import { useMemo } from 'react'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import useTransactionDeadline from './useTransactionDeadline'
-import { isLength } from 'lodash'
-import { from } from 'node-vibrant'
 
 export enum SwapCallbackState {
   INVALID,
@@ -95,9 +93,7 @@ export function useSmartSwapCallArguments(
 
   const smartSwapContract = useSmartSwapContract()
   const factoryContract = useFactoryContract()
-
   const argentWalletContract = useArgentWalletContract()
-  console.log("********** feePercent: ", feePercent.toFixed(10))
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId || !deadline) return []
@@ -110,9 +106,6 @@ export function useSmartSwapCallArguments(
       const etherOut = trade.outputAmount.currency.isNative
       // the aggregator does not support both ether in and out
       // invariant(!(etherIn && etherOut), 'ETHER_IN_OUT')
-
-      // console.log(`***** feePercent: ${toWeiBase10(feePercent, 18)}`);
-      // console.log(`***** feePercent: ${toWeiBase16(feePercent, 18)}`);
 
       swapMethods.push(
         Aggregator.swapCallParameters(trade, {

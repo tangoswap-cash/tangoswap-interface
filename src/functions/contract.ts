@@ -1,6 +1,6 @@
 // NOTE: Try not to add anything to thie file, it's almost entirely refactored out.
 
-import { ChainId, ROUTER_ADDRESS } from '@tangoswapcash/sdk'
+import { AGGREGATOR_ADDRESS, ChainId, ROUTER_ADDRESS } from '@tangoswapcash/sdk'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 import { AddressZero } from '@ethersproject/constants'
@@ -49,12 +49,6 @@ export function getRouterContract(chainId: number, library: Web3Provider, accoun
 
 export function getArcherRouterContract(chainId: number, library: Web3Provider, account?: string): Contract {
   return getContract('', ArcherSwapRouterABI, library, account)
-}
-
-
-//TODO: move to the SDK project
-export const AGGREGATOR_ADDRESS = {
-  [ChainId.SMARTBCH]: '',
 }
 
 export function getAggregatorAddress(chainId?: ChainId) {

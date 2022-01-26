@@ -1,4 +1,4 @@
-import { FC } from "react"; 
+import { FC } from "react";
 import Modal from '../../components/Modal'
 import ModalHeader from '../../components/ModalHeader'
 import CurrencyLogo from "../../components/CurrencyLogo";
@@ -9,43 +9,43 @@ import { PARTS } from "../../hooks/useSmartTrades";
 
 const getDistribution = (distribution: string[], parts: number = PARTS) => {
   const swapOptions = [
-      {exchange: "1BCHDEX", currency: "DIRECT_SWAP"},
-      {exchange: "1BCHDEX", currency: "BCH"},
-      {exchange: "1BCHDEX", currency: "FLEXUSD"},
+      {exchange: "1BCH", currency: "DIRECT_SWAP"},
+      {exchange: "1BCH", currency: "BCH"},
+      {exchange: "1BCH", currency: "flexUSD"},
       {exchange: "BenSwap", currency: "DIRECT_SWAP"},
       {exchange: "BenSwap", currency: "BCH"},
-      {exchange: "BenSwap", currency: "FLEXUSD"},
+      {exchange: "BenSwap", currency: "flexUSD"},
       {exchange: "MistSwap", currency: "DIRECT_SWAP"},
       {exchange: "MistSwap", currency: "BCH"},
-      {exchange: "MistSwap", currency: "FLEXUSD"},
+      {exchange: "MistSwap", currency: "flexUSD"},
       {exchange: "MuesliSwap", currency: "DIRECT_SWAP"},
       {exchange: "MuesliSwap", currency: "BCH"},
-      {exchange: "MuesliSwap", currency: "FLEXUSD"},
+      {exchange: "MuesliSwap", currency: "flexUSD"},
       {exchange: "TangoSwap", currency: "DIRECT_SWAP"},
       {exchange: "TangoSwap", currency: "BCH"},
-      {exchange: "TangoSwap", currency: "FLEXUSD"}, 
+      {exchange: "TangoSwap", currency: "flexUSD"},
       {exchange: "Tropical", currency: "DIRECT_SWAP"},
       {exchange: "Tropical", currency: "BCH"},
-      {exchange: "Tropical", currency: "FLEXUSD"}, 
+      {exchange: "Tropical", currency: "flexUSD"},
   ];
 
-  const exchangesDistribution = []; 
-  
-  distribution.forEach((value, index) => { 
-    if(value !== "0") { 
+  const exchangesDistribution = [];
+
+  distribution.forEach((value, index) => {
+    if(value !== "0") {
       exchangesDistribution.push({percentage: parseInt(value) * 100 / parts, ...swapOptions[index] })
     }
   })
 
-  return exchangesDistribution; 
+  return exchangesDistribution;
 }
 
-interface RoutingModalProps { 
-  isOpen: boolean; 
-  setIsOpen: (value: boolean) => void; 
-  inputCurrency: Currency; 
-  outputCurrency: Currency; 
-  distribution: string[]; 
+interface RoutingModalProps {
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+  inputCurrency: Currency;
+  outputCurrency: Currency;
+  distribution: string[];
 }
 
 const RoutingModal: FC<RoutingModalProps> = ({ isOpen, setIsOpen, inputCurrency, outputCurrency, distribution }) => {
@@ -71,23 +71,23 @@ const RoutingModal: FC<RoutingModalProps> = ({ isOpen, setIsOpen, inputCurrency,
       </div>
 
       <style jsx>{`
-        .swap-container::after { 
+        .swap-container::after {
           content: "";
           position: absolute;
           width: 1px;
           background: linear-gradient(180deg, rgba(101,25,6,1) 2%, rgba(187,94,65,1) 100%);
           top: 0;
           bottom: 0;
-          right: -110px; 
+          right: -110px;
         }
-        .swap-container::before { 
+        .swap-container::before {
           content: "";
           position: absolute;
           width: 1px;
           background: linear-gradient(180deg, rgba(187,94,65,1) 2%, rgba(101,25,6,1) 100%);
           top: 0;
           bottom: 0;
-          left: -110px; 
+          left: -110px;
         }
       `}</style>
     </Modal>

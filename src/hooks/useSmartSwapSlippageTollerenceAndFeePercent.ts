@@ -7,7 +7,6 @@ const V2_SWAP_DEFAULT_SLIPPAGE = new Percent(50, 10_000) // .50%
 const SWAP_FEE_PERCENT = new Percent(5, 10_000) // .50%
 
 export function useSmartSwapSlippageTolerance(trade: TradeSmart<Currency, Currency> | undefined): Percent {
-  console.log("useSmartSwapSlippageTolerance - trade: ", trade);
   const defaultSlippageTolerance = useMemo(() => {
     return V2_SWAP_DEFAULT_SLIPPAGE
   }, [trade])
@@ -15,7 +14,6 @@ export function useSmartSwapSlippageTolerance(trade: TradeSmart<Currency, Curren
 }
 
 export function useSmartSwapFeePercent(trade: TradeSmart<Currency, Currency> | undefined): Percent {
-  console.log("useSmartSwapFeePercent - trade: ", trade);
   const defaultFeePercent = useMemo(() => {
     return SWAP_FEE_PERCENT
   }, [trade])
