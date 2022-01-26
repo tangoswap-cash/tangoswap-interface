@@ -34,8 +34,6 @@ export interface TransactionSettingsSmartProps {
 export default function TransactionSettingsSmart(
   { placeholderSlippage, placeholderFeePercent }: TransactionSettingsSmartProps
 ) {
-
-  console.log("**************** TransactionSettingsSmart ********************");
   const { i18n } = useLingui()
 
   const inputRef = useRef<HTMLInputElement>()

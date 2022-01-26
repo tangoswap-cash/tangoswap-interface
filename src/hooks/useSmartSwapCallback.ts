@@ -217,18 +217,12 @@ export function useSmartSwapCallback(
 
   const swapCalls = useSmartSwapCallArguments(trade, allowedSlippage, feePercent, signatureData)
 
-  // console.log({ swapCalls, trade })
-
   const addTransaction = useTransactionAdder()
 
   const recipient = account
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId) {
-      // console.log("trade:   ", trade);
-      // console.log("library: ", library);
-      // console.log("account: ", account);
-      // console.log("chainId: ", chainId);
       return {
         state: SwapCallbackState.INVALID,
         callback: null,
@@ -317,8 +311,6 @@ export function useSmartSwapCallback(
         } = bestCallOption
 
         // console.log({ bestCallOption })
-
-        console.log('SMART SWAP')
         console.log(
           'gasEstimate' in bestCallOption ? { gasLimit: calculateGasMargin(bestCallOption.gasEstimate) } : {}
         )

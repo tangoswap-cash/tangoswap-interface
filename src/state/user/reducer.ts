@@ -138,8 +138,6 @@ export default createReducer(initialState, (builder) =>
       state.timestamp = currentTimestamp()
     })
     // .addCase(updateUserFeePercent, (state, action) => {
-    //   console.log("************************************* createReducer updateUserFeePercent *************************************");
-
     //   state.userFeePercent = action.payload.userFeePercent
     //   state.timestamp = currentTimestamp()
     // })

@@ -423,15 +423,12 @@ export function useUserSlippageToleranceWithDefault(defaultSlippageTolerance: Pe
     return state.user.userFeePercent
   })
 
-  // console.log("userFeePercent: ", userFeePercent);
-
   if ( ! userFeePercent) {
     userFeePercent = 5;
   }
 
   return useMemo(
     () => {
-      // console.log("userFeePercent: ", userFeePercent);
       return userFeePercent === 'auto' ? 'auto' : new Percent(userFeePercent, 10_000)
     },
     [userFeePercent]

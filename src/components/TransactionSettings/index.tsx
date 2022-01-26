@@ -25,9 +25,6 @@ export interface TransactionSettingsProps {
 }
 
 export default function TransactionSettings({ placeholderSlippage }: TransactionSettingsProps) {
-
-  console.log("**************** TransactionSettings ********************");
-
   const { i18n } = useLingui()
 
   const inputRef = useRef<HTMLInputElement>()
