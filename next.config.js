@@ -44,7 +44,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/swap',
+        destination: '/smart-swap',
         permanent: true,
       },
 
