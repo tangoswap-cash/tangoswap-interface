@@ -10,7 +10,7 @@ interface RoutingCurrencyBoxProps {
 
 const swapCurrencies = { 
   BCH: WBCH[ChainId.SMARTBCH], 
-  FLEXUSD: FLEXUSD
+  flexUSD: FLEXUSD
 }
 
 
