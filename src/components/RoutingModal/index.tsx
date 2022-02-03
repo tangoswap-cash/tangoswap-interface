@@ -6,6 +6,8 @@ import RoutingCurrencyBox from "../RoutingCurrencyBox";
 import { Currency } from "@tangoswapcash/sdk";
 import { groupBy } from "lodash";
 import { PARTS } from "../../hooks/useSmartTrades";
+import { useLingui } from '@lingui/react'
+import { t } from '@lingui/macro'
 
 const getDistribution = (distribution: string[], parts: number = PARTS) => {
   const swapOptions = [
@@ -50,10 +52,12 @@ interface RoutingModalProps {
 
 const RoutingModal: FC<RoutingModalProps> = ({ isOpen, setIsOpen, inputCurrency, outputCurrency, distribution }) => {
   const routingDistribution = groupBy(getDistribution(distribution), "currency");
+  const { i18n } = useLingui()
 
   return (
     <Modal isOpen={isOpen} onDismiss={() => setIsOpen(false)} maxWidth={700}>
-      <ModalHeader onClose={() => setIsOpen(false)} title="Routing" />
+      <ModalHeader onClose={() => setIsOpen(false)} title={i18n._(t`Routing`)} />
+
       <div className="max-w-full overflow-x-auto">
         <div className="flex justify-between items-center w-[650px] md:w-full">
           <div className="input-currency">
