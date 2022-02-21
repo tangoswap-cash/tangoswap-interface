@@ -2,7 +2,7 @@ import { FC } from "react";
 import Modal from '../../components/Modal'
 import ModalHeader from '../../components/ModalHeader'
 import CurrencyLogo from "../../components/CurrencyLogo";
-import RoutingCurrencyBox from "../RoutingCurrencyBox";
+import RoutingCurrencyBox from "../../components/RoutingCurrencyBox";
 import { Currency } from "@tangoswapcash/sdk";
 import { groupBy } from "lodash";
 import { PARTS } from "../../hooks/useSmartTrades";
