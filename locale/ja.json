@@ -218,6 +218,7 @@
   "Rewards": "報酬",
   "Roll it back - this feature is not yet supported on {0}.": "ロールバック - {0}ではこの機能は未対応です。",
   "Route": "ルート",
+  "Routing": "",
   "Routing through these tokens resulted in the best price for your trade.": "これらのトークンからのルーティングにより、取引に最適な価格が得られました。",
   "SLP": "SLP",
   "Search by name, symbol, address": "",
