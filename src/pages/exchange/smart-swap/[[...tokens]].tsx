@@ -146,9 +146,6 @@ export default function Swap() {
   const { address: recipientAddress } = useENSAddress(recipient)
 
   const trade = showWrap ? undefined : smartTrade
-  // console.log("***** trade(0): ", trade)
-  // console.log("***** smartTrade(0): ", smartTrade)
-  // console.log("***** showWrap(0): ", showWrap)
 
   const parsedAmounts = useMemo(
     () =>
@@ -218,8 +215,6 @@ export default function Swap() {
       : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
-  // console.log("***** trade(1): ", trade)
-
   // check whether the user has approved the aggregator on the input token
   const [approvalState, approveCallback] = useApproveCallbackFromTradeSmart(trade, allowedSlippage, feePercent, doArcher)
 
@@ -270,9 +265,6 @@ export default function Swap() {
     signatureData,
     // doArcher ? ttl : undefined
   )
-
-  // console.log("***** swapCallbackError: ", swapCallbackError)
-  // console.log("***** !swapCallbackError: ", !swapCallbackError)
 
   const [singleHopOnly] = useUserSingleHopOnly()
 

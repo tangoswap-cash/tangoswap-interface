@@ -51,6 +51,16 @@ const Menu = ({ positionsLength }) => {
           {i18n._(t`Past Farms`)}
         </a>
       </NavLink>
+      <NavLink
+          exact
+          href={`/farm?filter=2x`}
+          activeClassName="bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
+        >
+          <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
+            2x Reward Farms
+          </a>
+      </NavLink>
+
 
       {/*chainId === ChainId.MAINNET && (
         <>
@@ -75,17 +85,6 @@ const Menu = ({ positionsLength }) => {
         </>
       )*/}
 
-      {/*(chainId === ChainId.MAINNET || chainId === ChainId.MATIC) && (
-        <NavLink
-          exact
-          href={`/farm?filter=2x`}
-          activeClassName="bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
-        >
-          <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
-            2x Reward Farms
-          </a>
-        </NavLink>
-      )*/}
       <div className="md:hidden w-full h-0 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20" />
     </div>
   )
