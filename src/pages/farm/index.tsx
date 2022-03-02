@@ -292,6 +292,17 @@ export default function Farm(): JSX.Element {
         rewardPerSecond: "1000000000000000000"
       },
     },
+    [ChainId.SMARTBCH_AMBER]: {
+      "0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50": {
+        farmId: 0,
+        allocPoint: 1249937,
+        token0: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0xbA85D6bB454315A0fb65b205Fa48DBAff82A4019",
+        rewardToken: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
+        rewardPerSecond: "1000000000000000000"
+      },
+    }
   };
 
   const kashiPairs = [] // unused
