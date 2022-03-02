@@ -12,7 +12,7 @@ import {
 } from '../../services/graph'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, WNATIVE, Token, WBCH, MASTERCHEF_ADDRESS } from '@tangoswapcash/sdk'
+import { ChainId, WNATIVE, Token, WBCH, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS } from '@tangoswapcash/sdk'
 import { TANGO, FLEXUSD } from '../../config/tokens'
 import Container from '../../components/Container'
 import FarmList from '../../features/onsen/FarmList'
@@ -284,12 +284,21 @@ export default function Farm(): JSX.Element {
     [ChainId.SMARTBCH]: {
       "0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50": {
         farmId: 0,
-        allocPoint: 1249937,
+        allocPoint: 1249938,
         token0: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
         token1: WBCH[ChainId.SMARTBCH],
         rewarderId: "0xbA85D6bB454315A0fb65b205Fa48DBAff82A4019",
         rewardToken: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
         rewardPerSecond: "1000000000000000000"
+      },
+      "0xF463db65674426A58E9C3fE557FaaE338026ef39": {
+        farmId: 1,
+        allocPoint: 1249937,
+        token0: new Token(ChainId.SMARTBCH, '0x675E1d6FcE8C7cC091aED06A68D079489450338a', 18, 'ARG', 'Bitcoin Cash Argentina'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0x3f28b9BE239038568D67f076a0ff9AEdEa5668d8",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x675E1d6FcE8C7cC091aED06A68D079489450338a', 18, 'ARG', 'Bitcoin Cash Argentina'),
+        rewardPerSecond: "2342000000000000000000"
       },
     },
     [ChainId.SMARTBCH_AMBER]: {
