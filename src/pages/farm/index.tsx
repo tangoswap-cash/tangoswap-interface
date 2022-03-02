@@ -98,13 +98,13 @@ export default function Farm(): JSX.Element {
       },
       "0xF463db65674426A58E9C3fE557FaaE338026ef39": {
         farmId: 8,
-        allocPoint: 4999999,
+        allocPoint: 3750061,
         token0: new Token(ChainId.SMARTBCH, '0x675E1d6FcE8C7cC091aED06A68D079489450338a', 18, 'ARG', 'Bitcoin Cash Argentina'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50": {
         farmId: 9,
-        allocPoint: 4999999,
+        allocPoint: 3750062,
         token0: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
         token1: WBCH[ChainId.SMARTBCH],
       },
