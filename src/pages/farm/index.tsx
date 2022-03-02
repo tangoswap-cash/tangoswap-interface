@@ -393,14 +393,14 @@ export default function Farm(): JSX.Element {
       },
     })
 
-    const pool = usePool(pairAddress);
-    const derivedETH = getTokenPriceInBch(pool, chainId, tangoPriceBCH, bchPriceUSD);
+    // const pool = usePool(pairAddress);
+    // const derivedETH = getTokenPriceInBch(pool, chainId, tangoPriceBCH, bchPriceUSD);
 
     const f = {
       pair: pairAddress,
       symbol: `${hardcodedPairs2x[chainId][pairAddress].token0.symbol}-${hardcodedPairs2x[chainId][pairAddress].token1.symbol}`,
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      pool: pool,
+      pool: usePool(pairAddress),
       allocPoint: pair.allocPoint,
       balance: "1000000000000000000",
       chef: 1,
@@ -408,9 +408,9 @@ export default function Farm(): JSX.Element {
       pendingSushi: undefined,
       pending: 0,
       owner: {
-        id: MASTERCHEF_ADDRESS[chainId],
+        id: MASTERCHEF_V2_ADDRESS[chainId],
         sushiPerBlock: "10000000000000000000",
-        totalAllocPoint: "999949984"
+        totalAllocPoint: "999949984", // "999949984"
 
       },
 
@@ -425,7 +425,8 @@ export default function Farm(): JSX.Element {
         // derivedETH: "0.008895413447546274340688182514580205"
         // derivedETH: "0.0000014467"
         // derivedETH: "0"
-        derivedETH: derivedETH
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        derivedETH: getTokenPriceInBch(usePool(pairAddress), chainId, tangoPriceBCH, bchPriceUSD),
       },
 
       userCount: 1,
