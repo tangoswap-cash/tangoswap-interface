@@ -71,6 +71,7 @@ export function useMasterChefV2Farms(
 export function useFarms(variables = undefined, chainId = undefined, swrConfig: SWRConfiguration = undefined) {
   const masterChefV1Farms = useMasterChefV1Farms(variables, chainId)
   const masterChefV2Farms = useMasterChefV2Farms(variables, chainId)
+
   // useEffect(() => {
   //   console.log('debug', { masterChefV1Farms, masterChefV2Farms})
   // }, [masterChefV1Farms, masterChefV2Farms])
