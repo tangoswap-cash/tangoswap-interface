@@ -12,12 +12,14 @@ import { t } from '@lingui/macro'
 import { useCurrency } from '../../hooks/Tokens'
 import { usePendingSushi, useUserInfo } from './hooks'
 import { isMobile } from 'react-device-detect'
+import usePendingReward from './usePendingReward'
 
 const FarmListItem = ({ farm, ...rest }) => {
   const token0 = useCurrency(farm.pair.token0.id)
   const token1 = useCurrency(farm.pair.token1.id)
 
   const pendingSushi = usePendingSushi(farm)
+  const rewardAmount = usePendingReward(farm)
 
   const { i18n } = useLingui()
 
@@ -76,7 +78,7 @@ const FarmListItem = ({ farm, ...rest }) => {
               {pendingSushi && pendingSushi.greaterThan(ZERO) ? (
                 <div className="flex flex-col items-center justify-center md:flex-row space-x-4 font-bold md:flex">
                   <div className="hidden md:flex items-center space-x-2">
-                    <div key="0" className="flex items-center">
+                    {/* <div key="0" className="flex items-center">
                       <Image
                         src="https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png"
                         width="30px"
@@ -85,14 +87,45 @@ const FarmListItem = ({ farm, ...rest }) => {
                         layout="fixed"
                         alt="TANGO"
                       />
-                    </div>
+                    </div> */}
+
+                    {farm?.rewards?.map((reward, i) => (
+                      <div key={i} className="flex items-center">
+                        <Image
+                          src={reward.icon}
+                          width="30px"
+                          height="30px"
+                          className="rounded-md"
+                          layout="fixed"
+                          alt={reward.token}
+                        />
+                      </div>
+                    ))}
+
                   </div>
-                  <div className="flex flex-col space-y-1">
+
+                  {/* <div className="flex flex-col space-y-1">
                     <div key="0" className="text-xs md:text-sm">
                       {formatNumber(pendingSushi.toFixed(18))} TANGO
                     </div>
+                  </div> */}
+
+                  {/* <div className="flex flex-col space-y-1">
+                    {farm?.rewards?.map((reward, i) => (
+                      <div key={i} className="text-xs md:text-sm whitespace-nowrap">
+                        {formatNumber(reward.rewardPerDay)} {reward.token} / {i18n._(t`DAY`)}
+                      </div>
+                    ))}
+                  </div> */}
+
+                  <div className="flex flex-col space-y-1">
+                    {farm?.rewards?.map((reward, i) => (
+                      <div key={i} className="text-xs md:text-sm whitespace-nowrap">
+                        {i == 0 ? formatNumber(pendingSushi.toFixed(18)) : formatNumber(rewardAmount)} {reward.token}
+                      </div>
+                    ))}
                   </div>
-              </div>
+                </div>
               ) : (
                 <div className="flex-row items-center justify-center flex pl-3 font-bold text-sm">
                   {i18n._(t`Stake LP to Farm`)}
@@ -109,3 +142,5 @@ const FarmListItem = ({ farm, ...rest }) => {
 }
 
 export default FarmListItem
+
+// farm.rewards.length > 1 ? `& ${formatNumber(reward)} ${farm.rewards[1].token}` : ''

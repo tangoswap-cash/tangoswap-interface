@@ -53,6 +53,8 @@ export const getMasterChefV1PairAddreses = async () => {
 export const getMasterChefV2Farms = async (variables = undefined) => {
   const { pools } = await masterChefV2(poolsV2Query, undefined, variables)
 
+  console.log("getMasterChefV2Farms pools: ", pools);
+
   const tokens = await getTokenSubset(ChainId.SMARTBCH, {
     tokenAddresses: Array.from(pools.map((pool) => pool.rewarder.rewardToken)),
   })
