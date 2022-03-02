@@ -1,6 +1,6 @@
 import React, { useState, FC } from 'react'
 import Typography from '../../../components/Typography'
-import RoutingModal from '../../../components/RoutingModal'
+import RoutingModal from '../../../modals/RoutingModal'
 import { classNames } from '../../../functions'
 import { Currency } from '@tangoswapcash/sdk'
 

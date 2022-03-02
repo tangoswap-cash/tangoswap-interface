@@ -50,11 +50,13 @@ import MinerTip from '../../../features/exchange-v1/swap/MinerTip'
 import ProgressSteps from '../../../components/ProgressSteps'
 import SwapHeader from '../../../features/trade/Header'
 import TokenWarningModal from '../../../modals/TokenWarningModal'
+import SmartSwapInfo from '../../../modals/SmartSwapInfo'
 import { default as TradePrice, GetRateText } from '../../../features/exchange-v1/swap/TradePrice'
 import SmartSwapRouting from "../../../features/exchange-v1/swap/SmartSwapRouting"
 import Typography from '../../../components/Typography'
 import UnsupportedCurrencyFooter from '../../../features/exchange-v1/swap/UnsupportedCurrencyFooter'
 import Web3Connect from '../../../components/Web3Connect'
+import BurnedTangoCounter from '../../../components/BurnedTangoCounter'
 import { classNames } from '../../../functions'
 import { computeFiatValuePriceImpact } from '../../../functions/trade'
 import confirmPriceImpactWithoutFee from '../../../features/exchange-v1/swap/confirmPriceImpactWithoutFee'
@@ -425,6 +427,8 @@ export default function Swap() {
       }
   }
 
+  const [swapInfoOpen, setSwapInfoOpen] = useState(false)
+
   return (
     <Container id="swap-page" className="py-4 md:py-8 lg:py-12">
       <Head>
@@ -557,6 +561,10 @@ export default function Swap() {
                   <SmartSwapRouting outputCurrency={currencies[Field.OUTPUT]} inputCurrency={currencies[Field.INPUT]} distribution={trade?.distribution}/>
                 </div>
               )}
+            </div>
+            <div className='ml-1 mt-1'>
+              <button className='text-sm hover:text-high-emphesis' onClick={() => setSwapInfoOpen(true)}>What is SmartSwap?</button>
+              <SmartSwapInfo isOpen={swapInfoOpen} setIsOpen={setSwapInfoOpen} />
             </div>
           </div>
 
@@ -701,26 +709,16 @@ export default function Swap() {
         </div>
       </DoubleGlowShadow>
 
-      <div className="w-full border-1 border-pink py-3 mt-6 text-center border border-pink rounded">
-        <h2 className="font-bold text-2xl">Just Swap at the best price</h2>
-        <p className="font-bold w-10/12 mx-auto mt-2">
-          SmartSwap sources liquidity from all DEXes and is capable of splitting a single trade across multiple DEXes to ensure the best price.
-        </p>
-        <p></p>
-      </div>
-
-      {/* <Image src="/smartswap.png" alt="SmartSwap" width="100%" height="73%" layout="responsive" /> */}
-
-      <div className="w-full border-0 border-pink py-3 mt-6 text-center border border-pink rounded">
-        <p className="font-bold w-10/12 mx-auto mt-2">powered by:</p>
-        <div className="relative hidden h-64 lg:block">
-          <Image layout="fill" objectFit="contain" objectPosition="bottom" src="/smart-swap-neon-white.png" alt="" />
+      <div className="text-center flex items-center absolute bottom-20 lg:bottom-2 right-2">
+        <p className="font-bold mt-2 mr-3">Powered by:</p>
+        <div className="relative h-24 w-24">
+          <Image layout="fill" objectFit="contain" objectPosition="bottom" src="/smart-swap-neon-white.png" alt="Smart Swap" />
         </div>
       </div>
 
-
-
-
+      <div className='mt-2 lg:mt-6'>
+        <BurnedTangoCounter />
+      </div>
     </Container>
   )
 }
