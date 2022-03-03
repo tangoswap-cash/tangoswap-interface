@@ -57,6 +57,9 @@ const FarmListItem = ({ farm }) => {
       [ChainId.SMARTBCH]: MASTERCHEF_ADDRESS[ChainId.SMARTBCH],
       [ChainId.SMARTBCH_AMBER]: MASTERCHEF_ADDRESS[ChainId.SMARTBCH_AMBER],
     },
+    [Chef.MASTERCHEF_V2]: {
+      [ChainId.SMARTBCH]: MASTERCHEF_V2_ADDRESS[ChainId.SMARTBCH]
+    },
   }
 
   const typedDepositValue = tryParseAmount(depositValue, liquidityToken)

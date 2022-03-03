@@ -12,7 +12,7 @@ import {
 } from '../../services/graph'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, WNATIVE, Token, WBCH, MASTERCHEF_ADDRESS } from '@tangoswapcash/sdk'
+import { ChainId, WNATIVE, Token, WBCH, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS } from '@tangoswapcash/sdk'
 import { TANGO, FLEXUSD } from '../../config/tokens'
 import Container from '../../components/Container'
 import FarmList from '../../features/onsen/FarmList'
@@ -30,6 +30,41 @@ import { usePositions, usePendingSushi } from '../../features/onsen/hooks'
 import { useRouter } from 'next/router'
 import { updateUserFarmFilter } from '../../state/user/actions'
 import { getFarmFilter, useUpdateFarmFilter } from '../../state/user/hooks'
+
+function getTokenPriceInBch(pool, chainId, tangoPriceBCH, bchPriceUSD) {
+  let derivedETH = 0;
+  if (pool.token0 === TANGO[chainId].address) {
+    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
+    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
+    derivedETH = (reserve0 / reserve1) / tangoPriceBCH;
+  }
+  else if (pool.token1 === TANGO[chainId].address) {
+    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
+    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
+    derivedETH = (reserve0 / reserve1) / tangoPriceBCH;
+  }
+  else if (pool.token0 === FLEXUSD.address) {
+    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
+    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
+    derivedETH = (reserve0 / reserve1) * bchPriceUSD;
+  }
+  else if (pool.token1 === FLEXUSD.address) {
+    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
+    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
+    derivedETH = (reserve0 / reserve1) * bchPriceUSD;
+  }
+  else if (pool.token0 === WBCH[chainId].address) {
+    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
+    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
+    derivedETH = reserve0 / reserve1;
+  }
+  else if (pool.token1 === WBCH[chainId].address) {
+    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
+    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
+    derivedETH = reserve0 / reserve1;
+  }
+  return derivedETH;
+}
 
 export default function Farm(): JSX.Element {
   const { chainId } = useActiveWeb3React()
@@ -98,13 +133,13 @@ export default function Farm(): JSX.Element {
       },
       "0xF463db65674426A58E9C3fE557FaaE338026ef39": {
         farmId: 8,
-        allocPoint: 4999999,
+        allocPoint: 3750061,
         token0: new Token(ChainId.SMARTBCH, '0x675E1d6FcE8C7cC091aED06A68D079489450338a', 18, 'ARG', 'Bitcoin Cash Argentina'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50": {
         farmId: 9,
-        allocPoint: 4999999,
+        allocPoint: 3750062,
         token0: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -245,8 +280,43 @@ export default function Farm(): JSX.Element {
     }
   };
 
+  const hardcodedPairs2x = {
+    [ChainId.SMARTBCH]: {
+      "0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50": {
+        farmId: 0,
+        allocPoint: 1249938,
+        token0: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0xbA85D6bB454315A0fb65b205Fa48DBAff82A4019",
+        rewardToken: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
+        rewardPerSecond: "1000000000000000000"
+      },
+      "0xF463db65674426A58E9C3fE557FaaE338026ef39": {
+        farmId: 1,
+        allocPoint: 1249937,
+        token0: new Token(ChainId.SMARTBCH, '0x675E1d6FcE8C7cC091aED06A68D079489450338a', 18, 'ARG', 'Bitcoin Cash Argentina'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0x3f28b9BE239038568D67f076a0ff9AEdEa5668d8",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x675E1d6FcE8C7cC091aED06A68D079489450338a', 18, 'ARG', 'Bitcoin Cash Argentina'),
+        rewardPerSecond: "2342000000000000000000"
+      },
+    },
+    [ChainId.SMARTBCH_AMBER]: {
+      "0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50": {
+        farmId: 0,
+        allocPoint: 1249937,
+        token0: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0xbA85D6bB454315A0fb65b205Fa48DBAff82A4019",
+        rewardToken: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
+        rewardPerSecond: "1000000000000000000"
+      },
+    }
+  };
+
   const kashiPairs = [] // unused
   const swapPairs = []
+  const farms2 = useFarms();
   let farms = []
 
   for (const [pairAddress, pair] of Object.entries(hardcodedPairs[chainId])) {
@@ -296,17 +366,87 @@ export default function Farm(): JSX.Element {
   }
 
   // console.log(farms);
-
   const flexUSDTangoPool = farms[1].pool;
   const bchFlexUSDPool = farms[3].pool;
+  const bchTangoPool = farms[2].pool;
   let bchPriceUSD = 0;
   let tangoPriceUSD = 0;
+  let tangoPriceBCH = 0;
   if (bchFlexUSDPool.reserves) {
     bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
   }
   if (flexUSDTangoPool.reserves) {
     tangoPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
   }
+  if (bchTangoPool.reserves) {
+    tangoPriceBCH = Number.parseFloat(bchTangoPool.reserves[0].toFixed()) / Number.parseFloat(bchTangoPool.reserves[1].toFixed())
+  }
+
+  for (const [pairAddress, pair] of Object.entries(hardcodedPairs2x[chainId])) {
+    swapPairs.push({
+      id: pairAddress,
+      reserveUSD: "100000",
+      totalSupply: "1000",
+      timestamp: "1599830986",
+      token0: {
+        id: pair.token0.address,
+        name: pair.token0.name,
+        symbol: pair.token0.symbol,
+        decimals: pair.token0.decimals
+      },
+      token1: {
+        id: pair.token1.address,
+        name: pair.token1.name,
+        symbol: pair.token1.symbol,
+        decimals: pair.token1.decimals
+      },
+    })
+
+    // const pool = usePool(pairAddress);
+    // const derivedETH = getTokenPriceInBch(pool, chainId, tangoPriceBCH, bchPriceUSD);
+
+    const f = {
+      pair: pairAddress,
+      symbol: `${hardcodedPairs2x[chainId][pairAddress].token0.symbol}-${hardcodedPairs2x[chainId][pairAddress].token1.symbol}`,
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      pool: usePool(pairAddress),
+      allocPoint: pair.allocPoint,
+      balance: "1000000000000000000",
+      chef: 1,
+      id: pair.farmId,
+      pendingSushi: undefined,
+      pending: 0,
+      owner: {
+        id: MASTERCHEF_V2_ADDRESS[chainId],
+        sushiPerBlock: "10000000000000000000",
+        totalAllocPoint: "999949984", // "999949984"
+
+      },
+
+      rewarder: {
+        id: pair.rewarderId,
+        rewardToken: pair.rewardToken.address,
+        rewardPerSecond: pair.rewardPerSecond
+      },
+
+      rewardToken: {
+        ...pair.rewardToken,
+        // derivedETH: "0.008895413447546274340688182514580205"
+        // derivedETH: "0.0000014467"
+        // derivedETH: "0"
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        derivedETH: getTokenPriceInBch(usePool(pairAddress), chainId, tangoPriceBCH, bchPriceUSD),
+      },
+
+      userCount: 1,
+    }
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    f.pendingSushi = usePendingSushi(f)
+    f.pending = Number.parseFloat(f.pendingSushi?.toFixed())
+
+    farms.push(f);
+  }
+
 
   const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
     MASTERCHEF_ADDRESS[chainId],
@@ -357,9 +497,7 @@ export default function Farm(): JSX.Element {
 
   // const averageBlockTime = useAverageBlockTime()
   const averageBlockTime = 6;
-
-  // const masterChefV1TotalAllocPoint = useMasterChefV1TotalAllocPoint()
-
+  const masterChefV1TotalAllocPoint = useMasterChefV1TotalAllocPoint()
   const masterChefV1SushiPerBlock = useMasterChefV1SushiPerBlock()
 
   const blocksPerDay = 86400 / Number(averageBlockTime)
@@ -400,9 +538,36 @@ export default function Farm(): JSX.Element {
         rewardPrice: +tangoPriceUSD,
       }
 
-      const defaultRewards = [defaultReward]
+      let rewards = [defaultReward]
 
-      return defaultRewards
+      if (pool.chef === Chef.MASTERCHEF_V2) {
+        // override for mcv2...
+        pool.owner.totalAllocPoint = masterChefV1TotalAllocPoint
+
+        const icon = `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/${getAddress(
+          pool.rewarder.rewardToken
+        )}/logo.png`
+
+        const decimals = 10 ** pool.rewardToken.decimals
+
+        if (pool.rewarder.rewardToken !== '0x0000000000000000000000000000000000000000') {
+          const rewardPerBlock = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime
+          const rewardPerDay = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime * blocksPerDay
+          const rewardPrice = pool.rewardToken.derivedETH * bchPriceUSD
+
+          const reward = {
+            token: pool.rewardToken.symbol,
+            icon: icon,
+            rewardPerBlock,
+            rewardPerDay,
+            rewardPrice,
+          }
+
+          rewards[1] = reward
+        }
+      }
+
+      return rewards
     }
 
     const rewards = getRewards()
@@ -414,9 +579,7 @@ export default function Farm(): JSX.Element {
     }, 0) / pool.tvl
 
     const roiPerDay = roiPerBlock * blocksPerDay
-
     const roiPerYear = roiPerDay * 365
-
     const position = positions.find((position) => position.id === pool.id && position.chef === pool.chef)
 
     return {
@@ -440,6 +603,11 @@ export default function Farm(): JSX.Element {
     // sushi: (farm) => farm.pair.type === PairType.SWAP && farm.allocPoint !== '0',
     // kashi: (farm) => farm.pair.type === PairType.KASHI && farm.allocPoint !== '0',
     // '2x': (farm) => (farm.chef === Chef.MASTERCHEF_V2) && farm.allocPoint !== '0',
+
+    '2x': (farm) =>
+      farm.chef === Chef.MASTERCHEF_V2 &&
+      farm.rewards.length > 1 &&
+      farm.allocPoint !== '0',
   }
 
   const data = farms
