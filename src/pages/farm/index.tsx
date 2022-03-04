@@ -311,7 +311,7 @@ export default function Farm(): JSX.Element {
       },
       "0xD513165b3bbC1Ca812Db7CBB60340DDf74903A1c": {
         farmId: 3,
-        allocPoint: 125000,
+        allocPoint: 499999,
         token0: new Token(ChainId.SMARTBCH, '0xF2d4D9c65C2d1080ac9e1895F6a32045741831Cd', 2, 'HONK', 'Honk'),
         token1: WBCH[ChainId.SMARTBCH],
         rewarderId: "0x3f43FF8eF6715Eb6E76452a9d719f54eFa5372b1",
