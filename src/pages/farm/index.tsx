@@ -471,11 +471,21 @@ export default function Farm(): JSX.Element {
     farms.map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token')),
   )
 
+  const [v2PairsBalances2x, fetchingV2PairBalances2x] = useTokenBalancesWithLoadingIndicator(
+    MASTERCHEF_V2_ADDRESS[chainId],
+    farms.map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token')),
+  )
+
   if (! fetchingV2PairBalances) {
     for (let i=0; i<farms.length; ++i) {
+
       if (v2PairsBalances.hasOwnProperty(farms[i].pair) && farms[i].pool.totalSupply) {
         const totalSupply = Number.parseFloat(farms[i].pool.totalSupply.toFixed());
-        const chefBalance = Number.parseFloat(v2PairsBalances[farms[i].pair].toFixed());
+        let chefBalance = Number.parseFloat(v2PairsBalances[farms[i].pair].toFixed());
+
+        if (v2PairsBalances2x.hasOwnProperty(farms[i].pair)) {
+          chefBalance += Number.parseFloat(v2PairsBalances2x[farms[i].pair].toFixed());
+        }
 
         let tvl = 0;
         if (farms[i].pool.token0 === TANGO[chainId].address) {
