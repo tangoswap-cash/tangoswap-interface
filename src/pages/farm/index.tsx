@@ -280,6 +280,8 @@ export default function Farm(): JSX.Element {
     }
   };
 
+  //TODO: BCH-HONK: 0x3743eC0673453E5009310C727Ba4eaF7b3a1cc04-0xF2d4D9c65C2d1080ac9e1895F6a32045741831Cd: 0xD513165b3bbC1Ca812Db7CBB60340DDf74903A1c
+
   const hardcodedPairs2x = {
     [ChainId.SMARTBCH]: {
       "0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50": {
@@ -299,6 +301,15 @@ export default function Farm(): JSX.Element {
         rewarderId: "0x3f28b9BE239038568D67f076a0ff9AEdEa5668d8",
         rewardToken: new Token(ChainId.SMARTBCH, '0x675E1d6FcE8C7cC091aED06A68D079489450338a', 18, 'ARG', 'Bitcoin Cash Argentina'),
         rewardPerSecond: "2342000000000000000000"
+      },
+      "0x0152E5F007D85aae58Eb7191Bd484f12F9c13052": {
+        farmId: 2,
+        allocPoint: 499999,
+        token0: new Token(ChainId.SMARTBCH, '0x49F9ECF126B6dDF51C731614755508A4674bA7eD', 18, 'RMZ', 'Xolos'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0xefEf4dC16316Ae8c7AF00489b0e5FA52be68D1B6",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x49F9ECF126B6dDF51C731614755508A4674bA7eD', 18, 'RMZ', 'Xolos'),
+        rewardPerSecond: "58330000000000"
       },
     },
     [ChainId.SMARTBCH_AMBER]: {
