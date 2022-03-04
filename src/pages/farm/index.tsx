@@ -12,7 +12,7 @@ import {
 } from '../../services/graph'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, WNATIVE, Token, WBCH, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS } from '@tangoswapcash/sdk'
+import { ChainId, WNATIVE, Token, CurrencyAmount, JSBI, WBCH, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS } from '@tangoswapcash/sdk'
 import { TANGO, FLEXUSD } from '../../config/tokens'
 import Container from '../../components/Container'
 import FarmList from '../../features/onsen/FarmList'
@@ -31,38 +31,44 @@ import { useRouter } from 'next/router'
 import { updateUserFarmFilter } from '../../state/user/actions'
 import { getFarmFilter, useUpdateFarmFilter } from '../../state/user/hooks'
 
-function getTokenPriceInBch(pool, chainId, tangoPriceBCH, bchPriceUSD) {
-  let derivedETH = 0;
-  if (pool.token0 === TANGO[chainId].address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = (reserve0 / reserve1) / tangoPriceBCH;
+function getTokensSorted(pool, pair) {
+  if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
+    return [pair.token0, pair.token1, pool.reserves[0], pool.reserves[1]];
   }
-  else if (pool.token1 === TANGO[chainId].address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = (reserve0 / reserve1) / tangoPriceBCH;
+
+  if (pool.token0 == pair.token1.address && pool.token1 == pair.token0.address) {
+    return [pair.token0, pair.token1, pool.reserves[1], pool.reserves[0]];
   }
-  else if (pool.token0 === FLEXUSD.address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = (reserve0 / reserve1) * bchPriceUSD;
+
+  return [undefined, undefined, undefined, undefined];
+}
+
+function getTokenPriceInBch(pool, pair, chainId, tangoPriceBCH, bchPriceUSD) {
+  let [token0, token1, reserve0, reserve1] = getTokensSorted(pool, pair);
+
+  if (! token0) return 0;
+
+  let factor = 0;
+  let tokenAmount0 = Number.parseFloat(CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(reserve0.toString())).toFixed());
+  let tokenAmount1 = Number.parseFloat(CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(reserve1.toString())).toFixed());
+
+  if (token0.address === TANGO[chainId].address) {
+    factor = 1.0 / tangoPriceBCH;
+  } else if (token1.address === TANGO[chainId].address) {
+    [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
+    factor = 1.0 / tangoPriceBCH;
+  } else if (token0.address === FLEXUSD.address) {
+    factor = bchPriceUSD;
+  } else if (token1.address === FLEXUSD.address) {
+    [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
+    factor = bchPriceUSD;
+  } else if (token0.address === WBCH[chainId].address) {
+    factor = 1;
+  } else if (token1.address === WBCH[chainId].address) {
+    [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
+    factor = 1;
   }
-  else if (pool.token1 === FLEXUSD.address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = (reserve0 / reserve1) * bchPriceUSD;
-  }
-  else if (pool.token0 === WBCH[chainId].address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = reserve0 / reserve1;
-  }
-  else if (pool.token1 === WBCH[chainId].address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = reserve0 / reserve1;
-  }
+  const derivedETH = (tokenAmount0 / tokenAmount1) * factor;
   return derivedETH;
 }
 
@@ -420,14 +426,13 @@ export default function Farm(): JSX.Element {
       },
     })
 
-    // const pool = usePool(pairAddress);
-    // const derivedETH = getTokenPriceInBch(pool, chainId, tangoPriceBCH, bchPriceUSD);
-
     const f = {
       pair: pairAddress,
       symbol: `${hardcodedPairs2x[chainId][pairAddress].token0.symbol}-${hardcodedPairs2x[chainId][pairAddress].token1.symbol}`,
+
       // eslint-disable-next-line react-hooks/rules-of-hooks
       pool: usePool(pairAddress),
+
       allocPoint: pair.allocPoint,
       balance: "1000000000000000000",
       chef: 1,
@@ -449,11 +454,8 @@ export default function Farm(): JSX.Element {
 
       rewardToken: {
         ...pair.rewardToken,
-        // derivedETH: "0.008895413447546274340688182514580205"
-        // derivedETH: "0.0000014467"
-        // derivedETH: "0"
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        derivedETH: getTokenPriceInBch(usePool(pairAddress), chainId, tangoPriceBCH, bchPriceUSD),
+        derivedETH: getTokenPriceInBch(usePool(pairAddress), pair, chainId, tangoPriceBCH, bchPriceUSD),
       },
 
       userCount: 1,
@@ -577,9 +579,19 @@ export default function Farm(): JSX.Element {
         )}/logo.png`
 
         const decimals = 10 ** pool.rewardToken.decimals
+        // console.log("pool.rewardToken.decimals:      ", pool.rewardToken.decimals);
+        // console.log("pool.rewardToken.derivedETH:    ", pool.rewardToken.derivedETH);
+        // console.log("pool.rewarder.rewardPerSecond:  ", pool.rewarder.rewardPerSecond);
+        // console.log("decimals:      ", decimals);
 
         if (pool.rewarder.rewardToken !== '0x0000000000000000000000000000000000000000') {
+
+          // console.log("pool.rewarder.rewardPerSecond / decimals:      ", pool.rewarder.rewardPerSecond / decimals);
+
           const rewardPerBlock = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime
+
+          // console.log("rewardPerBlock:      ", rewardPerBlock);
+
           const rewardPerDay = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime * blocksPerDay
           const rewardPrice = pool.rewardToken.derivedETH * bchPriceUSD
 
@@ -608,6 +620,12 @@ export default function Farm(): JSX.Element {
 
     const roiPerDay = roiPerBlock * blocksPerDay
     const roiPerYear = roiPerDay * 365
+
+    // console.log("rewards:      ", rewards);
+    // console.log("roiPerBlock:  ", roiPerBlock);
+    // console.log("roiPerDay:    ", roiPerDay);
+    // console.log("roiPerYear:   ", roiPerYear);
+
     const position = positions.find((position) => position.id === pool.id && position.chef === pool.chef)
 
     return {
