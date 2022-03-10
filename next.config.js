@@ -37,6 +37,7 @@ const nextConfig = {
   images: {
     domains: [
       'raw.githubusercontent.com',
+      'metadata.bch.domains',
     ],
   },
   reactStrictMode: true,
