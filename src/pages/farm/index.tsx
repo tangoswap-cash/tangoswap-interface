@@ -271,7 +271,7 @@ export default function Farm(): JSX.Element {
       },
       "0x864c0090D955D947D809CF315E17665Bf9e3b6aB": {
         farmId: 30,
-        allocPoint: 14999748,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
         token1: TANGO[ChainId.SMARTBCH],
       },
@@ -335,6 +335,42 @@ export default function Farm(): JSX.Element {
         rewarderId: "0x3f43FF8eF6715Eb6E76452a9d719f54eFa5372b1",
         rewardToken: new Token(ChainId.SMARTBCH, '0xF2d4D9c65C2d1080ac9e1895F6a32045741831Cd', 2, 'HONK', 'Honk'),
         rewardPerSecond: "2325"
+      },
+      "0x864c0090D955D947D809CF315E17665Bf9e3b6aB": {
+        farmId: 4,
+        allocPoint: 14999748,
+        token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
+        token1: TANGO[ChainId.SMARTBCH],
+        rewarderId: "0x3e9AFf4008F3D6E05697025acCb607021e36e1e6",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
+        rewardPerSecond: "005787037000000000"
+      },
+      "0x9E59AAc21DaB7C89d0BDA99335386868539Af9B8": {
+        farmId: 5,
+        allocPoint: 249999,
+        token0: new Token(ChainId.SMARTBCH, '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567', 2, 'CANDYMAN', 'CandyMAN'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0x15f6A589D1Efc7F625965FB69f25dD5eA3b1c668",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567', 2, 'CANDYMAN', 'CandyMAN'),
+        rewardPerSecond: "030000000000000000"
+      },
+      "0x365Ec450d670455b336b833Ca363d21b4de3B9E3": {
+        farmId: 6,
+        allocPoint: 249999,
+        token0: new Token(ChainId.SMARTBCH, '0x4F1480ba79F7477230ec3b2eCc868E8221925072', 18, 'KONRA', 'Konra'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0x2F3056526014992b757a9F81D7B084e60a0Eb187",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x4F1480ba79F7477230ec3b2eCc868E8221925072', 18, 'KONRA', 'Konra'),
+        rewardPerSecond: "000011580000000000"
+      },
+      "0x5109aABC359c5267B6d470f43414319dd8a3C123": {
+        farmId: 7,
+        allocPoint: 249999,
+        token0: new Token(ChainId.SMARTBCH, '0x0cb20466c0dd6454acf50ec26f3042ccc6362fa0', 18, 'NARATH', 'Narath'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0x1d42B726E32f41102BC265d8a1cD5a1751e8deD9",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x0cb20466c0dd6454acf50ec26f3042ccc6362fa0', 18, 'NARATH', 'Narath'),
+        rewardPerSecond: "925000000000000000000"
       },
     },
     [ChainId.SMARTBCH_AMBER]: {
