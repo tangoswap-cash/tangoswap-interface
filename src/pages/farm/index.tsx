@@ -12,7 +12,7 @@ import {
 } from '../../services/graph'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { ChainId, WNATIVE, Token, WBCH, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS } from '@tangoswapcash/sdk'
+import { ChainId, WNATIVE, Token, CurrencyAmount, JSBI, WBCH, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS } from '@tangoswapcash/sdk'
 import { TANGO, FLEXUSD } from '../../config/tokens'
 import Container from '../../components/Container'
 import FarmList from '../../features/onsen/FarmList'
@@ -31,38 +31,44 @@ import { useRouter } from 'next/router'
 import { updateUserFarmFilter } from '../../state/user/actions'
 import { getFarmFilter, useUpdateFarmFilter } from '../../state/user/hooks'
 
-function getTokenPriceInBch(pool, chainId, tangoPriceBCH, bchPriceUSD) {
-  let derivedETH = 0;
-  if (pool.token0 === TANGO[chainId].address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = (reserve0 / reserve1) / tangoPriceBCH;
+function getTokensSorted(pool, pair) {
+  if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
+    return [pair.token0, pair.token1, pool.reserves[0], pool.reserves[1]];
   }
-  else if (pool.token1 === TANGO[chainId].address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = (reserve0 / reserve1) / tangoPriceBCH;
+
+  if (pool.token0 == pair.token1.address && pool.token1 == pair.token0.address) {
+    return [pair.token0, pair.token1, pool.reserves[1], pool.reserves[0]];
   }
-  else if (pool.token0 === FLEXUSD.address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = (reserve0 / reserve1) * bchPriceUSD;
+
+  return [undefined, undefined, undefined, undefined];
+}
+
+function getTokenPriceInBch(pool, pair, chainId, tangoPriceBCH, bchPriceUSD) {
+  let [token0, token1, reserve0, reserve1] = getTokensSorted(pool, pair);
+
+  if (! token0) return 0;
+
+  let factor = 0;
+  let tokenAmount0 = Number.parseFloat(CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(reserve0.toString())).toFixed());
+  let tokenAmount1 = Number.parseFloat(CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(reserve1.toString())).toFixed());
+
+  if (token0.address === TANGO[chainId].address) {
+    factor = tangoPriceBCH;
+  } else if (token1.address === TANGO[chainId].address) {
+    [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
+    factor = tangoPriceBCH;
+  } else if (token0.address === FLEXUSD.address) {
+    factor = bchPriceUSD;
+  } else if (token1.address === FLEXUSD.address) {
+    [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
+    factor = bchPriceUSD;
+  } else if (token0.address === WBCH[chainId].address) {
+    factor = 1;
+  } else if (token1.address === WBCH[chainId].address) {
+    [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
+    factor = 1;
   }
-  else if (pool.token1 === FLEXUSD.address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = (reserve0 / reserve1) * bchPriceUSD;
-  }
-  else if (pool.token0 === WBCH[chainId].address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = reserve0 / reserve1;
-  }
-  else if (pool.token1 === WBCH[chainId].address) {
-    const reserve0 = Number.parseFloat(pool.reserves[0].toFixed());
-    const reserve1 = Number.parseFloat(pool.reserves[1].toFixed());
-    derivedETH = reserve0 / reserve1;
-  }
+  const derivedETH = (tokenAmount0 / tokenAmount1) * factor;
   return derivedETH;
 }
 
@@ -103,7 +109,7 @@ export default function Farm(): JSX.Element {
       },
       "0xA15F8102AB4723A4D1554363c0c8AFF471F16E21": {
         farmId: 3,
-        allocPoint: 190250010,
+        allocPoint: 170250512,
         token0: FLEXUSD,
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -133,19 +139,19 @@ export default function Farm(): JSX.Element {
       },
       "0xF463db65674426A58E9C3fE557FaaE338026ef39": {
         farmId: 8,
-        allocPoint: 3750061,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x675E1d6FcE8C7cC091aED06A68D079489450338a', 18, 'ARG', 'Bitcoin Cash Argentina'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50": {
         farmId: 9,
-        allocPoint: 3750062,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xf9185C281fE4C8af452244A65cE7317345352942": {
         farmId: 10,
-        allocPoint: 2499999,
+        allocPoint: 1250000,
         token0: new Token(ChainId.SMARTBCH, '0xe11829a7d5d8806bb36e118461a1012588fafd89', 18, 'SPICE', 'SPICE'),
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -157,7 +163,7 @@ export default function Farm(): JSX.Element {
       },
       "0x1946978E39E6105fEb2107D9c01197a962746bf5": {
         farmId: 12,
-        allocPoint: 2499999,
+        allocPoint: 499999,
         token0: new Token(ChainId.SMARTBCH, '0xff3ed63bf8bc9303ea0a7e1215ba2f82d569799e', 18, 'ORB', 'ORB'),
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -193,37 +199,37 @@ export default function Farm(): JSX.Element {
       },
       "0x9E59AAc21DaB7C89d0BDA99335386868539Af9B8": {
         farmId: 18,
-        allocPoint: 499999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567', 2, 'CANDYMAN', 'CandyMAN'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xD4625760E0B5D9a0f46cB95dDa9b660fd6Db610A": {
         farmId: 19,
-        allocPoint: 499999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x225FCa2A940cd5B18DFb168cD9B7f921C63d7B6E', 18, 'FIRE', 'Incinerate'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xC28f5F07B733862f021f2266B99F5214c68E95d0": {
         farmId: 20,
-        allocPoint: 499999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x7ebeadb95724a006afaf2f1f051b13f4ebebf711', 2, 'KITTEN', 'CashKitten'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0x1CC824B67e694fd5e0cC7D55120355B1AE4B9c50": {
         farmId: 21,
-        allocPoint: 499999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x9192940099fDB2338B928DE2cad9Cd1525fEa881', 18, 'BPAD', 'BCHPad'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xfe323f2898810E6C3c2c5A9E7dF78A116fFAD4fa": {
         farmId: 22,
-        allocPoint: 999999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0xffa2394b61d3de16538a2bbf3491297cc5a7c79a', 18, 'UATX', 'UatX Token'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0x365Ec450d670455b336b833Ca363d21b4de3B9E3": {
         farmId: 23,
-        allocPoint: 499999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x4F1480ba79F7477230ec3b2eCc868E8221925072', 18, 'KONRA', 'Konra'),
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -235,7 +241,7 @@ export default function Farm(): JSX.Element {
       },
       "0x0152E5F007D85aae58Eb7191Bd484f12F9c13052": {
         farmId: 25,
-        allocPoint: 499999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x49F9ECF126B6dDF51C731614755508A4674bA7eD', 18, 'RMZ', 'Xolos'),
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -259,14 +265,26 @@ export default function Farm(): JSX.Element {
       },
       "0x018005da1a5C886Fb48eB18Eda0849a26B99DA80": {
         farmId: 29,
-        allocPoint: 999999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x77d4b6e44a53bbda9a1d156b32bb53a2d099e53d', 18, '1BCH', '1BCH'),
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0x864c0090D955D947D809CF315E17665Bf9e3b6aB": {
         farmId: 30,
-        allocPoint: 9999998,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
+        token1: TANGO[ChainId.SMARTBCH],
+      },
+      "0x4509Ff66a56cB1b80a6184DB268AD9dFBB79DD53": {
+        farmId: 32,
+        allocPoint: 2499999,
+        token0: new Token(ChainId.SMARTBCH, '0xF05bD3d7709980f60CD5206BddFFA8553176dd29', 18, 'SIDX', 'SmartIndex'),
+        token1: WBCH[ChainId.SMARTBCH],
+      },
+      "0xE7845D6df693BFD1b0b50AB2d17ac06964559c6b": {
+        farmId: 33,
+        allocPoint: 4999750,
+        token0: new Token(ChainId.SMARTBCH, '0xe1e655be6f50344e6dd708c27bd8d66492d6ecaf', 18, 'LAWUSD', 'lawUSD'),
         token1: TANGO[ChainId.SMARTBCH],
       },
     },
@@ -299,6 +317,60 @@ export default function Farm(): JSX.Element {
         rewarderId: "0x3f28b9BE239038568D67f076a0ff9AEdEa5668d8",
         rewardToken: new Token(ChainId.SMARTBCH, '0x675E1d6FcE8C7cC091aED06A68D079489450338a', 18, 'ARG', 'Bitcoin Cash Argentina'),
         rewardPerSecond: "2342000000000000000000"
+      },
+      "0x0152E5F007D85aae58Eb7191Bd484f12F9c13052": {
+        farmId: 2,
+        allocPoint: 499999,
+        token0: new Token(ChainId.SMARTBCH, '0x49F9ECF126B6dDF51C731614755508A4674bA7eD', 18, 'RMZ', 'Xolos'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0xefEf4dC16316Ae8c7AF00489b0e5FA52be68D1B6",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x49F9ECF126B6dDF51C731614755508A4674bA7eD', 18, 'RMZ', 'Xolos'),
+        rewardPerSecond: "58330000000000"
+      },
+      "0xD513165b3bbC1Ca812Db7CBB60340DDf74903A1c": {
+        farmId: 3,
+        allocPoint: 499999,
+        token0: new Token(ChainId.SMARTBCH, '0xF2d4D9c65C2d1080ac9e1895F6a32045741831Cd', 2, 'HONK', 'Honk'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0x3f43FF8eF6715Eb6E76452a9d719f54eFa5372b1",
+        rewardToken: new Token(ChainId.SMARTBCH, '0xF2d4D9c65C2d1080ac9e1895F6a32045741831Cd', 2, 'HONK', 'Honk'),
+        rewardPerSecond: "2325"
+      },
+      "0x864c0090D955D947D809CF315E17665Bf9e3b6aB": {
+        farmId: 4,
+        allocPoint: 14999748,
+        token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
+        token1: TANGO[ChainId.SMARTBCH],
+        rewarderId: "0x3e9AFf4008F3D6E05697025acCb607021e36e1e6",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
+        rewardPerSecond: "005787037000000000"
+      },
+      "0x9E59AAc21DaB7C89d0BDA99335386868539Af9B8": {
+        farmId: 5,
+        allocPoint: 249999,
+        token0: new Token(ChainId.SMARTBCH, '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567', 2, 'CANDYMAN', 'CandyMAN'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0xDc7D5F633F5721fa3Ff2B73B9396F0eAcE58ec0F",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567', 2, 'CANDYMAN', 'CandyMAN'),
+        rewardPerSecond: "01"
+      },
+      "0x365Ec450d670455b336b833Ca363d21b4de3B9E3": {
+        farmId: 6,
+        allocPoint: 249999,
+        token0: new Token(ChainId.SMARTBCH, '0x4F1480ba79F7477230ec3b2eCc868E8221925072', 18, 'KONRA', 'Konra'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0x2F3056526014992b757a9F81D7B084e60a0Eb187",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x4F1480ba79F7477230ec3b2eCc868E8221925072', 18, 'KONRA', 'Konra'),
+        rewardPerSecond: "000011580000000000"
+      },
+      "0x5109aABC359c5267B6d470f43414319dd8a3C123": {
+        farmId: 7,
+        allocPoint: 249999,
+        token0: new Token(ChainId.SMARTBCH, '0x0cb20466c0dd6454acf50ec26f3042ccc6362fa0', 18, 'NARATH', 'Narath'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0x1d42B726E32f41102BC265d8a1cD5a1751e8deD9",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x0cb20466c0dd6454acf50ec26f3042ccc6362fa0', 18, 'NARATH', 'Narath'),
+        rewardPerSecond: "925000000000000000000"
       },
     },
     [ChainId.SMARTBCH_AMBER]: {
@@ -402,14 +474,13 @@ export default function Farm(): JSX.Element {
       },
     })
 
-    // const pool = usePool(pairAddress);
-    // const derivedETH = getTokenPriceInBch(pool, chainId, tangoPriceBCH, bchPriceUSD);
-
     const f = {
       pair: pairAddress,
       symbol: `${hardcodedPairs2x[chainId][pairAddress].token0.symbol}-${hardcodedPairs2x[chainId][pairAddress].token1.symbol}`,
+
       // eslint-disable-next-line react-hooks/rules-of-hooks
       pool: usePool(pairAddress),
+
       allocPoint: pair.allocPoint,
       balance: "1000000000000000000",
       chef: 1,
@@ -431,11 +502,8 @@ export default function Farm(): JSX.Element {
 
       rewardToken: {
         ...pair.rewardToken,
-        // derivedETH: "0.008895413447546274340688182514580205"
-        // derivedETH: "0.0000014467"
-        // derivedETH: "0"
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        derivedETH: getTokenPriceInBch(usePool(pairAddress), chainId, tangoPriceBCH, bchPriceUSD),
+        derivedETH: getTokenPriceInBch(usePool(pairAddress), pair, chainId, tangoPriceBCH, bchPriceUSD),
       },
 
       userCount: 1,
@@ -453,11 +521,21 @@ export default function Farm(): JSX.Element {
     farms.map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token')),
   )
 
+  const [v2PairsBalances2x, fetchingV2PairBalances2x] = useTokenBalancesWithLoadingIndicator(
+    MASTERCHEF_V2_ADDRESS[chainId],
+    farms.map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token')),
+  )
+
   if (! fetchingV2PairBalances) {
     for (let i=0; i<farms.length; ++i) {
+
       if (v2PairsBalances.hasOwnProperty(farms[i].pair) && farms[i].pool.totalSupply) {
         const totalSupply = Number.parseFloat(farms[i].pool.totalSupply.toFixed());
-        const chefBalance = Number.parseFloat(v2PairsBalances[farms[i].pair].toFixed());
+        let chefBalance = Number.parseFloat(v2PairsBalances[farms[i].pair].toFixed());
+
+        if (v2PairsBalances2x.hasOwnProperty(farms[i].pair)) {
+          chefBalance += Number.parseFloat(v2PairsBalances2x[farms[i].pair].toFixed());
+        }
 
         let tvl = 0;
         if (farms[i].pool.token0 === TANGO[chainId].address) {
@@ -549,11 +627,23 @@ export default function Farm(): JSX.Element {
         )}/logo.png`
 
         const decimals = 10 ** pool.rewardToken.decimals
+        // console.log("pool.rewardToken.decimals:      ", pool.rewardToken.decimals);
+        // console.log("pool.rewardToken.derivedETH:    ", pool.rewardToken.derivedETH);
+        // console.log("pool.rewarder.rewardPerSecond:  ", pool.rewarder.rewardPerSecond);
+        // console.log("decimals:      ", decimals);
 
         if (pool.rewarder.rewardToken !== '0x0000000000000000000000000000000000000000') {
+
+          // console.log("pool.rewarder.rewardPerSecond / decimals:      ", pool.rewarder.rewardPerSecond / decimals);
+
           const rewardPerBlock = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime
+
+          // console.log("rewardPerBlock:      ", rewardPerBlock);
+
           const rewardPerDay = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime * blocksPerDay
           const rewardPrice = pool.rewardToken.derivedETH * bchPriceUSD
+
+          // console.log("rewardPrice:      ", rewardPrice);
 
           const reward = {
             token: pool.rewardToken.symbol,
@@ -580,6 +670,12 @@ export default function Farm(): JSX.Element {
 
     const roiPerDay = roiPerBlock * blocksPerDay
     const roiPerYear = roiPerDay * 365
+
+    // console.log("rewards:      ", rewards);
+    // console.log("roiPerBlock:  ", roiPerBlock);
+    // console.log("roiPerDay:    ", roiPerDay);
+    // console.log("roiPerYear:   ", roiPerYear);
+
     const position = positions.find((position) => position.id === pool.id && position.chef === pool.chef)
 
     return {
