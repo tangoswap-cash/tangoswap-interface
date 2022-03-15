@@ -53,10 +53,10 @@ function getTokenPriceInBch(pool, pair, chainId, tangoPriceBCH, bchPriceUSD) {
   let tokenAmount1 = Number.parseFloat(CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(reserve1.toString())).toFixed());
 
   if (token0.address === TANGO[chainId].address) {
-    factor = 1.0 / tangoPriceBCH;
+    factor = tangoPriceBCH;
   } else if (token1.address === TANGO[chainId].address) {
     [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
-    factor = 1.0 / tangoPriceBCH;
+    factor = tangoPriceBCH;
   } else if (token0.address === FLEXUSD.address) {
     factor = bchPriceUSD;
   } else if (token1.address === FLEXUSD.address) {
@@ -642,6 +642,8 @@ export default function Farm(): JSX.Element {
 
           const rewardPerDay = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime * blocksPerDay
           const rewardPrice = pool.rewardToken.derivedETH * bchPriceUSD
+
+          // console.log("rewardPrice:      ", rewardPrice);
 
           const reward = {
             token: pool.rewardToken.symbol,
