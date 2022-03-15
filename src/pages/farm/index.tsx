@@ -350,9 +350,9 @@ export default function Farm(): JSX.Element {
         allocPoint: 249999,
         token0: new Token(ChainId.SMARTBCH, '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567', 2, 'CANDYMAN', 'CandyMAN'),
         token1: WBCH[ChainId.SMARTBCH],
-        rewarderId: "0x15f6A589D1Efc7F625965FB69f25dD5eA3b1c668",
+        rewarderId: "0xDc7D5F633F5721fa3Ff2B73B9396F0eAcE58ec0F",
         rewardToken: new Token(ChainId.SMARTBCH, '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567', 2, 'CANDYMAN', 'CandyMAN'),
-        rewardPerSecond: "03"
+        rewardPerSecond: "01"
       },
       "0x365Ec450d670455b336b833Ca363d21b4de3B9E3": {
         farmId: 6,
