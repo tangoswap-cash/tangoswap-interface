@@ -30,6 +30,8 @@ import { usePositions, usePendingSushi } from '../../features/onsen/hooks'
 import { useRouter } from 'next/router'
 import { updateUserFarmFilter } from '../../state/user/actions'
 import { getFarmFilter, useUpdateFarmFilter } from '../../state/user/hooks'
+import Button from '../../components/Button'
+import useMasterChef from '../../features/onsen/useMasterChef'
 
 function getTokensSorted(pool, pair) {
   if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
@@ -728,14 +730,22 @@ export default function Farm(): JSX.Element {
     options,
   })
 
+  const { harvestAll } = useMasterChef(farms[0].chef)
+
   return (
     <Container id="farm-page" className="lg:grid lg:grid-cols-4 h-full py-4 mx-auto md:py-8 lg:py-12 gap-9" maxWidth="7xl">
       <Head>
         <title>Farm | Tango</title>
         <meta key="description" name="description" content="Farm TANGO" />
       </Head>
-      <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>
+      <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>      
         <Menu positionsLength={positions.length} />
+        {positions.length > 0 && (
+          <Button onClick={() => harvestAll(positions.map(position => parseInt(position.id)))}>
+            Harvest all
+            {/* Harvest All (~ {formatNumberScale(allStaked, true, 2)}) */}
+          </Button>
+        )}
       </div>
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
         <Search

@@ -103,5 +103,36 @@ export default function useMasterChef(chef: Chef) {
     [account, chef, contract, sushi]
   )
 
-  return { deposit, withdraw, harvest }
+  const harvestAll = useCallback(
+    async (pidArr: number[]) => {
+      try {
+        let txArr
+
+        if (chef === Chef.MASTERCHEF) {
+          txArr = await contract?.batch(
+            pidArr.map(pid => contract?.deposit(pid, Zero, {gasPrice: getGasPrice()})), 
+            true
+          )
+        } else if (chef === Chef.MASTERCHEF_V2) { 
+            txArr = await contract?.batch(
+              pidArr.map(pid => contract?.batch(
+                [              
+                  contract?.interface?.encodeFunctionData('harvestFromMasterChef'),
+                  contract?.interface?.encodeFunctionData('harvest', [pid, account]),
+                ],
+              true)
+              ),
+            true
+          )
+        }
+        return txArr
+      } catch (e) {
+        console.error(e)
+        return e
+      }
+    },
+    [account, chef, contract]
+  )
+
+  return { deposit, withdraw, harvest, harvestAll }
 }
