@@ -740,12 +740,6 @@ export default function Farm(): JSX.Element {
       </Head>
       <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>      
         <Menu positionsLength={positions.length} />
-        {positions.length > 0 && (
-          <Button onClick={() => harvestAll(positions.map(position => parseInt(position.id)))}>
-            Harvest all
-            {/* Harvest All (~ {formatNumberScale(allStaked, true, 2)}) */}
-          </Button>
-        )}
       </div>
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
         <Search
