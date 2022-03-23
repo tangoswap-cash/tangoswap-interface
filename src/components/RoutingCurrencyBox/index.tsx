@@ -1,25 +1,25 @@
-import { FC } from "react"; 
+import { FC } from "react";
 import CurrencyLogo from "../../components/CurrencyLogo";
-import { FLEXUSD } from '../../config/tokens'
+import { FLEXUSD, TANGO } from '../../config/tokens'
 import { WBCH, ChainId, Currency } from '@tangoswapcash/sdk'
 
-interface RoutingCurrencyBoxProps { 
+interface RoutingCurrencyBoxProps {
   currencyGroup: [string, {percentage: number, exchange: string, currency: string}[]]
-  outputCurrency: Currency; 
+  outputCurrency: Currency;
 }
 
-const swapCurrencies = { 
-  BCH: WBCH[ChainId.SMARTBCH], 
-  flexUSD: FLEXUSD
+const swapCurrencies = {
+  BCH: WBCH[ChainId.SMARTBCH],
+  flexUSD: FLEXUSD,
+  TANGO: TANGO[ChainId.SMARTBCH],
 }
-
 
 const RoutingCurrencyBox: FC<RoutingCurrencyBoxProps> = ({ currencyGroup, outputCurrency }) => {
-  const boxPercentage = currencyGroup[1].reduce((accumulator , item) => accumulator + item.percentage, 0); 
+  const boxPercentage = currencyGroup[1].reduce((accumulator , item) => accumulator + item.percentage, 0);
 
   return (
     <div className="rounded border border-pink px-4 py-3 mb-2 routing-currency-box">
-      <span className="flex items-center mb-2">                  
+      <span className="flex items-center mb-2">
         <CurrencyLogo currency={currencyGroup[0] === "DIRECT_SWAP" ? outputCurrency : swapCurrencies[currencyGroup[0]]} size="24px"/>
         <h3 className="font-bold ml-1">{currencyGroup[0] === "DIRECT_SWAP" ? outputCurrency.name : currencyGroup[0]}</h3>
       </span>
@@ -31,25 +31,25 @@ const RoutingCurrencyBox: FC<RoutingCurrencyBoxProps> = ({ currencyGroup, output
 
       <style jsx>{`
         .routing-currency-box {
-          position: relative; 
+          position: relative;
         }
-        .routing-currency-box::before { 
+        .routing-currency-box::before {
           content: "${boxPercentage !== 100 ? boxPercentage + "%" : ""} >";
           position: absolute;
-          font-size: 18px; 
-          color: #BFBFBF; 
+          font-size: 18px;
+          color: #BFBFBF;
           top: 40%;
           bottom: 0;
-          left: -80px; 
+          left: -80px;
         }
-        .routing-currency-box::after { 
+        .routing-currency-box::after {
           content: ">";
           position: absolute;
-          font-size: 18px; 
-          color: #BFBFBF; 
+          font-size: 18px;
+          color: #BFBFBF;
           top: 40%;
           bottom: 0;
-          right: -80px; 
+          right: -80px;
         }
       `}</style>
     </div>
