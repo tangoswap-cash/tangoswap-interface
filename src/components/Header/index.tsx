@@ -45,14 +45,14 @@ function AppBar(): JSX.Element {
                   <div className="hidden sm:block sm:ml-4">
                     <div className="flex space-x-2">
                       {/* <Buy /> */}
-                      <NavLink href="/swap">
+                      {/* <NavLink href="/swap">
                         <a
                           id={`swap-nav-link`}
                           className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                         >
                           {i18n._(t`Swap`)}
                         </a>
-                      </NavLink>
+                      </NavLink> */}
                       <NavLink href="/smart-swap">
                         <a
                           id={`smart-swap-nav-link`}
@@ -232,14 +232,14 @@ function AppBar(): JSX.Element {
 
             <Popover.Panel className="sm:hidden">
               <div className="flex flex-col px-4 pt-2 pb-3 space-y-1">
-                <Link href={'/swap'}>
+                {/* <Link href={'/swap'}>
                   <a
                     id={`swap-nav-link`}
                     className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                   >
                     {i18n._(t`Swap`)}
                   </a>
-                </Link>
+                </Link> */}
 
                 <Link href={'/smart-swap'}>
                   <a
