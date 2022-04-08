@@ -13,6 +13,9 @@ import { useCurrency } from '../../hooks/Tokens'
 import { usePendingSushi, useUserInfo } from './hooks'
 import { isMobile } from 'react-device-detect'
 import usePendingReward from './usePendingReward'
+import { CalculatorIcon } from '@heroicons/react/solid'
+import { useState } from 'react'
+import ROICalculatorModal from '../../components/ROICalculatorModal'
 
 const FarmListItem = ({ farm, ...rest }) => {
   const token0 = useCurrency(farm.pair.token0.id)
@@ -22,6 +25,7 @@ const FarmListItem = ({ farm, ...rest }) => {
   const rewardAmount = usePendingReward(farm)
 
   const { i18n } = useLingui()
+  const [calculator, setCalculator] = useState(false)
 
   return (
     <Disclosure {...rest}>
@@ -69,11 +73,23 @@ const FarmListItem = ({ farm, ...rest }) => {
                   ))}
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-center">
-                <div className="font-bold text-righttext-high-emphesis">
-                  {formatPercent(farm?.roiPerYear * 100)}
+              <div className="flex flex-row items-center justify-center">
+                <div className="flex flex-col items-center justify-center">
+                  <div className="font-bold text-righttext-high-emphesis">{formatPercent(farm?.roiPerYear * 100)}</div>
+                  <div className="text-xs text-right md:text-base text-secondary">{i18n._(t`annualized`)}</div>
                 </div>
-                <div className="text-xs text-right md:text-base text-secondary">{i18n._(t`annualized`)}</div>
+                <Disclosure.Button>
+                  <div style={{ margin: '10px' }}>
+                    <CalculatorIcon
+                      width={20}
+                      height={20}
+                      onClick={() => {
+                        setCalculator(true)
+                        close()
+                      }}
+                    />
+                  </div>
+                </Disclosure.Button>
               </div>
               {pendingSushi && pendingSushi.greaterThan(ZERO) ? (
                 <div className="flex flex-col items-center justify-center md:flex-row space-x-4 font-bold md:flex">
@@ -101,7 +117,6 @@ const FarmListItem = ({ farm, ...rest }) => {
                         />
                       </div>
                     ))}
-
                   </div>
 
                   {/* <div className="flex flex-col space-y-1">
@@ -135,6 +150,13 @@ const FarmListItem = ({ farm, ...rest }) => {
           </Disclosure.Button>
 
           {open && <FarmListItemDetails farm={farm} />}
+          <ROICalculatorModal
+            isOpen={calculator}
+            setIsOpen={setCalculator}
+            currency0={token0}
+            currency1={token1}
+            farm={farm}
+          />
         </>
       )}
     </Disclosure>
