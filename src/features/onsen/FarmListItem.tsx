@@ -81,8 +81,8 @@ const FarmListItem = ({ farm, ...rest }) => {
                 <Disclosure.Button>
                   <div style={{ margin: '10px' }}>
                     <CalculatorIcon
-                      width={15}
-                      height={15}
+                      width={20}
+                      height={20}
                       onClick={() => {
                         setCalculator(true)
                         close()

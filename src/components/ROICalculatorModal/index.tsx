@@ -14,6 +14,9 @@ import { SwitchVerticalIcon, ChevronDownIcon } from '@heroicons/react/outline'
 import { PencilIcon } from '@heroicons/react/solid'
 import Button from '../Button'
 import { useState } from 'react'
+import CurrencyInput from '../../features/exchange-v1/limit-order/CurrencyInput'
+import Input from '../../components/Input'
+import Checkbox from '../Checkbox'
 
 // const getDistribution = (distribution: string[], parts: number = PARTS) => {
 //   const swapOptions = [
@@ -66,6 +69,21 @@ const ROICalculatorModal: FC<ROICalculatorProps> = ({ isOpen, setIsOpen, currenc
   const [stakeAmount, setStakeAmount] = useState('myBalance')
   const [stakeFor, setStakeFor] = useState('30D')
   const [compundingEvery, setCompoundingEvery] = useState('1D')
+  const [inputValue, setInputValue] = useState((0.0).toFixed(2))
+  const [outputValue, setOutputValue] = useState((0.0).toFixed(2))
+  const [checked, setChecked] = useState(false)
+
+  const onInputValue = (value) => {
+    setInputValue(value)
+    let calc = value * 2
+    setOutputValue(calc)
+  }
+
+  const switchValues = (value1, value2) => {
+    let valueCopy = value1
+    setInputValue(value2)
+    setOutputValue(valueCopy)
+  }
   return (
     <Modal isOpen={isOpen} onDismiss={() => setIsOpen(false)} maxWidth={450}>
       <ModalHeader onClose={() => setIsOpen(false)} title={i18n._(t`ROI Calculator`)} />
@@ -81,19 +99,34 @@ const ROICalculatorModal: FC<ROICalculatorProps> = ({ isOpen, setIsOpen, currenc
                     {currency1.symbol} Staked
                   </p>
                 </div>
-                <div className="rounded border border-pink px-4 py-3 mb-2 routing-currency-box flex flex-row items-center">
-                  <div className="mr-3">
+                <div className="rounded border border-pink px-4 py-3 mb-2 routing-currency-box flex flex-row items-center justify-end">
+                  <div>
+                    <div className="flex flex-row items-center justify-center">
+                      <Input.Numeric
+                        className="p-2 pr-4 border-none rounded bg-dark-900 w-14"
+                        value={inputValue}
+                        type="text"
+                        inputMode="decimal"
+                        pattern="^[0-9]+[.,]?[0-9]*$"
+                        align="right"
+                        onUserInput={onInputValue}
+                        placeholder="0.00"
+                      />
+                      <p className="font-bold">{currency0.symbol}</p>
+                    </div>
+                    <div className="flex flex-row items-center justify-end">
+                      <p className="font-bold pr-3">{outputValue}</p>
+                      <p className="font-bold">{currency1.symbol}</p>
+                    </div>
+                  </div>
+                  <div className="ml-5 mr-5 cursor-pointer">
                     <SwitchVerticalIcon
-                      width={15}
-                      height={15}
+                      width={20}
+                      height={20}
                       onClick={() => {
-                        console.log('test')
+                        switchValues(inputValue, outputValue)
                       }}
                     />
-                  </div>
-                  <div>
-                    <p className="font-bold mb-1">0.00 {currency0.symbol}</p>
-                    <p className="font-bold">0.00 {currency1.symbol}</p>
                   </div>
                 </div>
               </Typography>
@@ -104,7 +137,10 @@ const ROICalculatorModal: FC<ROICalculatorProps> = ({ isOpen, setIsOpen, currenc
                 color="blue"
                 size="xs"
                 className={stakeAmount === '100' ? 'border border-pink mr-2' : 'mr-2'}
-                onClick={() => setStakeAmount('100')}
+                onClick={() => {
+                  setStakeAmount('100')
+                  onInputValue(100)
+                }}
               >
                 <p>$100</p>
               </Button>
@@ -113,7 +149,10 @@ const ROICalculatorModal: FC<ROICalculatorProps> = ({ isOpen, setIsOpen, currenc
                 color="blue"
                 size="xs"
                 className={stakeAmount === '1000' ? 'border border-pink mr-2' : 'mr-2'}
-                onClick={() => setStakeAmount('1000')}
+                onClick={() => {
+                  setStakeAmount('1000')
+                  onInputValue(1000)
+                }}
               >
                 <p>$1000</p>
               </Button>
@@ -184,7 +223,7 @@ const ROICalculatorModal: FC<ROICalculatorProps> = ({ isOpen, setIsOpen, currenc
                 <Typography variant="sm" className="select-none">
                   <p className="font-bold">Compounding every</p>
                 </Typography>
-
+                <Checkbox color={'blue'} checked={checked} disabled={false} set={() => setChecked(!checked)} />
                 <div className="grid grid-cols-5 rounded-full bg-dark-800 bg-red bg-opacity-30 h-[35px] mb-4">
                   <Button
                     className={compundingEvery === '1D' ? classNameButton + ' bg-black' : classNameButton}
