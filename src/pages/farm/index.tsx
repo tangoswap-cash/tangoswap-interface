@@ -372,6 +372,15 @@ export default function Farm(): JSX.Element {
         rewardToken: new Token(ChainId.SMARTBCH, '0x0cb20466c0dd6454acf50ec26f3042ccc6362fa0', 18, 'NARATH', 'Narath'),
         rewardPerSecond: "925000000000000000000"
       },
+      "0x7B545548dabA183Fc779e656da09dF6bD2b94F88": {
+        farmId: 8,
+        allocPoint: 249999,
+        token0: new Token(ChainId.SMARTBCH, '0x4EA4A00E15B9E8FeE27eB6156a865525083e9F71', 18, 'Martin₿', 'Africa Unite'),
+        token1: WBCH[ChainId.SMARTBCH],
+        rewarderId: "0x6C54582E1F7E0602F526267BEB4b073E35eB46a4",
+        rewardToken: new Token(ChainId.SMARTBCH, '0x4EA4A00E15B9E8FeE27eB6156a865525083e9F71', 18, 'Martin₿', 'Africa Unite'),
+        rewardPerSecond: "803755000000000000000000"
+      },
     },
     [ChainId.SMARTBCH_AMBER]: {
       "0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50": {
