@@ -45,7 +45,12 @@ const getDistribution = (distribution: string[], parts: number = PARTS) => {
       {exchange: "LawSwap", currency: "BCH"},
       {exchange: "LawSwap", currency: "flexUSD"},
       {exchange: "LawSwap", currency: "TANGO"},
-  ];
+
+      {exchange: "KoingFu", currency: "DIRECT_SWAP"},
+      {exchange: "KoingFu", currency: "BCH"},
+      {exchange: "KoingFu", currency: "flexUSD"},
+      {exchange: "KoingFu", currency: "TANGO"},
+    ];
 
   const exchangesDistribution = [];
 
