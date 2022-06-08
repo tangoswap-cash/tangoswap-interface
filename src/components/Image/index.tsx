@@ -17,11 +17,11 @@ const cloudFlareLoader = ({ src, width, quality }) => {
 const shimmer = (w, h) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
-  <linearGradient id="g">
-    <stop stop-color="#333" offset="20%" />
-    <stop stop-color="#222" offset="50%" />
-    <stop stop-color="#333" offset="70%" />
-  </linearGradient>
+    <linearGradient id="g">
+      <stop stop-color="#333" offset="20%" />
+      <stop stop-color="#222" offset="50%" />
+      <stop stop-color="#333" offset="70%" />
+    </linearGradient>
   </defs>
   <rect width="${w}" height="${h}" fill="#333" />
   <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
@@ -40,14 +40,11 @@ const Image = ({
   ...rest
 }) => {
   const useBlur = parseInt(String(height), 10) >= 40 && parseInt(String(width), 10) >= 40
-  if (!loader) {
-    loader = typeof src === 'string' && src.includes('http') ? () => src : undefined
-  }
   return (
     <div style={{ width, height }} className="overflow-hidden rounded">
       {useBlur ? (
         <NextImage
-          loader={loader}
+          loader={() => src}
           src={src}
           width={width}
           height={height}
@@ -58,7 +55,7 @@ const Image = ({
         />
       ) : (
         <NextImage
-          loader={loader}
+          loader={() => src}
           src={src}
           width={width}
           height={height}
