@@ -47,9 +47,6 @@ const nextConfig = {
   images: {
     domains: [
       'raw.githubusercontent.com',
-      'sideshift.ai',
-      'assets.tangoswap.cash',
-      'metadata.bch.domains',
     ],
   },
   reactStrictMode: true,
@@ -86,14 +83,6 @@ const nextConfig = {
         destination: '/bar',
       },
       {
-        source: '/vote',
-        destination: '/governance',
-      },
-      {
-        source: '/vote/:proposalId',
-        destination: '/governance/proposal/:proposalId',
-      },
-      {
         source: '/add/:token*',
         destination: '/exchange/add/:token*',
       },
@@ -128,22 +117,6 @@ const nextConfig = {
       {
         source: '/find',
         destination: '/exchange/find',
-      },
-      {
-        source: '/lend',
-        destination: '/mistlend/lend',
-      },
-      {
-        source: '/lend/:pair',
-        destination: '/mistlend/lend/:pair',
-      },
-      {
-        source: '/borrow',
-        destination: '/mistlend/borrow',
-      },
-      {
-        source: '/borrow/:pair',
-        destination: '/mistlend/borrow/:pair',
       },
       {
         source: '/create',

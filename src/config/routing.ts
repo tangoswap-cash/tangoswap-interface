@@ -1,5 +1,5 @@
 import {
-    TANGO, XTANGO, FLEXUSD, LAWUSD, SBUSD, LAW, GOB
+    TANGO, FLEXUSD,
 } from '../config/tokens'
 // a list of tokens by chain
 import { ChainId, Currency, Token, WNATIVE } from '@tangoswapcash/sdk'
@@ -26,10 +26,6 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.SMARTBCH]: [
     ...WRAPPED_NATIVE_ONLY[ChainId.SMARTBCH],
     FLEXUSD[ChainId.SMARTBCH],
-    LAWUSD,
-    SBUSD,
-    LAW,
-    GOB,
     TANGO[ChainId.SMARTBCH]
   ],
   [ChainId.SMARTBCH_AMBER]: [...WRAPPED_NATIVE_ONLY[ChainId.SMARTBCH_AMBER]],
@@ -72,9 +68,6 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.SMARTBCH]: [
     ...WRAPPED_NATIVE_ONLY[ChainId.SMARTBCH],
     FLEXUSD[ChainId.SMARTBCH],
-    LAWUSD,
-    SBUSD,
-    LAW,
     TANGO[ChainId.SMARTBCH],
   ],
   [ChainId.SMARTBCH_AMBER]: [...WRAPPED_NATIVE_ONLY[ChainId.SMARTBCH_AMBER]],
