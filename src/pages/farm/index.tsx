@@ -17,7 +17,6 @@ import { TANGO, FLEXUSD } from '../../config/tokens'
 import Container from '../../components/Container'
 import FarmList from '../../features/onsen/FarmList'
 import Head from 'next/head'
-import Image from 'next/image'
 import Menu from '../../features/onsen/FarmMenu'
 import React, { useEffect } from 'react'
 import Search from '../../components/Search'
@@ -298,7 +297,7 @@ export default function Farm(): JSX.Element {
         allocPoint: 1000,
         token0: WBCH[ChainId.SMARTBCH_AMBER],
         token1: new Token(ChainId.SMARTBCH_AMBER, '0xC6F80cF669Ab9e4BE07B78032b4821ed5612A9ce', 18, 'sc', 'testcoin2'),
-      }
+      },
     }
   };
 
