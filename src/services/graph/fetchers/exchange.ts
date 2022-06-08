@@ -160,7 +160,7 @@ export const getAvaxPrice = async (variables = undefined) => {
 
 export const getTangoPrice = async (variables = {}) => {
   return getTokenPrice(ChainId.SMARTBCH, tokenPriceQuery, {
-    id: '0x5fa664f69c2a4a3ec94fac3cbf7049bd9ca73129',
+    id: '0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91',
     ...variables,
   })
 }
