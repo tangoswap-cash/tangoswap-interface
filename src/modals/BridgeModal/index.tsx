@@ -237,7 +237,7 @@ export default function BridgeModal({
           // send the transaction to the support server
           const myHeaders = new Headers()
           myHeaders.append("Content-Type", "application/json")
-          fetch("https://bridgelogger.mistswap.fi/log", {
+          fetch("https://bridgelogger.tangoswap.cash/log", {
             method: 'POST',
             headers: myHeaders,
             body: JSON.stringify(bridgeTransaction),

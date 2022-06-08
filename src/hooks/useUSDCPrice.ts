@@ -3,7 +3,7 @@ import { ChainId, Currency, CurrencyAmount, Price, Token } from '@tangoswapcash/
 import { useActiveWeb3React } from '../hooks/useActiveWeb3React'
 import { useMemo } from 'react'
 import { useV2TradeExactOut } from './useV2Trades'
-import { FLEXUSD } from '@mistswapdex/sdk'
+import { FLEXUSD } from '@tangoswapcash/sdk'
 
 // import { wrappedCurrency } from "../functions/currency/wrappedCurrency";
 

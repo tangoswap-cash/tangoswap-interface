@@ -1,5 +1,5 @@
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
-import { ChainId, CurrencyAmount, JSBI, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS, Token, ZERO } from '@mistswapdex/sdk'
+import { ChainId, CurrencyAmount, JSBI, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS, Token, ZERO } from '@tangoswapcash/sdk'
 import { Disclosure, Transition } from '@headlessui/react'
 import ProposalVoteOption from './ProposalVoteOption'
 import React, { useState } from 'react'
@@ -19,7 +19,7 @@ import { useTransactionAdder } from '../../state/transactions/hooks'
 import { BigNumber } from '@ethersproject/bignumber'
 import { isMobile } from 'react-device-detect'
 import { useRouter } from 'next/router'
-import { formatXmist } from './util'
+import { formatXtango } from './util'
 
 const ProposalListItemDetails = ({ proposal }) => {
   const { i18n } = useLingui()
@@ -50,7 +50,7 @@ const ProposalListItemDetails = ({ proposal }) => {
           {proposal?.options.map((option, index) => (
             <ProposalVoteOption proposal={proposal} index={index} />
           ))}
-          <span className="float-left mt-2">Your voting power: {formatXmist(proposal?.userVotingPower)} xMIST</span>
+          <span className="float-left mt-2">Your voting power: {formatXtango(proposal?.userVotingPower)} xTANGO</span>
           <span className="float-right mt-2">Total votes: {proposal?.voteCount}</span>
           <Button
             className="w-full mt-2"

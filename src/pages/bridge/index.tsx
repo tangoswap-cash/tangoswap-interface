@@ -2,7 +2,7 @@ import {
   ChainId,
   Currency,
   Token,
-} from '@mistswapdex/sdk'
+} from '@tangoswapcash/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import { AutoRow } from '../../components/Row'
 import Container from '../../components/Container'
@@ -321,7 +321,7 @@ export default function Bridge() {
     insufficientBalance()
 
   const buttonText =
-    maintenance ? i18n._(t`Bridge under temporary maintenance`) : 
+    maintenance ? i18n._(t`Bridge under temporary maintenance`) :
     !shiftAllowed ? i18n._(t`Bridge forbidden (blocked country)`) :
     !currency0
       ? i18n._(t`Select a Token`)
@@ -351,7 +351,7 @@ export default function Bridge() {
         onDismiss={() => setShowBridgeModal(false)} />)}
 
       <Head>
-        <title>{i18n._(t`Bridge`)} | MISTswap</title>
+        <title>{i18n._(t`Bridge`)} | TANGOswap</title>
         <meta key="description" name="description" content="Bridge" />
       </Head>
 

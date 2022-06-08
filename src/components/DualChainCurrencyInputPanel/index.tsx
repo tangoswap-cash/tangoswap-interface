@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Token } from '@mistswapdex/sdk'
+import { Currency, CurrencyAmount, Token } from '@tangoswapcash/sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import { classNames, formatNumberScale } from '../../functions'
 import Button from '../Button'

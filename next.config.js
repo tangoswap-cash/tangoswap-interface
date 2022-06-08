@@ -48,7 +48,7 @@ const nextConfig = {
     domains: [
       'raw.githubusercontent.com',
       'sideshift.ai',
-      'assets.mistswap.fi',
+      'assets.tangoswap.cash',
       'metadata.bch.domains',
     ],
   },

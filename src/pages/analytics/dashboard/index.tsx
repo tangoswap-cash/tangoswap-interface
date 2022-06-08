@@ -156,7 +156,7 @@ export default function Dashboard(): JSX.Element {
           <div>
             <div className="text-3xl font-bold text-high-emphesis">Tango Analytics</div>
             <div className="">
-              Dive deeper in the analytics of mist bar,
+              Dive deeper in the analytics of tango bar,
               <br /> pools, pairs and tokens.
             </div>
           </div>

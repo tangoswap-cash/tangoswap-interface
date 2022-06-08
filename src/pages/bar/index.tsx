@@ -20,7 +20,7 @@ import useActiveWeb3React from '../../hooks/useActiveWeb3React'
 import { useLingui } from '@lingui/react'
 import useSWR from 'swr'
 import useSushiBar from '../../hooks/useSushiBar'
-import { getDayData, useMistPrice } from '../../services/graph'
+import { getDayData, useTangoPrice } from '../../services/graph'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { GRAPH_HOST } from '../../services/graph/constants'
@@ -62,10 +62,10 @@ const buttonStyleConnectWallet = `${buttonStyle} text-high-emphesis bg-cyan-blue
 export default function Stake() {
   const { i18n } = useLingui()
   const { account, chainId } = useActiveWeb3React()
-  const sushiBalance = useTokenBalance(account ?? undefined, TANGO[chainId])
-  const xSushiBalance = useTokenBalance(account ?? undefined, XTANGO[chainId])
+  const tangoBalance = useTokenBalance(account ?? undefined, TANGO[chainId])
+  const xTangoBalance = useTokenBalance(account ?? undefined, XTANGO[chainId])
 
-  const mistPrice = useMistPrice()
+  const tangoPrice = useTangoPrice()
 
   const { enter, leave } = useSushiBar()
 
@@ -85,7 +85,7 @@ export default function Stake() {
   const [input, setInput] = useState<string>('')
   const [usingBalance, setUsingBalance] = useState(false)
 
-  const balance = activeTab === 0 ? mistBalance : xMistBalance
+  const balance = activeTab === 0 ? tangoBalance : xTangoBalance
 
   const formattedBalance = balance?.toSignificant(4)
 
@@ -156,11 +156,11 @@ export default function Stake() {
   useEffect(() => {
     const fetchData = async () => {
       const results = await getDayData()
-      const apr = (((results[1].volumeUSD * 0.05) / data?.bar?.totalSupply) * 365) / (data?.bar?.ratio * mistPrice)
+      const apr = (((results[1].volumeUSD * 0.05) / data?.bar?.totalSupply) * 365) / (data?.bar?.ratio * tangoPrice)
       setApr(apr)
     }
     fetchData()
-  }, [data?.bar?.ratio, data?.bar?.totalSupply, mistPrice])
+  }, [data?.bar?.ratio, data?.bar?.totalSupply, tangoPrice])
 
   return (
     <Container id="bar-page" className="py-4 md:py-8 lg:py-12" maxWidth="full">
@@ -413,14 +413,14 @@ export default function Stake() {
                     />
                     <div className="flex flex-col justify-center">
                       <p className="text-sm font-bold md:text-lg text-high-emphesis">
-                        {xMistBalance ? xMistBalance.toSignificant(8) : '-'}
+                        {xTangoBalance ? xTangoBalance.toSignificant(8) : '-'}
                       </p>
                       <p className="text-sm md:text-base text-primary">xTANGO</p>
                     </div>
                   </div>
-                  {(xMistBalance && xSushiPerSushi) ?
+                  {(xTangoBalance && xSushiPerSushi) ?
                     (<div className="mt-3">
-                      ~ {xMistBalance.multiply(Math.round(xSushiPerSushi * 1e8)).divide(1e8).toSignificant(8)} MIST
+                      ~ {xTangoBalance.multiply(Math.round(xSushiPerSushi * 1e8)).divide(1e8).toSignificant(8)} TANGO
                     </div>) : (<></>)
                   }
                 </div>
@@ -442,7 +442,7 @@ export default function Stake() {
                     />
                     <div className="flex flex-col justify-center">
                       <p className="text-sm font-bold md:text-lg text-high-emphesis">
-                        {mistBalance ? mistBalance.toSignificant(8) : '-'}
+                        {tangoBalance ? tangoBalance.toSignificant(8) : '-'}
                       </p>
                       <p className="text-sm md:text-base text-primary">TANGO</p>
                     </div>

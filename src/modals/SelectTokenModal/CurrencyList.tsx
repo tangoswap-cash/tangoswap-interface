@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Token } from '@mistswapdex/sdk'
+import { Currency, CurrencyAmount, Token } from '@tangoswapcash/sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { RowBetween, RowFixed } from '../../components/Row'
 
@@ -23,7 +23,7 @@ import { useIsUserAddedToken } from '../../hooks/Tokens'
 import { useLingui } from '@lingui/react'
 import { formatNumberScale } from '../../functions'
 import { useWeb3React } from '@web3-react/core'
-import { ChainId } from '@mistswapdex/sdk'
+import { ChainId } from '@tangoswapcash/sdk'
 import Logo from '../../components/Logo'
 
 function currencyKey(currency: Currency): string {

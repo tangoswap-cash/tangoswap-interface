@@ -20,7 +20,7 @@ import { useLingui } from '@lingui/react'
 import { useRouter } from 'next/router'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { PairState, useV2Pair } from '../../../hooks/useV2Pairs'
-import { Pair } from '@mistswapdex/sdk'
+import { Pair } from '@tangoswapcash/sdk'
 import NeonSelect, { NeonSelectItem } from '../../../components/Select'
 
 export type ChainlinkToken = {
@@ -197,7 +197,7 @@ function Create() {
       const tx = await bentoBoxContract?.deploy(chainId && KASHI_ADDRESS[chainId], kashiData, true)
 
       addTransaction(tx, {
-        summary: `Add Lend market ${currencies[Field.ASSET].symbol}/${currencies[Field.COLLATERAL].symbol} MistSwap TWAP0`,
+        summary: `Add Lend market ${currencies[Field.ASSET].symbol}/${currencies[Field.COLLATERAL].symbol} TangoSwap TWAP0`,
       })
 
       router.push('/lend')

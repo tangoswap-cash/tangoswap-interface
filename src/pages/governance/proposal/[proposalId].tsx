@@ -17,7 +17,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { useRouter } from 'next/router'
 import ProposalVoteOption from '../../../features/governance/ProposalVoteOption'
 import Copy from '../../../components/AccountDetails/Copy'
-import { castVote, formatXmist, VOTING_API_URL } from '../../../features/governance/util'
+import { castVote, formatXtango, VOTING_API_URL } from '../../../features/governance/util'
 import Button from '../../../components/Button'
 import Web3Connect from '../../../components/Web3Connect'
 import moment from 'moment'
@@ -74,27 +74,27 @@ export default function Proposal() {
   return (
     <Container id="vote-page" className="py-4 space-y-6 md:py-8 lg:py-12" maxWidth="2xl">
       <Head>
-        <title key="title">Vote | Mist</title>
+        <title key="title">Vote | Tango</title>
         <meta
           key="description"
           name="description"
-          content="Vote using xMIST on community created proposals."
+          content="Vote using xTANGO on community created proposals."
         />
-        <meta key="twitter:url" name="twitter:url" content="https://app.mistswap.fi/vote" />
-        <meta key="twitter:title" name="twitter:title" content="VOTE WITH XMIST" />
+        <meta key="twitter:url" name="twitter:url" content="https://app.tangoswap.cash/vote" />
+        <meta key="twitter:title" name="twitter:title" content="VOTE WITH XTANGO" />
         <meta
           key="twitter:description"
           name="twitter:description"
-          content="Vote using xMIST on community created proposals."
+          content="Vote using xTANGO on community created proposals."
         />
-        <meta key="twitter:image" name="twitter:image" content="https://app.mistswap.fi/xmist-governance.png" />
-        <meta key="og:title" property="og:title" content="VOTE WITH XMIST" />
-        <meta key="og:url" property="og:url" content="https://app.mistswap.fi/vote" />
-        <meta key="og:image" property="og:image" content="https://app.mistswap.fi/xmist-governance.png" />
+        <meta key="twitter:image" name="twitter:image" content="https://app.tangoswap.cash/xtango-governance.png" />
+        <meta key="og:title" property="og:title" content="VOTE WITH XTANGO" />
+        <meta key="og:url" property="og:url" content="https://app.tangoswap.cash/vote" />
+        <meta key="og:image" property="og:image" content="https://app.tangoswap.cash/xtango-governance.png" />
         <meta
           key="og:description"
           property="og:description"
-          content="Vote using xMIST on community created proposals."
+          content="Vote using xTANGO on community created proposals."
         />
       </Head>
 
@@ -143,7 +143,7 @@ export default function Proposal() {
                   {proposal?.options.map((option, index) => (
                     <ProposalVoteOption key={index} proposal={proposal} index={index} />
                   ))}
-                  <span className="float-left mt-2">Your voting power: {formatXmist(proposal.userVotingPower)} xMIST</span>
+                  <span className="float-left mt-2">Your voting power: {formatXtango(proposal.userVotingPower)} xTANGO</span>
                   <span className="float-right mt-2">{i18n._(t`Total votes: ${proposal?.voteCount}`)}</span>
                 </div>
               </div>
@@ -191,7 +191,7 @@ export default function Proposal() {
                       <span>{proposal.options[vote.choiceId]}</span>
                     </div>
                     <div className="flex flex-col items-end col-span-2">
-                    <span className="flex items-baseline flex-nowrap">{formatXmist(vote.amount)} <span className="hidden pl-1 text-xs md:flex">xMIST</span></span>
+                    <span className="flex items-baseline flex-nowrap">{formatXtango(vote.amount)} <span className="hidden pl-1 text-xs md:flex">xTANGO</span></span>
                     </div>
                   </div>
                 ))}

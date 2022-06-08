@@ -5,8 +5,8 @@ import { CHAINLINK_PRICE_FEED_MAP } from '../config/oracles/chainlink'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import { e10 } from '../functions/math'
 import { isAddress } from '../functions'
-import { TWAP_0_ORACLE_ADDRESS } from '@mistswapdex/sdk'
-import { TWAP_1_ORACLE_ADDRESS } from '@mistswapdex/sdk'
+import { TWAP_0_ORACLE_ADDRESS } from '@tangoswapcash/sdk'
+import { TWAP_1_ORACLE_ADDRESS } from '@tangoswapcash/sdk'
 
 export interface Oracle {
   address: string
@@ -40,7 +40,7 @@ export abstract class AbstractOracle implements Oracle {
 export class SushiSwapTWAP0Oracle extends AbstractOracle {
   constructor(pair, chainId: ChainId, tokens?: Token[]) {
     super(pair, chainId, tokens)
-    this.name = 'MistSwap TWAP0'
+    this.name = 'TangoSwap TWAP0'
     this.valid = this.validate()
   }
 
@@ -53,7 +53,7 @@ export class SushiSwapTWAP0Oracle extends AbstractOracle {
 export class SushiSwapTWAP1Oracle extends AbstractOracle {
   constructor(pair, chainId: ChainId, tokens?: Token[]) {
     super(pair, chainId, tokens)
-    this.name = 'MistSwap TWAP1'
+    this.name = 'TangoSwap TWAP1'
     this.valid = this.validate()
   }
 

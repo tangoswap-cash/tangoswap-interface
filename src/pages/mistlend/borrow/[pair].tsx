@@ -21,7 +21,7 @@ import { useToken } from '../../../hooks/Tokens'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { useUSDCPrice } from '../../../hooks'
 import { useV2Pair } from '../../../hooks/useV2Pairs'
-import { CurrencyAmount } from '@mistswapdex/sdk'
+import { CurrencyAmount } from '@tangoswapcash/sdk'
 
 function Pair() {
   const router = useRouter()
@@ -243,10 +243,10 @@ const PairLayout = ({ children }) => {
                 />
               </div>
             </div>
-            {pair && (pair.oracle.name.indexOf('MistSwap TWAP') === 0) && (
+            {pair && (pair.oracle.name.indexOf('TangoSwap TWAP') === 0) && (
               <>
                 <div className="flex justify-between pt-3">
-                  <div className="text-xl text-high-emphesis">{i18n._(t`MLP`)}</div>
+                  <div className="text-xl text-high-emphesis">{i18n._(t`TLP`)}</div>
                 </div>
                 {liquidityPair ? (
                   <>

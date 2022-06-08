@@ -158,7 +158,7 @@ export default function Bridge() {
     // fetch the bridge transaction from the support server
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const response = await fetch(`https://bridgelogger.mistswap.fi/log/${hash}`, {
+    const response = await fetch(`https://bridgelogger.tangoswap.cash/log/${hash}`, {
       headers: myHeaders,
       redirect: 'follow'
     })
@@ -180,7 +180,7 @@ export default function Bridge() {
         onDismiss={() => setShowBridgeModal(false)} />)}
 
       <Head>
-        <title>{i18n._(t`Bridge`)} | MISTswap</title>
+        <title>{i18n._(t`Bridge`)} | TANGOswap</title>
         <meta key="description" name="description" content="Bridge" />
       </Head>
 

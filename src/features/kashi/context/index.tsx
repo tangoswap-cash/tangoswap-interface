@@ -212,7 +212,7 @@ export function KashiProvider({ children }) {
         decimals: tokens[address].decimals,
         name: tokens[address].name,
         symbol: tokens[address].symbol,
-        logoURI: "https://raw.githubusercontent.com/mistswapdex/icons/master/token/unknown.png"
+        logoURI: "https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/unknown.png"
       }
     }
   })
