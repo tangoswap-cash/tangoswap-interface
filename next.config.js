@@ -118,14 +118,6 @@ const nextConfig = {
         source: '/find',
         destination: '/exchange/find',
       },
-      {
-        source: '/create',
-        destination: '/mistlend/create',
-      },
-      {
-        source: '/balances',
-        destination: '/user/balances',
-      },
     ]
   },
   i18n: {
