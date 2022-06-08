@@ -7,7 +7,7 @@ import Main from '../../components/Main'
 import NavLink from '../../components/NavLink'
 import Popups from '../../components/Popups'
 import React from 'react'
-import kashiLogo from '../../../public/kashi-logo.png'
+// import kashiLogo from '../../../public/kashi-logo.png'
 import { useRouter } from 'next/router'
 
 interface LayoutProps {
@@ -31,7 +31,7 @@ export default function Layout({
             <div className="flex justify-center col-span-12 xl:col-span-3 lg:justify-start">
               <Link href="/borrow">
                 <a className="flex justify-center xl:justify-start xl:mx-8">
-                  <Image src={kashiLogo} alt="Lend" height={64} width={250} />
+                  {/* <Image src={kashiLogo} alt="Lend" height={64} width={250} /> */}
                 </a>
               </Link>
             </div>
@@ -63,11 +63,11 @@ export default function Layout({
                     </a>
                   </NavLink>
 
-                  <NavLink href="/mistlend/create">
+                  <NavLink href="/tangolend/create">
                     <a
                       className={
                         'px-2 sm:px-4 flex items-center font-medium ' +
-                        (router.pathname.startsWith('/mistlend/create')
+                        (router.pathname.startsWith('/tangolend/create')
                           ? 'text-high-emphesis'
                           : 'text-secondary hover:text-primary')
                       }

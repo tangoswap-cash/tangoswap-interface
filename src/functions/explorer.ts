@@ -20,6 +20,15 @@ const builders = {
         return `${prefix}/${type}/${data}`
     }
   },
+  smartbit: (chainName: string, data: string, type: 'transaction' | 'token' | 'address' | 'block') => {
+    const prefix = `https://smartbit.cash`
+    switch (type) {
+      case 'transaction':
+        return `${prefix}/tx/${data}`
+      default:
+        return `${prefix}/${type}/${data}`
+    }
+  },
   sonaramber: (chainName: string, data: string, type: 'transaction' | 'token' | 'address' | 'block') => {
     const prefix = `https://testnet.sonar.cash`
     switch (type) {
@@ -41,7 +50,7 @@ interface ChainObject {
 const chains: ChainObject = {
   [ChainId.SMARTBCH]: {
     chainName: '',
-    builder: builders.sonar,
+    builder: builders.smartbit,
   },
   [ChainId.SMARTBCH_AMBER]: {
     chainName: 'amber',
