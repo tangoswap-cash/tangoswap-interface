@@ -4,12 +4,14 @@ export enum Feature {
   AMM = 'AMM',
   AMM_V2 = 'AMM V2',
   LIQUIDITY_MINING = 'Liquidity Mining',
-  BENTOBOX = 'BentoBox',
-  KASHI = 'Kashi',
+  BENTOBOX = 'Mirror',
+  KASHI = 'Lend',
   MISO = 'MISO',
   ANALYTICS = 'Analytics',
   MIGRATE = 'Migrate',
   STAKING = 'Staking',
+  BRIDGE = 'Bridge',
+  GOVERNANCE = 'Governance',
 }
 
 const features = {
@@ -18,7 +20,9 @@ const features = {
     Feature.LIQUIDITY_MINING,
     // Feature.MIGRATE,
     Feature.ANALYTICS,
-    Feature.STAKING
+    Feature.STAKING,
+    Feature.BRIDGE,
+    Feature.GOVERNANCE,
   ],
   [ChainId.SMARTBCH_AMBER]: [
     Feature.AMM,
@@ -28,6 +32,8 @@ const features = {
     Feature.ANALYTICS,
     */
     Feature.STAKING,
+    Feature.BENTOBOX,
+    Feature.KASHI
   ],
 }
 

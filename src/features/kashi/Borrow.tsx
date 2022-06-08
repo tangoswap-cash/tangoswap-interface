@@ -132,7 +132,7 @@ export default function Borrow({ pair }: BorrowProps) {
   collateralWarnings.add(
     collateralBalance?.lt(collateralValue.toBigNumber(pair.collateral.tokenInfo.decimals)),
     `Please make sure your ${
-      useBentoCollateral ? 'BentoBox' : 'wallet'
+      useBentoCollateral ? 'Mirror' : 'wallet'
     } balance is sufficient to deposit and then try again.`,
     true
   )
@@ -241,8 +241,7 @@ export default function Borrow({ pair }: BorrowProps) {
   // Handlers
   async function onExecute(cooker: KashiCooker): Promise<string> {
     let summary = ''
-
-    /*
+    const SUSHISWAP_MULTISWAPPER_ADDRESS = {}
     if (borrowValueSet) {
       if (displayUpdateOracle) {
         cooker.updateExchangeRate(true, ZERO, ZERO)
@@ -313,7 +312,6 @@ export default function Borrow({ pair }: BorrowProps) {
     } else if (borrowValueSet) {
       summary = trade ? 'Borrow, swap and add as collateral' : 'Borrow'
     }
-    */
 
     return summary
   }
@@ -375,6 +373,7 @@ export default function Borrow({ pair }: BorrowProps) {
         setUseBento={setUseBentoBorrow}
         maxTitle="Max"
         max={nextMaxBorrowPossible}
+        showMax={true}
       />
 
       {collateralValueSet && (

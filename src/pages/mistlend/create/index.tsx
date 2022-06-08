@@ -15,10 +15,13 @@ import { defaultAbiCoder } from '@ethersproject/abi'
 import { e10 } from '../../../functions/math'
 import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React'
-import { useBentoBoxContract } from '../../../hooks/useContract'
+import { useBentoBoxContract, useFactoryContract } from '../../../hooks/useContract'
 import { useLingui } from '@lingui/react'
 import { useRouter } from 'next/router'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
+import { PairState, useV2Pair } from '../../../hooks/useV2Pairs'
+import { Pair } from '@mistswapdex/sdk'
+import NeonSelect, { NeonSelectItem } from '../../../components/Select'
 
 export type ChainlinkToken = {
   symbol: string
@@ -27,7 +30,15 @@ export type ChainlinkToken = {
   decimals: number
 }
 
+enum OracleType {
+  ChainLink,
+  TWAP0,
+  TWAP1,
+}
+
 function Create() {
+  const { i18n } = useLingui()
+
   const { chainId } = useActiveWeb3React()
 
   const bentoBoxContract = useBentoBoxContract()
@@ -35,12 +46,32 @@ function Create() {
   const addTransaction = useTransactionAdder()
 
   const router = useRouter()
+  const factory = useFactoryContract();
 
   // swap state
   const { independentField, typedValue } = useCreateState()
   const { onSwitchTokens, onCurrencySelection, onUserInput } = useCreateActionHandlers()
 
   const { currencies, inputError } = useDerivedCreateInfo()
+
+  const [isChainlink, setIsChainlink] = useState<boolean>(false)
+  const [pairState, pair] = useV2Pair(currencies[Field.ASSET], currencies[Field.COLLATERAL]) as [PairState, Pair]
+  const twapType = pair?.token0.address === currencies[Field.ASSET].wrapped.address ? OracleType.TWAP0 : OracleType.TWAP1
+  let error = pairState === PairState.EXISTS ? '' : 'Pair does not exist';
+
+  const [oracleType, setOracleType] = useState<OracleType>(isChainlink ? OracleType.ChainLink : twapType)
+  const items = {
+    [OracleType.ChainLink]: i18n._(t`ChainLink price oracle`),
+    [OracleType.TWAP0]: i18n._(t`Time-weighted average price`),
+  }
+
+  const selectHandler = useCallback(
+    (e, item) => {
+      setIsChainlink(item === OracleType.ChainLink)
+      setOracleType(item)
+    },
+    [items]
+  )
 
   const handleCollateralSelect = useCallback(
     (collateralCurrency) => {
@@ -58,7 +89,7 @@ function Create() {
 
   const both = Boolean(currencies[Field.COLLATERAL] && currencies[Field.ASSET])
 
-  const getOracleData = useCallback(
+  const getChainlikOracleData = useCallback(
     async (asset: Currency, collateral: Currency) => {
       const oracleData = ''
 
@@ -112,18 +143,39 @@ function Create() {
     [chainId]
   )
 
+  const getTWAPOracleData = useCallback(
+    async (asset: Currency, collateral: Currency) => {
+      const pair = await factory.getPair(asset.wrapped.address, collateral.wrapped.address)
+      return defaultAbiCoder.encode(['address'], [pair])
+    },
+    [chainId]
+  )
+
   const handleCreate = async () => {
     try {
       if (!both) return
 
-      const oracleData = await getOracleData(currencies[Field.ASSET], currencies[Field.COLLATERAL])
+      let oracleData;
+      let oracleAddress;
+      switch (oracleType) {
+        case OracleType.ChainLink:
+          oracleData = await getChainlikOracleData(currencies[Field.ASSET], currencies[Field.COLLATERAL])
+          oracleAddress = CHAINLINK_ORACLE_ADDRESS[chainId]
+          break
+        case OracleType.TWAP0:
+          oracleData = await getTWAPOracleData(currencies[Field.ASSET], currencies[Field.COLLATERAL])
+          oracleAddress = TWAP_0_ORACLE_ADDRESS[chainId]
+          break
+        case OracleType.TWAP1:
+          oracleData = await getTWAPOracleData(currencies[Field.ASSET], currencies[Field.COLLATERAL])
+          oracleAddress = TWAP_1_ORACLE_ADDRESS[chainId]
+          break
+      }
 
       if (!oracleData) {
         console.log('No path')
         return
       }
-
-      const oracleAddress = undefined // CHAINLINK_ORACLE_ADDRESS[chainId]
 
       const kashiData = defaultAbiCoder.encode(
         ['address', 'address', 'address', 'bytes'],
@@ -145,7 +197,7 @@ function Create() {
       const tx = await bentoBoxContract?.deploy(chainId && KASHI_ADDRESS[chainId], kashiData, true)
 
       addTransaction(tx, {
-        summary: `Add Kashi market ${currencies[Field.ASSET].symbol}/${currencies[Field.COLLATERAL].symbol} Chainlink`,
+        summary: `Add Lend market ${currencies[Field.ASSET].symbol}/${currencies[Field.COLLATERAL].symbol} MistSwap TWAP0`,
       })
 
       router.push('/lend')
@@ -195,13 +247,26 @@ function Create() {
             />
           </div>
 
+          {false && <div className="flex justify-between items-center">
+            <span>
+              {i18n._(t`Select price oracle`)}
+            </span>
+            <NeonSelect value={items[oracleType]}>
+              {Object.entries(items).map(([k, v]) => (
+                <NeonSelectItem key={k} value={k} onClick={selectHandler}>
+                  {v}
+                </NeonSelectItem>
+              ))}
+            </NeonSelect>
+          </div>}
+
           <Button
             color="gradient"
             className="w-full px-4 py-3 text-base rounded text-high-emphesis"
             onClick={() => handleCreate()}
-            disabled={!both}
+            disabled={!both || !!error}
           >
-            {inputError || 'Create'}
+            {inputError || error || 'Create'}
           </Button>
         </Container>
       </Card>
@@ -217,7 +282,7 @@ const CreateLayout = ({ children }) => {
         <Card
           className="h-full bg-dark-900"
           backgroundImage="/deposit-graphic.png"
-          title={i18n._(t`Create a new Kashi Market`)}
+          title={i18n._(t`Create a new Lend Market`)}
           description={i18n._(
             t`If you want to supply to a market that is not listed yet, you can use this tool to create a new pair.`
           )}

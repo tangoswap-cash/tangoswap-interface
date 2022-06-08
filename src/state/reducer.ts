@@ -10,12 +10,14 @@ import swap from './swap/reducer'
 import smartSwap from './smart-swap/reducer'
 
 import transactions from './transactions/reducer'
+import bridgeTransactions from './bridgeTransactions/reducer'
 import user from './user/reducer'
 
 const reducer = combineReducers({
   application,
   user,
   transactions,
+  bridgeTransactions,
   swap,
   smartSwap,
   mint,

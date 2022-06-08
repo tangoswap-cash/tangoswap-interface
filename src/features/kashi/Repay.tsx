@@ -161,7 +161,7 @@ export default function Repay({ pair }: RepayProps) {
   const warnings = new Warnings()
     .addError(
       assetNative && !useBentoRepay && pinRepayMax,
-      `You cannot MAX repay ${pair.asset.tokenInfo.symbol} directly from your wallet. Please deposit your ${pair.asset.tokenInfo.symbol} into the BentoBox first, then repay. Because your debt is slowly accrueing interest we can't predict how much it will be once your transaction gets mined.`
+      `You cannot MAX repay ${pair.asset.tokenInfo.symbol} directly from your wallet. Please deposit your ${pair.asset.tokenInfo.symbol} into the Mirror first, then repay. Because your debt is slowly accrueing interest we can't predict how much it will be once your transaction gets mined.`
     )
     .addError(
       displayRemoveValue.toBigNumber(pair.collateral.tokenInfo.decimals).gt(pair.userCollateralAmount.value),
@@ -173,7 +173,7 @@ export default function Repay({ pair }: RepayProps) {
       new Warning(
         balance?.lt(displayRepayValue.toBigNumber(pair.asset.tokenInfo.decimals)),
         `Please make sure your ${
-          useBentoRepay ? 'BentoBox' : 'wallet'
+          useBentoRepay ? 'Mirror' : 'wallet'
         } balance is sufficient to repay and then try again.`,
         true
       )
@@ -238,8 +238,8 @@ export default function Repay({ pair }: RepayProps) {
   // Handlers
   async function onExecute(cooker: KashiCooker) {
     let summary = ''
+    const SUSHISWAP_MULTI_EXACT_SWAPPER_ADDRESS = {}
 
-    /*
     if (swap && trade) {
       const share = toShare(pair.collateral, pair.userCollateralAmount.value)
 
@@ -314,7 +314,6 @@ export default function Repay({ pair }: RepayProps) {
 
     resetRepayState()
 
-    */
     return summary
   }
 

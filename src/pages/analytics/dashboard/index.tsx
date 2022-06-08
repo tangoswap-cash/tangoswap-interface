@@ -11,8 +11,11 @@ import TokenList from '../../../features/analytics/Tokens/TokenList'
 import useFarmRewards from '../../../hooks/useFarmRewards'
 import { useFuse } from '../../../hooks'
 import Background from '../../../features/analytics/Background'
+import { t } from '@lingui/macro'
+import { useLingui } from '@lingui/react'
 
 export default function Dashboard(): JSX.Element {
+  const { i18n } = useLingui()
   const [type, setType] = useState<'pools' | 'pairs' | 'tokens'>('pools')
 
   const block1d = useBlock({ daysAgo: 1 })
@@ -55,7 +58,7 @@ export default function Dashboard(): JSX.Element {
             token1: farm.pair.token1,
             address: farm.pair.id,
             name: farm.pair.symbol ?? `${farm.pair.token0.symbol}-${farm.pair.token1.symbol}`,
-            type: farm.pair.symbol ? 'Kashi Farm' : 'Sushi Farm',
+            type: farm.pair.symbol ? 'Lend Farm' : 'Sushi Farm',
           },
           rewards: farm.rewards,
           liquidity: farm.tvl,
@@ -153,12 +156,13 @@ export default function Dashboard(): JSX.Element {
           <div>
             <div className="text-3xl font-bold text-high-emphesis">Tango Analytics</div>
             <div className="">
-              Dive deeper in the analytics of sushi bar,
+              Dive deeper in the analytics of mist bar,
               <br /> pools, pairs and tokens.
             </div>
           </div>
           <Search
             term={term}
+            placeholder={i18n._(t`Search by name, symbol, address`)}
             search={search}
             inputProps={{ className: 'placeholder-primary bg-opacity-50 w-full py-3 pl-4 pr-14 rounded bg-dark-900' }}
             className="border shadow-2xl border-dark-800"

@@ -13,6 +13,17 @@ import {
 } from '@tangoswapcash/sdk'
 import { ZERO, e10 } from './math'
 
+const FACTOR_PRECISION = BigNumber.from(_FACTOR_PRECISION)
+const FULL_UTILIZATION_MINUS_MAX = BigNumber.from(_FULL_UTILIZATION_MINUS_MAX)
+const INTEREST_ELASTICITY = BigNumber.from(_INTEREST_ELASTICITY)
+const MAXIMUM_INTEREST_PER_YEAR = BigNumber.from(_MAXIMUM_INTEREST_PER_YEAR)
+const MAXIMUM_TARGET_UTILIZATION = BigNumber.from(_MAXIMUM_TARGET_UTILIZATION)
+const MINIMUM_INTEREST_PER_YEAR = BigNumber.from(_MINIMUM_INTEREST_PER_YEAR)
+const MINIMUM_TARGET_UTILIZATION = BigNumber.from(_MINIMUM_TARGET_UTILIZATION)
+const PROTOCOL_FEE = BigNumber.from(_PROTOCOL_FEE)
+const PROTOCOL_FEE_DIVISOR = BigNumber.from(_PROTOCOL_FEE_DIVISOR)
+const STARTING_INTEREST_PER_YEAR = BigNumber.from(_STARTING_INTEREST_PER_YEAR)
+
 import { getCurrency } from './currency/getCurrency'
 
 export function accrue(pair: any, amount: BigNumber, includePrincipal = false): BigNumber {

@@ -21,6 +21,7 @@ import { useToken } from '../../../hooks/Tokens'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { useUSDCPrice } from '../../../hooks'
 import { useV2Pair } from '../../../hooks/useV2Pairs'
+import { CurrencyAmount } from '@mistswapdex/sdk'
 
 function Pair() {
   const router = useRouter()
@@ -229,23 +230,23 @@ const PairLayout = ({ children }) => {
             </div>
 
             <div className="flex justify-between pt-3">
-              <div className="text-xl text-high-emphesis">{i18n._(t`BentoBox`)}</div>
+              <div className="text-xl text-high-emphesis">{i18n._(t`Mirror`)}</div>
             </div>
             <div className="flex justify-between">
               <div className="text-lg text-secondary">{i18n._(t`${pair?.collateral.tokenInfo.symbol} Strategy`)}</div>
-              <div className="flex flex-row text-lg text-high-emphesis">
+              <div className="flex flex-row text-lg text-high-emphesis items-center">
                 {i18n._(t`None`)}
                 <QuestionHelper
                   text={i18n._(
-                    t`BentoBox strategies can create yield for your collateral tokens. This token does not yet have a strategy in the BentoBox.`
+                    t`Mirror strategies can create yield for your collateral tokens. This token does not yet have a strategy in the Mirror.`
                   )}
                 />
               </div>
             </div>
-            {pair && pair.oracle.name === 'SushiSwap' && (
+            {pair && (pair.oracle.name.indexOf('MistSwap TWAP') === 0) && (
               <>
                 <div className="flex justify-between pt-3">
-                  <div className="text-xl text-high-emphesis">{i18n._(t`SLP`)}</div>
+                  <div className="text-xl text-high-emphesis">{i18n._(t`MLP`)}</div>
                 </div>
                 {liquidityPair ? (
                   <>
@@ -262,13 +263,22 @@ const PairLayout = ({ children }) => {
                     <div className="flex justify-between">
                       <div className="text-lg text-secondary">TVL</div>
                       <div className="text-lg text-high-emphesis">
-                        {formatNumber(
-                          liquidityPair?.reserve1
-                            .multiply(assetPrice?.quotient)
-                            .add(liquidityPair?.reserve1.multiply(collateralPrice?.quotient))
-                            .toSignificant(4),
-                          true
-                        )}
+                        {pair.oracle.name.includes('TWAP0') ?
+                          formatNumber(
+                            CurrencyAmount.fromFractionalAmount(liquidityPair?.reserve0.currency, liquidityPair?.reserve1.numerator, liquidityPair?.reserve1.denominator)
+                              .multiply(collateralPrice)
+                              .add(liquidityPair?.reserve0.multiply(assetPrice))
+                              .toSignificant(4),
+                            true
+                          ) :
+                          formatNumber(
+                            CurrencyAmount.fromFractionalAmount(liquidityPair?.reserve0.currency, liquidityPair?.reserve1.numerator, liquidityPair?.reserve1.denominator)
+                              .multiply(assetPrice)
+                              .add(liquidityPair?.reserve0.multiply(collateralPrice))
+                              .toSignificant(4),
+                            true
+                          )
+                        }
                       </div>
                     </div>
                   </>

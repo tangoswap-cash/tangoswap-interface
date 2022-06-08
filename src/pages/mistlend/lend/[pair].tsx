@@ -203,15 +203,15 @@ const PairLayout = ({ children }) => {
             </div>
 
             <div className="flex justify-between pt-3">
-              <div className="text-xl text-high-emphesis">{i18n._(t`BentoBox`)}</div>
+              <div className="text-xl text-high-emphesis">{i18n._(t`Mirror`)}</div>
             </div>
             <div className="flex justify-between">
               <div className="text-lg text-secondary">{i18n._(t`${pair?.asset.tokenInfo.symbol} Strategy`)}</div>
-              <div className="flex flex-row text-lg text-high-emphesis">
+              <div className="flex flex-row text-lg text-high-emphesis items-center">
                 {i18n._(t`None`)}
                 <QuestionHelper
                   text={i18n._(
-                    t`BentoBox strategies can create yield for your liquidity while it is not lent out. This token does not yet have a strategy in the BentoBox.`
+                    t`Mirror strategies can create yield for your liquidity while it is not lent out. This token does not yet have a strategy in the Mirror.`
                   )}
                 />
               </div>

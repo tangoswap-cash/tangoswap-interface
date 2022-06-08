@@ -38,7 +38,7 @@ function Borrow() {
         <meta
           key="description"
           name="description"
-          content="Kashi is a lending and margin trading platform, built upon BentoBox, which allows for anyone to create customized and gas-efficient markets for lending, borrowing, and collateralizing a variety of DeFi tokens, stable coins, and synthetic assets."
+          content="Lend is a lending and margin trading platform, built upon Mirror, which allows for anyone to create customized and gas-efficient markets for lending, borrowing, and collateralizing a variety of DeFi tokens, stable coins, and synthetic assets."
         />
       </Head>
       <Card className="h-full bg-dark-900" header={<MarketHeader type="Borrow" lists={[pairs, positions]} />}>
@@ -52,7 +52,7 @@ function Borrow() {
                   sortKey="search"
                 >
                   <>
-                    <span className="hidden md:inline-block">{i18n._(t`Your`)}</span> {i18n._(t`Positions`)}
+                    <span className="hidden md:inline-block">{i18n._(t`Your`)}&nbsp;</span> {i18n._(t`Positions`)}
                   </>
                 </ListHeaderWithSort>
                 <ListHeaderWithSort
@@ -72,13 +72,13 @@ function Borrow() {
                   {i18n._(t`Collateral`)}
                 </ListHeaderWithSort>
                 <ListHeaderWithSort
-                  className="justify-end hidden lg:flex"
+                  className="justify-end"
                   sort={positions}
                   sortKey="health.value"
                   direction="descending"
                 >
                   <>
-                    {i18n._(t`Limit`)} <span className="hidden md:inline-block">{i18n._(t`Used`)}</span>
+                    {i18n._(t`Limit`)}<span className="hidden md:inline-block">&nbsp;{i18n._(t`Used`)}</span>
                   </>
                 </ListHeaderWithSort>
                 <ListHeaderWithSort
@@ -235,7 +235,7 @@ function Borrow() {
                         </div>
                         <div className="hidden md:block">{pair.collateral.tokenInfo.symbol}</div>
                         <div className="hidden lg:block">{pair.oracle.name}</div>
-                        <div className="text-left md:text-right">
+                        <div className="text-right">
                           <div className="md:hidden">
                             <div className="flex flex-col">
                               <div>{formatNumber(pair.currentBorrowAmount.string)}</div>

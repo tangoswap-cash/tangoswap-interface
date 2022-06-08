@@ -26,6 +26,16 @@ const nextConfig = {
       },
     ]
 
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve.alias,
+        tls: false,
+        net: false,
+        fs: false,
+      }
+    }
+
     return config
   },
   experimental: { esmExternals: true },
@@ -37,6 +47,9 @@ const nextConfig = {
   images: {
     domains: [
       'raw.githubusercontent.com',
+      'sideshift.ai',
+      'assets.mistswap.fi',
+      'metadata.bch.domains',
     ],
   },
   reactStrictMode: true,
@@ -73,6 +86,14 @@ const nextConfig = {
         destination: '/bar',
       },
       {
+        source: '/vote',
+        destination: '/governance',
+      },
+      {
+        source: '/vote/:proposalId',
+        destination: '/governance/proposal/:proposalId',
+      },
+      {
         source: '/add/:token*',
         destination: '/exchange/add/:token*',
       },
@@ -107,6 +128,30 @@ const nextConfig = {
       {
         source: '/find',
         destination: '/exchange/find',
+      },
+      {
+        source: '/lend',
+        destination: '/mistlend/lend',
+      },
+      {
+        source: '/lend/:pair',
+        destination: '/mistlend/lend/:pair',
+      },
+      {
+        source: '/borrow',
+        destination: '/mistlend/borrow',
+      },
+      {
+        source: '/borrow/:pair',
+        destination: '/mistlend/borrow/:pair',
+      },
+      {
+        source: '/create',
+        destination: '/mistlend/create',
+      },
+      {
+        source: '/balances',
+        destination: '/user/balances',
       },
     ]
   },

@@ -1,6 +1,15 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 const plugin = require('tailwindcss/plugin')
 
+function withOpacity(variableName) {
+  return ({ opacityValue }) => {
+    if (opacityValue) {
+      return `rgba(var(${variableName}), ${opacityValue})`
+    }
+    return `rgb(var(${variableName}))`
+  }
+}
+
 module.exports = {
   // important: '#__next',
   // darkMode: true,
