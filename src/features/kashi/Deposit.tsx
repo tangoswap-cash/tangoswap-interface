@@ -33,14 +33,14 @@ export default function Deposit({ pair }: any): JSX.Element {
   const assetNative = WNATIVE[chainId || 1].address === pair.asset.address
   const balance = useBento ? pair.asset.bentoBalance : assetNative ? info?.ethBalance : pair.asset.balance
 
-  const max = useBento ? pair.asset.bentoBalance : assetNative ? info?.ethBalance : pair.asset.balance
+  const max = useBento ? pair.asset.bentoBalance : assetNative ? info?.ethBalance.sub(e10(16)) : pair.asset.balance
 
   const warnings = new Warnings()
 
   warnings.add(
     balance?.lt(value.toBigNumber(pair.asset.tokenInfo.decimals)),
     i18n._(
-      t`Please make sure your ${useBento ? 'BentoBox' : 'wallet'} balance is sufficient to deposit and then try again.`
+      t`Please make sure your ${useBento ? 'Mirror' : 'wallet'} balance is sufficient to deposit and then try again.`
     ),
     true
   )

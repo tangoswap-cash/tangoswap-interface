@@ -26,6 +26,16 @@ const nextConfig = {
       },
     ]
 
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve.alias,
+        tls: false,
+        net: false,
+        fs: false,
+      }
+    }
+
     return config
   },
   experimental: { esmExternals: true },
@@ -37,6 +47,7 @@ const nextConfig = {
   images: {
     domains: [
       'raw.githubusercontent.com',
+      'metadata.bch.domains',
     ],
   },
   reactStrictMode: true,

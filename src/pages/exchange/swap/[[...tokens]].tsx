@@ -60,6 +60,7 @@ import { computeFiatValuePriceImpact } from '../../../functions/trade'
 import confirmPriceImpactWithoutFee from '../../../features/exchange-v1/swap/confirmPriceImpactWithoutFee'
 import { maxAmountSpend } from '../../../functions/currency'
 import swapArrowsAnimationData from '../../../animation/swap-arrows.json'
+import swapArrowsLightAnimationData from '../../../animation/swap-arrows-light.json'
 import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React'
 import useENSAddress from '../../../hooks/useENSAddress'
@@ -71,6 +72,7 @@ import { useRouter } from 'next/router'
 import { useSwapCallback } from '../../../hooks/useSwapCallback'
 import { useUSDCValue } from '../../../hooks/useUSDCPrice'
 import { warningSeverity } from '../../../functions/prices'
+import * as gtag from '../../../functions/matomo'
 
 export default function Swap() {
   const { i18n } = useLingui()
@@ -292,6 +294,14 @@ export default function Swap() {
           swapErrorMessage: undefined,
           txHash: hash,
         })
+
+        gtag.event({
+          category: 'Exchange',
+          action: 'Swap',
+          name: txHash,
+          value: null,
+        });
+
       })
       .catch((error) => {
         setSwapState({
@@ -340,8 +350,7 @@ export default function Swap() {
     !swapInputError &&
     (approvalState === ApprovalState.NOT_APPROVED ||
       approvalState === ApprovalState.PENDING ||
-      (approvalSubmitted && approvalState === ApprovalState.APPROVED)) &&
-    !(priceImpactSeverity > 3 && !isExpertMode)
+      (approvalSubmitted && approvalState === ApprovalState.APPROVED))
 
   const handleConfirmDismiss = useCallback(() => {
     setSwapState({
@@ -477,7 +486,7 @@ export default function Swap() {
               currency={currencies[Field.INPUT]}
               onUserInput={handleTypeInput}
               onMax={handleMaxInput}
-              fiatValue={fiatValueInput ?? undefined}
+              fiatValue={/*fiatValueInput ?? */undefined}
               onCurrencySelect={handleInputSelect}
               otherCurrency={currencies[Field.OUTPUT]}
               showCommonBases={true}
@@ -535,8 +544,8 @@ export default function Swap() {
                 label={independentField === Field.INPUT && !showWrap ? i18n._(t`Swap To (est.):`) : i18n._(t`Swap To:`)}
                 showMaxButton={false}
                 hideBalance={false}
-                fiatValue={fiatValueOutput ?? undefined}
-                priceImpact={priceImpact}
+                fiatValue={/*fiatValueOutput ?? */undefined}
+                //priceImpact={priceImpact}
                 currency={currencies[Field.OUTPUT]}
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT]}

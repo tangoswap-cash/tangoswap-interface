@@ -1,5 +1,6 @@
 // https://developer.matomo.org/guides/spa-tracking
 export const pageview = (url) => {
+  window._paq = window._paq || [];
   window._paq.push(['setCustomUrl', window.location.pathname]);
   window._paq.push(['setDocumentTitle', document.title]);
   window._paq.push(['trackPageView']);

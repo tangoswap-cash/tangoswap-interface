@@ -70,6 +70,10 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({
       return [unknown]
     }
 
+    if (currency["logoURI"]) {
+      return [currency["logoURI"]]
+    }
+
     if (currency.isNative || currency.equals(WNATIVE[currency.chainId])) {
       return [LOGO[currency.chainId], unknown]
     }

@@ -4,6 +4,9 @@ import { AddressZero } from '@ethersproject/constants'
 import { CHAINLINK_PRICE_FEED_MAP } from '../config/oracles/chainlink'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import { e10 } from '../functions/math'
+import { isAddress } from '../functions'
+import { TWAP_0_ORACLE_ADDRESS } from '@tangoswapcash/sdk'
+import { TWAP_1_ORACLE_ADDRESS } from '@tangoswapcash/sdk'
 
 export interface Oracle {
   address: string
@@ -37,14 +40,26 @@ export abstract class AbstractOracle implements Oracle {
 export class SushiSwapTWAP0Oracle extends AbstractOracle {
   constructor(pair, chainId: ChainId, tokens?: Token[]) {
     super(pair, chainId, tokens)
-    this.name = 'SushiSwap'
+    this.name = 'TangoSwap TWAP0'
+    this.valid = this.validate()
+  }
+
+  private validate() {
+    const params = defaultAbiCoder.decode(['address'], this.data)
+    return !!isAddress(params[0])
   }
 }
 
 export class SushiSwapTWAP1Oracle extends AbstractOracle {
   constructor(pair, chainId: ChainId, tokens?: Token[]) {
     super(pair, chainId, tokens)
-    this.name = 'SushiSwap'
+    this.name = 'TangoSwap TWAP1'
+    this.valid = this.validate()
+  }
+
+  private validate() {
+    const params = defaultAbiCoder.decode(['address'], this.data)
+    return !!isAddress(params[0])
   }
 }
 
@@ -123,5 +138,11 @@ export function getOracle(pair, chainId: ChainId, tokens): Oracle {
   // if (lowerEqual(pair.oracle, CHAINLINK_ORACLE_ADDRESS[chainId])) {
   if (lowerEqual(pair.oracle, "")) {
     return new ChainlinkOracle(pair, chainId, tokens)
+  } else {
+    if (lowerEqual(pair.oracle, TWAP_0_ORACLE_ADDRESS[chainId]))
+      return new SushiSwapTWAP0Oracle(pair, chainId, tokens);
+    else if (lowerEqual(pair.oracle, TWAP_1_ORACLE_ADDRESS[chainId]))
+      return new SushiSwapTWAP1Oracle(pair, chainId, tokens);
+    else throw Error(`Unsupported oracle: ${pair.oracle}`)
   }
 }

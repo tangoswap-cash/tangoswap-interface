@@ -20,7 +20,7 @@ import useActiveWeb3React from '../../hooks/useActiveWeb3React'
 import { useLingui } from '@lingui/react'
 import useSWR from 'swr'
 import useSushiBar from '../../hooks/useSushiBar'
-import { useSushiPrice } from '../../services/graph'
+import { getDayData, useTangoPrice } from '../../services/graph'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import { GRAPH_HOST } from '../../services/graph/constants'
@@ -62,10 +62,10 @@ const buttonStyleConnectWallet = `${buttonStyle} text-high-emphesis bg-cyan-blue
 export default function Stake() {
   const { i18n } = useLingui()
   const { account, chainId } = useActiveWeb3React()
-  const sushiBalance = useTokenBalance(account ?? undefined, TANGO[chainId])
-  const xSushiBalance = useTokenBalance(account ?? undefined, XTANGO[chainId])
+  const tangoBalance = useTokenBalance(account ?? undefined, TANGO[chainId])
+  const xTangoBalance = useTokenBalance(account ?? undefined, XTANGO[chainId])
 
-  const sushiPrice = useSushiPrice()
+  const tangoPrice = useTangoPrice()
 
   const { enter, leave } = useSushiBar()
 
@@ -85,7 +85,7 @@ export default function Stake() {
   const [input, setInput] = useState<string>('')
   const [usingBalance, setUsingBalance] = useState(false)
 
-  const balance = activeTab === 0 ? sushiBalance : xSushiBalance
+  const balance = activeTab === 0 ? tangoBalance : xTangoBalance
 
   const formattedBalance = balance?.toSignificant(4)
 
@@ -155,11 +155,12 @@ export default function Stake() {
   // TODO: DROP AND USE SWR HOOKS INSTEAD
   useEffect(() => {
     const fetchData = async () => {
-      const apr = (((3000000 * 0.05) / data?.bar?.totalSupply) * 365) / (data?.bar?.ratio * sushiPrice)
+      const results = await getDayData()
+      const apr = (((results[1].volumeUSD * 0.05) / data?.bar?.totalSupply) * 365) / (data?.bar?.ratio * tangoPrice)
       setApr(apr)
     }
     fetchData()
-  }, [data?.bar?.ratio, data?.bar?.totalSupply, sushiPrice])
+  }, [data?.bar?.ratio, data?.bar?.totalSupply, tangoPrice])
 
   return (
     <Container id="bar-page" className="py-4 md:py-8 lg:py-12" maxWidth="full">
@@ -242,9 +243,18 @@ export default function Stake() {
                         py-1 px-4 md:py-1.5 md:px-7 rounded
                         text-xs md:text-sm font-medium md:font-bold text-dark-900
                         bg-light-yellow hover:bg-opacity-90`}
-                    >
-                      {i18n._(t`View Stats`)}
-                    </a>
+                      >
+                        {i18n._(t`View Stats`)}
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="mb-1 text-lg font-bold text-right text-high-emphesis md:text-3xl">
+                      {`${apr ? apr.toFixed(2) + '%' : i18n._(t`Loading...`)}`}
+                    </p>
+                    <p className="w-32 text-sm text-right text-primary md:w-64 md:text-base">
+                      {i18n._(t`Yesterday's APR`)}
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-col"> */}
@@ -403,11 +413,16 @@ export default function Stake() {
                     />
                     <div className="flex flex-col justify-center">
                       <p className="text-sm font-bold md:text-lg text-high-emphesis">
-                        {xSushiBalance ? xSushiBalance.toSignificant(8) : '-'}
+                        {xTangoBalance ? xTangoBalance.toSignificant(8) : '-'}
                       </p>
                       <p className="text-sm md:text-base text-primary">xTANGO</p>
                     </div>
                   </div>
+                  {(xTangoBalance && xSushiPerSushi) ?
+                    (<div className="mt-3">
+                      ~ {xTangoBalance.multiply(Math.round(xSushiPerSushi * 1e8)).divide(1e8).toSignificant(8)} TANGO
+                    </div>) : (<></>)
+                  }
                 </div>
 
                 <div className="flex flex-col flex-grow">
@@ -427,7 +442,7 @@ export default function Stake() {
                     />
                     <div className="flex flex-col justify-center">
                       <p className="text-sm font-bold md:text-lg text-high-emphesis">
-                        {sushiBalance ? sushiBalance.toSignificant(8) : '-'}
+                        {tangoBalance ? tangoBalance.toSignificant(8) : '-'}
                       </p>
                       <p className="text-sm md:text-base text-primary">TANGO</p>
                     </div>

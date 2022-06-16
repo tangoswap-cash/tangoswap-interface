@@ -22,6 +22,7 @@ import {
   getTransactions,
   getTruPrice,
   getYggPrice,
+  getTangoPrice,
 } from '../fetchers'
 import { getEthPrice, getPairs } from '../fetchers'
 import useSWR, { SWRConfiguration } from 'swr'
@@ -186,8 +187,15 @@ export function useMaticPrice(variables = undefined, swrConfig: SWRConfiguration
   return data
 }
 
+// TODO this should be removed when possible as useTangoPrice replaces it
 export function useSushiPrice(variables = undefined, swrConfig: SWRConfiguration = undefined) {
   const { data } = useSWR(['sushiPrice', JSON.stringify(variables)], () => getSushiPrice(variables), swrConfig)
+  return data
+}
+
+export function useTangoPrice(variables = undefined, swrConfig: SWRConfiguration = undefined) {
+  const { data } = useSWR(['tangoPrice', JSON.stringify(variables)], () => getTangoPrice(variables), swrConfig)
+
   return data
 }
 

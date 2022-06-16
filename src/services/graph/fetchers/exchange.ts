@@ -158,6 +158,13 @@ export const getAvaxPrice = async (variables = undefined) => {
   // return getNativePrice(ChainId.AVALANCHE, variables)
 }
 
+export const getTangoPrice = async (variables = {}) => {
+  return getTokenPrice(ChainId.SMARTBCH, tokenPriceQuery, {
+    id: '0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91',
+    ...variables,
+  })
+}
+
 export const getBundle = async (
   chainId = ChainId.SMARTBCH,
   query = ethPriceQuery,

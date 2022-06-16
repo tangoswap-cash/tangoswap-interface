@@ -15,6 +15,10 @@ declare global {
       autoRefreshOnNetworkChange?: boolean
     }
     web3?: Record<string, unknown>
+    hopwallet: any
+    FromBlock: number
+    bridgeId: string
+    smTimeout: any
   }
 }
 

@@ -30,6 +30,8 @@ import { usePositions, usePendingSushi } from '../../features/onsen/hooks'
 import { useRouter } from 'next/router'
 import { updateUserFarmFilter } from '../../state/user/actions'
 import { getFarmFilter, useUpdateFarmFilter } from '../../state/user/hooks'
+import { t } from '@lingui/macro'
+import { useLingui } from '@lingui/react'
 
 function getTokensSorted(pool, pair) {
   if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
@@ -73,6 +75,7 @@ function getTokenPriceInBch(pool, pair, chainId, tangoPriceBCH, bchPriceUSD) {
 }
 
 export default function Farm(): JSX.Element {
+  const { i18n } = useLingui()
   const { chainId } = useActiveWeb3React()
   const router = useRouter()
 
@@ -758,6 +761,7 @@ export default function Farm(): JSX.Element {
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
         <Search
           search={search}
+          placeholder={i18n._(t`Search by name, symbol, address`)}
           term={term}
           className={classNames('px-3 md:px-0 ')}
           inputProps={{

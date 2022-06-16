@@ -11,6 +11,7 @@ export default function Loader({
   stroke?: string
   [k: string]: any
 }) {
+
   return (
     <svg
       className="animate-spin-slow"
