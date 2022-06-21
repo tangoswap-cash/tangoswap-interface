@@ -26,7 +26,7 @@ interface TokenListProps {
   tokenList?: Currency[]
 }
 
-export function TokenList({ selectedCurrency, onCurrencySelect, onDismiss,  tokenList }: TokenListProps) {
+export function TokenList({ selectedCurrency, onCurrencySelect, onDismiss, tokenList }: TokenListProps) {
   const { i18n } = useLingui()
 
   // refs for fixed size lists
@@ -52,14 +52,14 @@ export function TokenList({ selectedCurrency, onCurrencySelect, onDismiss,  toke
         <div className="flex-1 h-full">
           {/* <AutoSizer disableWidth>
             {({ height }) => ( */}
-              <CurrencyList
-                height={500}
-                currencies={tokenList}
-                onCurrencySelect={handleCurrencySelect}
-                selectedCurrency={selectedCurrency}
-                fixedListRef={fixedList}
-              />
-            {/* )}
+          <CurrencyList
+            height={500}
+            currencies={tokenList}
+            onCurrencySelect={handleCurrencySelect}
+            selectedCurrency={selectedCurrency}
+            fixedListRef={fixedList}
+          />
+          {/* )}
           </AutoSizer> */}
         </div>
       ) : (

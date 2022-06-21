@@ -1,4 +1,12 @@
+<<<<<<< Updated upstream
 import { CurrencyAmount, Currency, Token } from '@tangoswapcash/sdk'
+=======
+<<<<<<< HEAD
+import { CurrencyAmount, Currency, Token } from '@mistswapdex/sdk'
+=======
+import { CurrencyAmount, Currency, Token } from '@tangoswapcash/sdk'
+>>>>>>> a31aa33e207030a4b10116ac7b511c1f3de249a9
+>>>>>>> Stashed changes
 
 import { useAllTokenBalances } from '../../state/wallet/hooks'
 import { useMemo } from 'react'
