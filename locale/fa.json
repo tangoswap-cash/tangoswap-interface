@@ -1,5 +1,6 @@
 {
   "(COMING SOON) Accrue automatic yield through flash loans and\nTANGO strategies": "",
+  "*the amount received is estimated and may vary": "",
   "1 Hour": "1 ساعت",
   "1 Week": "1 هفته",
   "24 Hours": "24 ساعت",
@@ -7,6 +8,7 @@
   "A portion of each trade (0.05%) goes to xTANGO holders as a protocol incentive.": "",
   "A portion of each trade (0.25%) goes to liquidity providers as a protocol incentive.": "بخشی از هر معامله (0.05٪) به عنوان مشوق پروتكل به دارندگان ایکس‌سوشی تعلق می‌گیرد.",
   "APR": "APR",
+  "Above Maximum Amount": "",
   "Accept": "قبول کنید",
   "Account": "",
   "Add": "اضافه کنید",
@@ -27,13 +29,44 @@
   "Approving": "در حال تایید",
   "Approving {0}": "در حال تایید {0}",
   "Are you sure?": "آیا مطمئن هستید؟",
+  "Asset": "",
   "Auto": "خودکار",
   "Available Networks": "شبکه‌های موجود",
+  "BCH cross-chain tx {0}": "",
   "Balance": "مانده",
   "Balance USD": "",
   "Balance:": "مانده:",
+<<<<<<< Updated upstream
   "Borrow": "قرض گیری",
   "Borrowed": "قرض گرفته شد",
+=======
+<<<<<<< HEAD
+  "Below Minimum Amount": "",
+  "Bento Balance: {0}": "مانده بنتو {0}",
+  "BentoBox": "بنتوباکس",
+  "BentoBox provides extra yield on deposits with flash lending, strategies, and fixed, low-gas transfers among integrated dapps, like Kashi markets": "بنتوباکس در سپرده هایی که وام سریع، استراتژی دارند بازده بیشتری فراهم می آورد و با گاز ثابت و کمتر در میان dapp های یکپارچه مانند بازارهای کشی منتقل می شود",
+  "BentoBox strategies can create yield for your collateral tokens. This token does not yet have a strategy in the BentoBox.": "استراتژی های بنتوباکس می توانند برای توکن های وثیقه شما بازده ایجاد کنند. این توکن هنوز هیچ استراتژی در بنتوباکس ندارد",
+  "BentoBox strategies can create yield for your liquidity while it is not lent out. This token does not yet have a strategy in the BentoBox.": "استراتژی های بنتوباکس می توانند برای لیکوییدیتی شما بازده ایجاد کنند و در عین حال قرض داده نمی شود. این توکن هنوز هیچ استراتژی در بنتوباکس ندارد",
+=======
+>>>>>>> a31aa33e207030a4b10116ac7b511c1f3de249a9
+  "Borrow": "قرض گیری",
+  "Borrowed": "قرض گرفته شد",
+<<<<<<< HEAD
+  "Borrowing allows you to obtain liquidity without selling. Your borrow limit depends on the amount of deposited collateral. You will be able to borrow up to 75% of your collateral and repay at any time with accrued interest.": "قرض گیری این امکان را برای شما فراهم می آورد تا بدون فروش لیکوییدیتی به دست آورید. حد قرض گیری شما به مبلغ وثیقه واریز شده بستگی دارد. می توانید تا 75% وثیقه خود را قرض بگیرید و در هر زمانی و بدون پرداخت بهره افزوده آن را پس دهید",
+  "Bridge": "",
+  "Bridge Bitcoin Cash to and from the SmartBCH Network": "",
+  "Bridge Tx Lookup Id:": "",
+  "Bridge assets": "",
+  "Bridge between BCH and SmartBCH or vice versa with hop.cash.": "",
+  "Bridge forbidden (blocked country)": "",
+  "Bridge process cancelled due to error:": "",
+  "Bridge transaction not found": "",
+  "Bridge under temporary maintenance": "",
+  "Bridge {0}": "",
+  "Bridge {symbol}": "",
+=======
+>>>>>>> a31aa33e207030a4b10116ac7b511c1f3de249a9
+>>>>>>> Stashed changes
   "Buy": "خرید",
   "By adding liquidity you'll earn 0.25% of all trades on this pair proportional to your share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity.": "",
   "Bypasses confirmation modals and allows high slippage trades. Use at your own risk.": "راه های فرعی حالات را تایید می کنند و امکان معاملات با افت بالا را فراهم می آورند. با قبول ریسک، از آن استفاده کنید",
@@ -64,9 +97,19 @@
   "Create pool": "استخر ایجاد کنید",
   "Current": "جاری",
   "DAY": "",
+  "Date": "",
   "Deposit": "واریز کنید",
   "Deposit TANGO into BentoBox": "",
+<<<<<<< Updated upstream
   "Deposit tokens into Mirror for all the yields": "برای تمامی بازده ها، توکن ها را به بنتوباکس واریز کنید",
+=======
+<<<<<<< HEAD
+  "Deposit tokens into BentoBox for all the yields": "برای تمامی بازده ها، توکن ها را به بنتوباکس واریز کنید",
+  "Destination address": "",
+=======
+  "Deposit tokens into Mirror for all the yields": "برای تمامی بازده ها، توکن ها را به بنتوباکس واریز کنید",
+>>>>>>> a31aa33e207030a4b10116ac7b511c1f3de249a9
+>>>>>>> Stashed changes
   "Disable Multihops": "غیرفعال سازی چندپرش ها",
   "Disconnect": "قطع",
   "Dismiss": "لغو",
@@ -77,10 +120,12 @@
   "Enter a recipient": "گیرنده را وارد کنید",
   "Enter a valid fee percentage": "",
   "Enter a valid slippage percentage": "درصد افت معتبر را وارد کنید",
+  "Enter an Amount": "",
   "Enter an amount": "",
   "Error": "خطا",
   "Error connecting": "خطا در اتصال",
   "Error connecting. Try refreshing the page.": "خطا در اتصال. سعی کنید صفحه را تازه‌سازی کنید.",
+  "Estimated Fee Included: {0} USD + {1} BCH": "",
   "Exchange Rate": "نرخ ارز",
   "Expanded results from inactive Token Lists": "نتایج گسترش یافته از لیست‌های توکن غیرفعال",
   "Expert Mode": "حالت خبره",
@@ -88,22 +133,44 @@
   "Expiration is the time at which the order will become invalid": "انقضا به زمانی اطلاق می‌گردد که سفارش نامعتبر می‌شود",
   "Expired": "منقضی شده",
   "Farm": "مزرعه",
+  "Faucet": "",
   "Fee": "",
   "Filled": "پر شده",
   "Find Pool": "استخر را پیدا کنید",
   "For every swap on the exchange on every chain, 0.05% of the swap fees are distributed as TANGO\nproportional to your share of the TangoBar. When your TANGO is staked into the TangoBar, you receive\nxTANGO in return.\nYour xTANGO is continuously compounding, when you unstake you will receive all the originally deposited\nTANGO and any additional from fees.": "",
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+  "For hop.cash related issues, note the BCH and SBCH transaction identifiers and request assistance here:": "",
+  "From": "",
+  "Funds arrived to destination": "",
+  "Funds sent to the cross-chain bridge": "",
+  "Gain exposure to tokens without reducing your assets. Leverage will enable you to take short positions against assets and earn from downside movements.": "بدون کاهش دارایی خود، توکن بگیرید. سرمایه گذاری با قرض شما را قادر می سازد تا در مقابل دارایی ها جایگاه کوتاهی به دست آورید و از جابه جایی کاهش قیمت بازده دریافت کنید",
+=======
+>>>>>>> a31aa33e207030a4b10116ac7b511c1f3de249a9
+>>>>>>> Stashed changes
   "Gain governance rights with xTANGO and earn 5% APR (0.05% of\nall swaps from all chains)": "",
   "Get {0}/{1} LP tokens for staking": "",
+  "Give me some MOVR": "",
   "Go Back": "بازگشت",
   "Harvest": "",
   "Historical Total Locked: Connect Wallet": "مجموع تاریخی قفل شد: به کیف پول وصل شوید",
   "Historical Total Locked: Fetching Total": "مجموع تاریخی قفل شد: بازآوری مجموع",
   "Historical Total Locked: {0} TANGO": "",
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+  "History": "",
+  "If you want to supply to a market that is not listed yet, you can use this tool to create a new pair.": "اگر می‌خواهید به بازاری عرضه کنید که هنوز لیست نشده، می‌توانید از این ابزار برای ایجاد یک جفت جدید استفاده کنید.",
+=======
+>>>>>>> a31aa33e207030a4b10116ac7b511c1f3de249a9
+>>>>>>> Stashed changes
   "Import": "وارد كردن",
   "Import List": "",
   "Import Pool": "استخر را وارد کنید",
   "In Mirror:": "ﺂﯿﻨﻫ:",
   "In Wallet:": "در کیف پول:",
+  "Initializing": "",
   "Input is estimated. You will sell at most": "ورودی برآوردی است. حداکثر میرانی که خواهید فروخت",
   "Insufficient Balance": "مانده کافی نیست",
   "Insufficient liquidity for this trade": "لیکوییدیتی ناکافی برای این معامله",
@@ -123,17 +190,22 @@
   "Lists": "فهرست ها",
   "Loading": "بارگیری",
   "Loading balance": "مانده در حال بارگیری است",
+  "Lookup": "",
   "MAX": "حداکثر",
   "Manage": "مدیریت کنید",
   "Manage Token Lists": "مدیریت لیست‌های توکن",
   "Manage this pool": "این استخر را مدیریت کنید",
   "Max": "حداکثر",
   "Maximize yield by staking TANGO for xTANGO": "",
+  "Maximum Bridge Amount: {0} {1}": "",
+  "Maximum Bridge Fee: {0} {1}": "",
   "Maximum sent": "حداکثر ارسال شده",
   "MetaMask": "",
   "MetaMask extension": "",
   "Migrate": "جابه جایی",
   "Miner Tip": "نکته ویژه ماینر",
+  "Minimum Bridge Amount: {0} {1}": "",
+  "Minimum Bridge Fee: {0} {1}": "",
   "Minimum Received": "حداقل دریافتی",
   "Minimum received": "حداقل دریافتی",
   "Mirror": "آینه",
@@ -156,6 +228,7 @@
   "Open main menu": "منوی اصلی را باز کنید",
   "Order Expiration": "انقضای سفارش",
   "Order History": "تاریخچه سفارش",
+  "Our bridge uses hop.cash as an intermediary": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "نتیجه برآوردی است. در صورت تغییر قیمت تا بیش از {0}% تراکنش شما برگشت داده خواهد شد",
   "Output is estimated. You will receive at least": "خروجی برآوردی است. حداقل مبلغی که دریافت خواهید کرد",
@@ -174,6 +247,14 @@
   "Pool Found!": "استخر یافت شد",
   "Pool Tokens": "توکن های استخر",
   "Pooled {0}": "{0} استخر شد",
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+  "Positions": "وضعیت ها",
+  "Powered by hop.cash": "",
+=======
+>>>>>>> a31aa33e207030a4b10116ac7b511c1f3de249a9
+>>>>>>> Stashed changes
   "Price Impact": "تاثیر قیمت",
   "Price Impact High": "تاثیر بالای قیمت",
   "Price Impact Too High": "تاثیر بسیار بالای قیمت",
@@ -188,6 +269,7 @@
   "Remove {0} {1} and {2} {3}": "حذف {0} {1} و {2} {3}",
   "Removing {0} {1} and {2} {3}": "حذف {0} {1}  و {2} {3}",
   "Restricts swaps to direct pairs only.": "جابه جایی های را تنها به جفت های مستقیم محدود می کند",
+  "Retry from previous step": "",
   "Rewards": "جوایز",
   "Roll it back - this feature is not yet supported on {0}.": "آن را برگشت دهید - این ویژگی هنوز در {0} پشتیبانی نمی‌شود.",
   "Route": "مسیریابی ",
@@ -196,6 +278,7 @@
   "Search by name, symbol, address": "",
   "Search name or paste address": "نام را جستجو کنید یا آدرس را پیست کنید",
   "Select a Network": "",
+  "Select a Token": "",
   "Select a asset token": "یک توکن دارایی را انتخاب کنید",
   "Select a collateral token": "یک توکن وثیقه را انتخاب کنید",
   "Select a rate": "یک نرخ را انتخاب کنید",
@@ -203,10 +286,13 @@
   "Select a token to find your liquidity": "برای پیدا کردن لیکوییدیتی خود، توکنی را انتخاب کنید",
   "Select an order expiration": "یک انقضای سفارش را انتخاب کنید",
   "Send to:": "فرستادن به:",
+  "Sending {0} {symbol} from {1} network": "",
+  "Settled": "",
   "Share of Pool": "سهم استخر",
   "Share of Pool:": "سهم استخر",
   "Slippage tolerance": "دامنه پذیرش افت",
   "Slippage tolerance...": "دامنه پذیرش افت...",
+  "SmartBCH cross-chain tx {0}": "",
   "SmartSwap": "",
   "SmartSwap fee": "",
   "SmartSwap fee...": "",
@@ -217,6 +303,7 @@
   "Stake TANGO": "",
   "Stake TANGO for xTANGO": "",
   "Stake into xTANGO add collateral as axTANGO on Aave all in\none click": "",
+  "Status": "",
   "Supply APR": "",
   "Supplying {0} {1} and {2} {3}": "تامین {0} {1} و {2} {3}",
   "Swap": "جابه جا کنید",
@@ -238,12 +325,14 @@
   "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low.": "ارسال این تراکنش امکان‌پذیر نیست زیرا مهلت آن گذشته است. لطفاً بررسی کنید که مهلت تراکنش شما خیلی کم نباشد.",
   "These tokens are commonly paired with other tokens.": "",
   "Things you can do with your TANGO": "",
+  "This service helps you to quickly bridge your Bitcoin Cash to and from the SmartBCH network.": "",
   "This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade.": "این توکن در لیست(های) توکن فعال نمایش داده نمی‌شود. اطمینان حاصل کنید که این همان نشانه‌ای است که می‌خواهید تبادل کنید.",
   "This transaction is below market rate": "این تراکنش زیر نرخ بازار است",
   "This transaction will not succeed due to price movement. Try increasing your slippage tolerance.": "این تراکنش به علت جابه‌جایی قیمت موفقیت‌آمیز نخواهد بود. افزایش دامنه پذیرش افت را امتحان کنید.",
   "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance.": "این تراکنش به علت جابه جایی قیمت یا هزینه انتقال، ناموفق خواهد بود. افزایش دامنه پذیرش افت را امتحان کنید",
   "Tip to encourage miners to select this transaction.": "نکته‌ای برای تشویق ماینرها به انتخاب این تراکنش.",
   "Tip:": "نکته:",
+  "To": "",
   "Toggle Expert Mode": "حالت خبره توگل",
   "Token": "توکن",
   "Tokens": "توکن ها",
@@ -263,7 +352,11 @@
   "Vesting is executed within the guidelines selected by the community in": "واگذاری در چارچوب دستورالعمل‌های انتخاب شده توسط جامعه اجرا می‌شود",
   "View Liquidity Positions": "مشاهده وضعیت‌های لیکوییدیتی خود",
   "View on explorer": "مشاهده در جستجوگر (اکسپلورو)",
+  "View the history of all your bridge interactions": "",
   "Waiting for Confirmation": "در انتظار تأیید",
+  "Waiting for cross-chain transfer": "",
+  "Waiting for deposit": "",
+  "Waiting for {symbol} confirmations": "",
   "Wallet": "کیف پول",
   "Wallet Balance": "مانده کیف پول",
   "When creating a pair you are the first liquidity provider. The ratio of tokens you add will set the price of this pool. Once you are happy with the rate, click supply to review": "هنگام ایجاد جفت، شما اولین تامین کننده لیکوییدیتی هستید. نسبت توکن هایی که اضافه می کنید، قیمت این استخر را مشخص خواهند کرد. اگر با نرخ موافق بودید، می توانید برای مشاهده بر روی تامین (supply) کلیک کنید",
@@ -277,9 +370,20 @@
   "You pay": "شما می‌پردازید",
   "You receive": "شما دریافت می‌کنید",
   "You receive:": "شما دریافت می‌کنید:",
+  "You send:": "",
   "You will receive": "شما دریافت خواهید کرد",
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+  "You will receive about: {0} {1}": "",
+  "Your": "شما",
+=======
+>>>>>>> a31aa33e207030a4b10116ac7b511c1f3de249a9
+>>>>>>> Stashed changes
   "Your Claimable TANGO this Week": "",
   "Your Staked": "سهام گذاری های شما",
+  "Your XLM deposit must contain the memo: \"{memo}\", otherwise the deposit might be lost": "",
+  "Your XRP deposit must contain the Destination Tag: \"{destinationTag}\", otherwise the deposit will be rejected by the network": "",
   "Your browser is not supported, please install": "",
   "Your browser is supported, but first you need to install": "",
   "Your pool share": "سهم استخر شما ",
@@ -301,6 +405,7 @@
   "minutes": "دقیقه ها",
   "of pool": "",
   "or the transaction will revert.": "یا تراکنش برگشت داده خواهد شد.",
+  "sideshift.ai order {sideShiftOrderId}": "",
   "xTANGO Fee": "",
   "{0, plural, one {Token} many {Tokens}}": "",
   "{0} Deposited": "{0} واریز شد",

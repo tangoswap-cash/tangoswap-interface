@@ -128,6 +128,16 @@ function AppBar(): JSX.Element {
                           {i18n._(t`Analytics`)}
                         </ExternalLink>
                       )} */}
+                      {chainId && featureEnabled(Feature.BRIDGE, chainId) && (
+                        <NavLink href={'/bridge'}>
+                          <a
+                            id={`bridge-nav-link`}
+                            className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                          >
+                            {i18n._(t`Bridge`)} <sup>NEW</sup>
+                          </a>
+                        </NavLink>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -137,28 +147,32 @@ function AppBar(): JSX.Element {
                     {chainId && [ChainId.SMARTBCH].includes(chainId) && library && library.provider.isMetaMask && (
                       <>
                         <AddToken
-                          imageProps={{src: "/images/tokens/xtango-square.png", alt: "xTANGO"}}
+                          imageProps={{ src: '/images/tokens/xtango-square.png', alt: 'xTANGO' }}
                           text={i18n._(t`Add xTANGO to your MetaMask wallet`)}
                           metamaskProps={{
                             address: '0x98Ff640323C059d8C4CB846976973FEEB0E068aA',
                             symbol: 'xTANGO',
                             decimals: 18,
-                            image: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x98Ff640323C059d8C4CB846976973FEEB0E068aA/logo.png',
-                          }} />
+                            image:
+                              'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x98Ff640323C059d8C4CB846976973FEEB0E068aA/logo.png',
+                          }}
+                        />
                       </>
                     )}
 
                     {chainId && chainId in TANGO_ADDRESS && library && library.provider.isMetaMask && (
                       <>
                         <AddToken
-                          imageProps={{src: "/images/tokens/tango-square.png", alt: "TANGO"}}
+                          imageProps={{ src: '/images/tokens/tango-square.png', alt: 'TANGO' }}
                           text={i18n._(t`Add TANGO to your MetaMask wallet`)}
                           metamaskProps={{
                             address: TANGO_ADDRESS[chainId],
                             symbol: 'TANGO',
                             decimals: 18,
-                            image: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png',
-                          }} />
+                            image:
+                              'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png',
+                          }}
+                        />
                       </>
                     )}
 
@@ -259,16 +273,15 @@ function AppBar(): JSX.Element {
                   </a>
                 </Link>
 
-
                 {chainId && featureEnabled(Feature.MIGRATE, chainId) && (
-                <Link href={'/migrate'}>
-                  <a
-                    id={`migrate-nav-link`}
-                    className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                  >
-                    {i18n._(t`Migrate`)}
-                  </a>
-                </Link>
+                  <Link href={'/migrate'}>
+                    <a
+                      id={`migrate-nav-link`}
+                      className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                    >
+                      {i18n._(t`Migrate`)}
+                    </a>
+                  </Link>
                 )}
 
                 {chainId && featureEnabled(Feature.LIQUIDITY_MINING, chainId) && (
@@ -325,6 +338,16 @@ function AppBar(): JSX.Element {
                     {i18n._(t`Analytics`)}
                   </ExternalLink>
                 )} */}
+                {chainId && featureEnabled(Feature.BRIDGE, chainId) && (
+                  <Link href={'/bridge'}>
+                    <a
+                      id={`bridge-nav-link`}
+                      className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                    >
+                      {i18n._(t`Bridge`)} <sup>NEW</sup>
+                    </a>
+                  </Link>
+                )}
               </div>
             </Popover.Panel>
           </>

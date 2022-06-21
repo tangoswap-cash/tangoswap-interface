@@ -23,9 +23,9 @@ export function getCurrencyLogoUrls(currency) {
   urls.push(`https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/${getCurrencySymbol(currency)}.png`)
   if (currency.chainId in BLOCKCHAIN) {
     urls.push(
-      `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/${BLOCKCHAIN[currency.chainId]}/assets/${
-        currency.address
-      }/logo.png`
+      `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/${
+        BLOCKCHAIN[currency.chainId]
+      }/assets/${currency.address}/logo.png`
     )
     urls.push(
       `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${BLOCKCHAIN[currency.chainId]}/assets/${
@@ -70,8 +70,8 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({
       return [unknown]
     }
 
-    if (currency["logoURI"]) {
-      return [currency["logoURI"]]
+    if (currency['logoURI']) {
+      return [currency['logoURI']]
     }
 
     if (currency.isNative || currency.equals(WNATIVE[currency.chainId])) {
