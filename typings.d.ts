@@ -1,4 +1,6 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
+import { HopStatus } from './src/services/hop.cash'
+import { ShiftStatus } from './src/services/sideshift.ai'
 import Fraction from './src/entities/Fraction'
 
 declare module 'fortmatic'
@@ -15,6 +17,10 @@ declare global {
       autoRefreshOnNetworkChange?: boolean
     }
     web3?: Record<string, unknown>
+    hopwallet: any
+    hopStatus: HopStatus
+    hopwallet: any
+    shiftStatus: ShiftStatus
     hopwallet: any
     FromBlock: number
     bridgeId: string

@@ -25,6 +25,15 @@ const nextConfig = {
         type: 'javascript/auto',
       },
     ]
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve.alias,
+        tls: false,
+        net: false,
+        fs: false,
+      },
+    }
 
     config.resolve = {
       ...config.resolve,
@@ -33,7 +42,17 @@ const nextConfig = {
         tls: false,
         net: false,
         fs: false,
-      }
+      },
+    }
+
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve.alias,
+        tls: false,
+        net: false,
+        fs: false,
+      },
     }
 
     return config
@@ -45,10 +64,8 @@ const nextConfig = {
     disable: process.env.NODE_ENV === 'development',
   },
   images: {
-    domains: [
-      'raw.githubusercontent.com',
-      'metadata.bch.domains',
-    ],
+    domains: ['raw.githubusercontent.com', 'sideshift.ai'],
+    domains: ['raw.githubusercontent.com', 'metadata.bch.domains'],
   },
   reactStrictMode: true,
   async redirects() {

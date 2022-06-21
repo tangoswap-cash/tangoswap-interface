@@ -1,4 +1,12 @@
+<<<<<<< Updated upstream
 import { Currency } from '@tangoswapcash/sdk'
+=======
+<<<<<<< HEAD
+import { Currency } from '@mistswapdex/sdk'
+=======
+import { Currency } from '@tangoswapcash/sdk'
+>>>>>>> a31aa33e207030a4b10116ac7b511c1f3de249a9
+>>>>>>> Stashed changes
 import React, { useCallback } from 'react'
 
 import CurrencyModalView from './CurrencyModalView'
