@@ -420,29 +420,14 @@ export default function Bridge() {
               <div className="p-3 mx-5 rounded bg-dark-800">
                 <p>
                   {i18n._(
-                    t`This service helps you to try out the SmartBCH network by converting your assets to BCH and bridging it to our network`
+                    t`This service helps you to quickly bridge your Bitcoin Cash to and from the SmartBCH network.`
                   )}
                 </p>
-                <p>{i18n._(t`Our bridge utilizes a two-step process:`)}</p>
-                <p className="pl-4">
-                  {i18n._(t`1) asset coversion from anything to BCH with`)}{' '}
+                <p>{i18n._(t`Our bridge uses hop.cash as an intermediary`)}</p>
+                <p className="py-4">
+                  {i18n._(t`Bridge between BCH and SmartBCH or vice versa with`)}{' '}
                   <a className="font-bold" target="_blank" rel="noreferrer" href="https://sideshift.ai">
-                    SideShift.ai
-                  </a>
-                  .
-                </p>
-                <p className="pl-4">
-                  {i18n._(t`2) bridging the BCH to SmartBCH with `)}{' '}
-                  <a className="font-bold" target="_blank" rel="noreferrer" href="https://hop.cash">
                     hop.cash
-                  </a>
-                </p>
-                <p>
-                  {i18n._(
-                    t`If you experience any issues with SideShift conversion, note the order id, visit their website and ask for support there or in their telegram group: `
-                  )}{' '}
-                  <a className="font-bold" target="_blank" rel="noreferrer" href="https://t.me/sideshift">
-                    https://t.me/sideshift
                   </a>
                   .
                 </p>
