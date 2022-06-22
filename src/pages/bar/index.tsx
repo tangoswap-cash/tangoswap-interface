@@ -4,26 +4,21 @@ import React, { useEffect, useState } from 'react'
 import { TANGO, XTANGO } from '../../config/tokens'
 
 import Button from '../../components/Button'
-import { ChainId } from '@tangoswapcash/sdk'
 import Container from '../../components/Container'
 import Dots from '../../components/Dots'
 import Head from 'next/head'
 import Image from 'next/image'
 import Input from '../../components/Input'
 import TransactionFailedModal from '../../modals/TransactionFailedModal'
-import { request } from 'graphql-request'
 import styled from 'styled-components'
-import sushiData from '@sushiswap/sushi-data'
 import { t } from '@lingui/macro'
 import { tryParseAmount } from '../../functions/parse'
 import useActiveWeb3React from '../../hooks/useActiveWeb3React'
 import { useLingui } from '@lingui/react'
-import useSWR from 'swr'
 import useSushiBar from '../../hooks/useSushiBar'
 import { getDayData, useTangoPrice } from '../../services/graph'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
-import { GRAPH_HOST } from '../../services/graph/constants'
 
 const INPUT_CHAR_LIMIT = 18
 
@@ -56,9 +51,6 @@ const buttonStyleInsufficientFunds = `${buttonStyleEnabled} opacity-60`
 const buttonStyleDisabled = `${buttonStyle} text-secondary bg-dark-700`
 const buttonStyleConnectWallet = `${buttonStyle} text-high-emphesis bg-cyan-blue hover:bg-opacity-90`
 
-// TODO(tango): change this
-// const fetcher = (query) => request('https://thegraph.tangoswap.cash/subgraphs/name/tangoswap/bar', query)
-
 export default function Stake() {
   const { i18n } = useLingui()
   const { account, chainId } = useActiveWeb3React()
@@ -69,9 +61,6 @@ export default function Stake() {
 
   const { enter, leave } = useSushiBar()
 
-  // TODO(tango): change this
-  // // const { data } = useSWR(`{bar(id: "${XTANGO[chainId].address}") {ratio, totalSupply}}`, fetcher)
-  // const { data } = useSWR(`{bar(id: "0xc41c680c60309d4646379ed62020c534eb67b6f4") {ratio, totalSupply}}`, fetcher)
   const data = null;
 
   const xSushiPerSushi = parseFloat(data?.bar?.ratio)
@@ -195,9 +184,6 @@ export default function Stake() {
               <div className="self-end mb-3 text-lg font-bold md:text-2xl text-high-emphesis md:mb-7">
                 {i18n._(t`Maximize yield by staking TANGO for xTANGO`)}
               </div>
-              {/* <div className="self-start pl-6 pr-3 mb-1 min-w-max md:hidden">
-                                <img src={XSushiSignSmall} alt="xTANGO sign" />
-                            </div> */}
             </div>
             <div className="max-w-lg pr-3 mb-2 text-sm leading-5 text-gray-500 md:text-base md:mb-4 md:pr-0">
               {i18n._(t`For every swap on the exchange on every chain, 0.05% of the swap fees are distributed as TANGO
@@ -206,18 +192,6 @@ export default function Stake() {
                                 Your xTANGO is continuously compounding, when you unstake you will receive all the originally deposited
                                 TANGO and any additional from fees.`)}
             </div>
-            {/* <div className="flex">
-                            <div className="mr-14 md:mr-9">
-                                <StyledLink className="text-sm text-lg whitespace-nowrap md:text-lg md:leading-5">
-                                    Enter the Kitchen
-                                </StyledLink>
-                            </div>
-                            <div>
-                                <StyledLink className="text-sm text-lg whitespace-nowrap md:text-lg md:leading-5">
-                                    Tips for using xTANGO
-                                </StyledLink>
-                            </div>
-                        </div> */}
           </div>
           <div className="hidden px-8 ml-6 md:block w-72">
             <Image src="/xtango-sign.png" alt="xTANGO sign" width="100%" height="100%" layout="responsive" />
@@ -225,51 +199,6 @@ export default function Stake() {
         </div>
         <div className="flex flex-col justify-center md:flex-row">
           <div className="flex flex-col w-full max-w-xl mx-auto mb-4 md:m-0">
-            {/* <div className="mb-4">
-              {
-              <div className="flex items-center justify-between w-full h-24 max-w-xl p-4 rounded md:pl-5 md:pr-7 bg-light-yellow bg-opacity-40">
-                <div className="flex flex-col">
-                  <div className="flex items-center justify-center mb-4 flex-nowrap md:mb-2">
-                    <p className="text-sm font-bold whitespace-nowrap md:text-lg md:leading-5 text-high-emphesis">
-                      {i18n._(t`Staking APR`)}{' '}
-                    </p>
-                  </div>
-                  <div className="flex">
-                    <a
-                      href={`https://analytics.TANGOswap.fi/bar`}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className={`
-                        py-1 px-4 md:py-1.5 md:px-7 rounded
-                        text-xs md:text-sm font-medium md:font-bold text-dark-900
-                        bg-light-yellow hover:bg-opacity-90`}
-                      >
-                        {i18n._(t`View Stats`)}
-                      </a>
-                    </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <p className="mb-1 text-lg font-bold text-right text-high-emphesis md:text-3xl">
-                      {`${apr ? apr.toFixed(2) + '%' : i18n._(t`Loading...`)}`}
-                    </p>
-                    <p className="w-32 text-sm text-right text-primary md:w-64 md:text-base">
-                      {i18n._(t`Yesterday's APR`)}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col"> */}
-                  {/*
-                  <p className="mb-1 text-lg font-bold text-right text-high-emphesis md:text-3xl">
-                    {`${apr ? apr.toFixed(2) + '%' : i18n._(t`Loading...`)}`}
-                  </p>
-                  <p className="w-32 text-sm text-right text-primary md:w-64 md:text-base">
-                    {i18n._(t`Yesterday's APR`)}
-                  </p>
-                  */}
-                {/* </div>
-              </div>
-              }
-            </div> */}
             <div>
               <TransactionFailedModal isOpen={modalOpen} onDismiss={() => setModalOpen(false)} />
               <div className="w-full max-w-xl px-3 pt-2 pb-6 rounded bg-dark-900 md:pb-9 md:pt-4 md:px-8">
@@ -430,7 +359,6 @@ export default function Stake() {
                     <p className="text-lg font-bold md:text-2xl md:font-medium text-high-emphesis">
                       {i18n._(t`Unstaked`)}
                     </p>
-                    {/* <img className="w-4 ml-2 cursor-pointer" src={MoreInfoSymbol} alt={'more info'} /> */}
                   </div>
                   <div className="flex items-center ml-8 space-x-4 md:ml-0">
                     <Image
@@ -448,27 +376,6 @@ export default function Stake() {
                     </div>
                   </div>
                 </div>
-
-                {/*
-                <div className="flex flex-col w-full mb-4 mt-7 md:mb-0">
-                  {account && (
-                    <a
-                      href={`https://analytics.TANGOswap.fi/users/${account}`}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className={`
-                                flex flex-grow justify-center items-center
-                                h-14 mt-6 rounded
-                                bg-dark-700 text-high-emphesis
-                                focus:outline-none focus:ring hover:bg-opacity-80
-                                text-sm font-bold cursor-pointer
-                            `}
-                    >
-                      {i18n._(t`Your TangoBar Stats`)}
-                    </a>
-                  )}
-                </div>
-                */}
               </div>
             </div>
           </div>
