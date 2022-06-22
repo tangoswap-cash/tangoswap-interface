@@ -22,7 +22,7 @@ import { TrashIcon } from '@heroicons/react/outline'
 import { BridgeChains } from '..'
 import Button from '../../../components/Button'
 
-const Transaction: FC<{ chainId: string; hash: string, onClick: (hash) => any }> = ({ chainId, hash, onClick }) => {
+const Transaction: FC<{ chainId: string; hash: string; onClick: (hash) => any }> = ({ chainId, hash, onClick }) => {
   const { i18n } = useLingui()
   const allTransactions = useAllTransactions()
 
@@ -39,12 +39,18 @@ const Transaction: FC<{ chainId: string; hash: string, onClick: (hash) => any }>
   const symbol = tx?.symbol
 
   const dispatch = useAppDispatch()
-  const deleteTransactionCallback = useCallback((hash: string) => {
-    dispatch(deleteTransaction({hash}))
-  }, [dispatch])
+  const deleteTransactionCallback = useCallback(
+    (hash: string) => {
+      dispatch(deleteTransaction({ hash }))
+    },
+    [dispatch]
+  )
 
   return (
-    <div onClick={() => onClick(hash)} className={'w-full px-2 py-2 text-left rounded bg-dark-700  text-primary text-sm md:text-lg'}>
+    <div
+      onClick={() => onClick(hash)}
+      className={'w-full px-2 py-2 text-left rounded bg-dark-700  text-primary text-sm md:text-lg'}
+    >
       <div className="flex flex-col px-2 md:px-0 md:flex-row">
         <div className="flex flex-row justify-between md:flex-none md:w-40">
           <div className="items-center text-base font-bold text-primary md:hidden">
@@ -84,10 +90,11 @@ const Transaction: FC<{ chainId: string; hash: string, onClick: (hash) => any }>
           </div>
           <Typography variant="sm" className="flex items-center md:py-0.5 justify-end">
             <div className={'text-primary'}>
-              {status === HopStage.settled ? i18n._(t`Settled`)
-                : status === HopStage.cancelled ? i18n._(t`Cancelled`)
-                : i18n._(t`Pending`)
-              }
+              {status === HopStage.settled
+                ? i18n._(t`Settled`)
+                : status === HopStage.cancelled
+                ? i18n._(t`Cancelled`)
+                : i18n._(t`Pending`)}
             </div>
           </Typography>
         </div>
@@ -96,11 +103,14 @@ const Transaction: FC<{ chainId: string; hash: string, onClick: (hash) => any }>
             <div className="w-10"></div>
           </div>
           <Typography variant="sm" className="flex items-center md:py-0.5 justify-end">
-            <div className={'cursor-pointer text-primary'} onClick={(e) => {
-              e.stopPropagation()
-              e.nativeEvent.stopImmediatePropagation()
-              deleteTransactionCallback(hash)
-            }} >
+            <div
+              className={'cursor-pointer text-primary'}
+              onClick={(e) => {
+                e.stopPropagation()
+                e.nativeEvent.stopImmediatePropagation()
+                deleteTransactionCallback(hash)
+              }}
+            >
               <TrashIcon width="20" height="20" />
             </div>
           </Typography>
@@ -138,16 +148,15 @@ export default function Bridge() {
   const { account: activeAccount, chainId: activeChainId } = useActiveWeb3React()
   const { account, chainId, library, activate } = useWeb3React()
   const [refresher, setRefresher] = useState(0)
-  const [lookupHash, setLookupHash] = useState<string>("")
+  const [lookupHash, setLookupHash] = useState<string>('')
 
   const allTransactions = useAllTransactions(refresher)
-  const transactionUpdater = useTransactionUpdater();
+  const transactionUpdater = useTransactionUpdater()
 
   const [showBridgeModal, setShowBridgeModal] = useState(false)
   const [bridgeTransactionHash, setBridgeTransactionHash] = useState<string | null>(null)
 
-  useEffect(() => {
-  }, [activate, chainId, activeAccount, activeChainId])
+  useEffect(() => {}, [activate, chainId, activeAccount, activeChainId])
 
   const onClick = (hash) => {
     setBridgeTransactionHash(hash)
@@ -156,13 +165,13 @@ export default function Bridge() {
 
   const onLookup = async (hash) => {
     // fetch the bridge transaction from the support server
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    const myHeaders = new Headers()
+    myHeaders.append('Content-Type', 'application/json')
     const response = await fetch(`https://bridgelogger.mistswap.fi/log/${hash}`, {
       headers: myHeaders,
-      redirect: 'follow'
+      redirect: 'follow',
     })
-    const bridgeTransaction = await response.json() as TransactionDetails
+    const bridgeTransaction = (await response.json()) as TransactionDetails
 
     if (response.ok) {
       // store the retreived transaction in the browser and deliver it to user's ui
@@ -174,13 +183,16 @@ export default function Bridge() {
 
   return (
     <>
-      {showBridgeModal && (<BridgeModal
-        isOpen={showBridgeModal}
-        hash={bridgeTransactionHash}
-        onDismiss={() => setShowBridgeModal(false)} />)}
+      {showBridgeModal && (
+        <BridgeModal
+          isOpen={showBridgeModal}
+          hash={bridgeTransactionHash}
+          onDismiss={() => setShowBridgeModal(false)}
+        />
+      )}
 
       <Head>
-        <title>{i18n._(t`Bridge`)} | MISTswap</title>
+        <title>{i18n._(t`Bridge`)} | TANGOswap</title>
         <meta key="description" name="description" content="Bridge" />
       </Head>
 
@@ -263,7 +275,7 @@ export default function Bridge() {
                   )}
                 </div>
               )}
-              <div className='flex items-center gap-2 mx-4'>
+              <div className="flex items-center gap-2 mx-4">
                 <input
                   id="list-add-input"
                   type="text"
@@ -275,7 +287,9 @@ export default function Bridge() {
                   autoComplete="off"
                   autoCorrect="off"
                 />
-                <Button color="gradient" variant="outlined" onClick={() => onLookup(lookupHash)}>{i18n._(t`Lookup`)}</Button>
+                <Button color="gradient" variant="outlined" onClick={() => onLookup(lookupHash)}>
+                  {i18n._(t`Lookup`)}
+                </Button>
               </div>
             </BottomGrouping>
           </div>

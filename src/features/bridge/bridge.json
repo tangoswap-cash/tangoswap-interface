@@ -1,11 +1,11 @@
 [
   {
     "methodId": "bch",
-    "symbol": "BCH",
-    "hint": "Smart Bitcoin Cash",
-    "name": "Smart Bitcoin Cash",
-    "logoUrl": "https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/bch.png",
-    "title": "Smart Bitcoin Cash",
+    "symbol": "sBCH",
+    "hint": "SmartBCH",
+    "name": "SmartBCH",
+    "logoUrl": "https://raw.githubusercontent.com/tirobs000/tangoswap-interface/feature/bridge/public/images/tokens/smartbch-logo.png",
+    "title": "SmartBCH",
     "chainId": 10000
   },
   {

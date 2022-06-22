@@ -351,7 +351,7 @@ export default function Bridge() {
       )}
 
       <Head>
-        <title>{i18n._(t`Bridge`)} | MISTswap</title>
+        <title>{i18n._(t`Bridge`)} | TANGOswap</title>
         <meta key="description" name="description" content="Bridge" />
       </Head>
 
@@ -401,48 +401,6 @@ export default function Bridge() {
                 </NavLink> */}
               </div>
             </div>
-
-            <div className="flex justify-center p-4 text-center">
-              <div className="flex items-center gap-1">
-                <Typography component="h3" variant="base">
-                  {i18n._(t`Bridge tokens to and from the SmartBCH Network`)}
-                </Typography>
-                <QuestionMarkCircleIcon
-                  className="cursor-pointer"
-                  onClick={() => setHelpVisible(!helpVisible)}
-                  width={16}
-                  height={16}
-                />
-              </div>
-            </div>
-
-            {helpVisible && (
-              <div className="p-3 mx-5 rounded bg-dark-800">
-                <p>
-                  {i18n._(
-                    t`This service helps you to quickly bridge your Bitcoin Cash to and from the SmartBCH network.`
-                  )}
-                </p>
-                <p>{i18n._(t`Our bridge uses hop.cash as an intermediary`)}</p>
-                <p className="py-4">
-                  {i18n._(t`Bridge between BCH and SmartBCH or vice versa with`)}{' '}
-                  <a className="font-bold" target="_blank" rel="noreferrer" href="https://sideshift.ai">
-                    hop.cash
-                  </a>
-                  .
-                </p>
-                <p>
-                  {i18n._(
-                    t`For issues related to hop cash, note the BCH and SBCH transaction ids and ask for support here:`
-                  )}{' '}
-                  <a className="font-bold" target="_blank" rel="noreferrer" href="https://t.me/hopcash">
-                    https://t.me/hopcash
-                  </a>
-                  .
-                </p>
-              </div>
-            )}
-
             <div className="flex flex-row items-center justify-between text-center">
               <ChainSelect
                 chains={chains}
@@ -602,13 +560,53 @@ export default function Bridge() {
                 </div>
               </div>
             )}
+            <div className="flex justify-center p-4 text-center">
+              <div className="flex items-center gap-1">
+                <Typography component="h3" variant="base">
+                  {i18n._(t`Bridge tokens to and from the SmartBCH Network`)}
+                </Typography>
+                <QuestionMarkCircleIcon
+                  className="cursor-pointer"
+                  onClick={() => setHelpVisible(!helpVisible)}
+                  width={16}
+                  height={16}
+                />
+              </div>
+            </div>
+
+            {helpVisible && (
+              <div className="p-3 mx-5 rounded bg-dark-800">
+                <p>
+                  {i18n._(
+                    t`This service helps you to quickly bridge your Bitcoin Cash to and from the SmartBCH network.`
+                  )}
+                </p>
+                <p>{i18n._(t`Our bridge uses hop.cash as an intermediary`)}</p>
+                <p className="py-4">
+                  {i18n._(t`Bridge between BCH and SmartBCH or vice versa with`)}{' '}
+                  <a className="font-bold" target="_blank" rel="noreferrer" href="https://sideshift.ai">
+                    hop.cash
+                  </a>
+                  .
+                </p>
+                <p>
+                  {i18n._(
+                    t`For issues related to hop cash, note the BCH and SBCH transaction ids and ask for support here:`
+                  )}{' '}
+                  <a className="font-bold" target="_blank" rel="noreferrer" href="https://t.me/hopcash">
+                    https://t.me/hopcash
+                  </a>
+                  .
+                </p>
+              </div>
+            )}
 
             <AutoRow
               style={{ justifyItems: 'center', backgroundColor: '', padding: '12px 0px', borderRadius: '12px' }}
               justify={'center'}
               gap={'0 3px'}
             >
-              {i18n._(t`Powered by SideShift.ai and hop.cash`)}
+              {i18n._(t`Powered by hop.cash`)}
             </AutoRow>
           </div>
         </DoubleGlowShadow>
