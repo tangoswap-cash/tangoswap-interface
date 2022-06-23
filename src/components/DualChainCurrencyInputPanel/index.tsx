@@ -14,6 +14,7 @@ import { useLingui } from '@lingui/react'
 import SelectTokenModal from '../../modals/SelectTokenModal/SelectTokenModal'
 import { useWeb3React } from '@web3-react/core'
 import { AnyswapTokensMap, Chain } from '../../features/bridge/interface'
+import { chain } from 'lodash'
 
 interface CurrencyInputPanelProps {
   value?: string

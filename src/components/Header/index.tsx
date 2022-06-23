@@ -58,7 +58,7 @@ function AppBar(): JSX.Element {
                           id={`smart-swap-nav-link`}
                           className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                         >
-                          {i18n._(t`SmartSwap`)} <sup>NEW</sup>
+                          {i18n._(t`SmartSwap`)}
                         </a>
                       </NavLink>
                       <NavLink href="/pool">
@@ -260,7 +260,7 @@ function AppBar(): JSX.Element {
                     id={`smart-swap-nav-link`}
                     className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                   >
-                    {i18n._(t`SmartSwap`)} <sup>NEW</sup>
+                    {i18n._(t`SmartSwap`)}
                   </a>
                 </Link>
 
