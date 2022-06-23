@@ -155,9 +155,11 @@ export default function Stake() {
   // TODO: DROP AND USE SWR HOOKS INSTEAD
   useEffect(() => {
     const fetchData = async () => {
-      const results = await getDayData()
-      const apr = (((results[1].volumeUSD * 0.05) / data?.bar?.totalSupply) * 365) / (data?.bar?.ratio * tangoPrice)
-      setApr(apr)
+      const results = await getDayData().catch(console.error)
+      if (results) {
+        const apr = (((results[1].volumeUSD * 0.05) / data?.bar?.totalSupply) * 365) / (data?.bar?.ratio * tangoPrice)
+        setApr(apr)
+      }
     }
     fetchData()
   }, [data?.bar?.ratio, data?.bar?.totalSupply, tangoPrice])
