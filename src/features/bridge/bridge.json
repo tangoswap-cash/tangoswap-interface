@@ -4,7 +4,7 @@
     "symbol": "sBCH",
     "hint": "SmartBCH",
     "name": "SmartBCH",
-    "logoUrl": "https://raw.githubusercontent.com/tirobs000/tangoswap-interface/feature/bridge/public/images/tokens/smartbch-logo.png",
+    "logoUrl": "https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/smartbch-logo.png",
     "title": "SmartBCH",
     "chainId": 10000
   },
