@@ -18,12 +18,11 @@ const NavLink = ({ children, exact = false, activeClassName = 'text-high-emphesi
 
   const className = isActive ? `${childClassName} ${activeClassName}`.trim() : childClassName
 
-  // console.log({ asPath, pathname, route, query })
-
   return (
     <Link href={props.href} {...props}>
       {React.cloneElement(child, {
         className: className || null,
+        style: { wordBreak: 'break-word' },
       })}
     </Link>
   )
