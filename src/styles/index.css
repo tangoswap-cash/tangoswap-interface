@@ -48,10 +48,6 @@ a {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-button:focus {
-  outline: none;
-}
-
 input:focus {
   box-shadow: none;
   outline: none;
