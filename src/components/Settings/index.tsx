@@ -1,11 +1,6 @@
-import { ChainId, Percent } from '@tangoswapcash/sdk'
+import { Percent } from '@tangoswapcash/sdk'
 import React, { useRef, useState } from 'react'
-import {
-  useExpertModeManager,
-  useUserArcherUseRelay,
-  useUserSingleHopOnly,
-  useUserTransactionTTL,
-} from '../../state/user/hooks'
+import { useExpertModeManager, useUserSingleHopOnly } from '../../state/user/hooks'
 import { useModalOpen, useToggleSettingsMenu } from '../../state/application/hooks'
 
 import { AdjustmentsIcon } from '@heroicons/react/outline'
@@ -18,14 +13,11 @@ import Toggle from '../Toggle'
 import TransactionSettings from '../TransactionSettings'
 import Typography from '../Typography'
 import { t } from '@lingui/macro'
-import { useActiveWeb3React } from '../../hooks'
 import { useLingui } from '@lingui/react'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 
 export default function SettingsTab({ placeholderSlippage }: { placeholderSlippage?: Percent }) {
   const { i18n } = useLingui()
-  const { chainId } = useActiveWeb3React()
-
   const node = useRef<HTMLDivElement>(null)
   const open = useModalOpen(ApplicationModal.SETTINGS)
   const toggle = useToggleSettingsMenu()
@@ -39,19 +31,16 @@ export default function SettingsTab({ placeholderSlippage }: { placeholderSlippa
 
   useOnClickOutside(node, open ? toggle : undefined)
 
-  const [ttl, setTtl] = useUserTransactionTTL()
-
-  const [userUseArcher, setUserUseArcher] = useUserArcherUseRelay()
-
   return (
     <div className="relative flex" ref={node}>
-      <div
+      <button
+        aria-label={i18n._(t`Transaction Settings`)}
         className="flex items-center justify-center w-8 h-8 rounded cursor-pointer"
         onClick={toggle}
         id="open-settings-dialog-button"
       >
-        <AdjustmentsIcon className="w-[26px] h-[26px] transform rotate-90" />
-      </div>
+        <AdjustmentsIcon className="w-[26px] h-[26px] transform rotate-90" aria-hidden />
+      </button>
       {open && (
         <div className="absolute top-14 right-0 z-50 -mr-2.5 min-w-20 md:m-w-22 md:-mr-5 bg-dark-900 border-2 border-dark-800 rounded w-80 shadow-lg">
           <div className="p-4 space-y-4">
@@ -103,25 +92,6 @@ export default function SettingsTab({ placeholderSlippage }: { placeholderSlippa
                 toggle={() => (singleHopOnly ? setSingleHopOnly(false) : setSingleHopOnly(true))}
               />
             </div>
-            {/* {chainId == ChainId.SMARTBCH && (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Typography variant="sm" className="text-primary">
-                    {i18n._(t`MEV Shield by Archer DAO`)}
-                  </Typography>
-                  <QuestionHelper
-                    text={i18n._(
-                      t`Send transaction privately to avoid front-running and sandwich attacks. Requires a miner tip to incentivize miners`
-                    )}
-                  />
-                </div>
-                <Toggle
-                  id="toggle-use-archer"
-                  isActive={userUseArcher}
-                  toggle={() => setUserUseArcher(!userUseArcher)}
-                />
-              </div>
-            )} */}
           </div>
         </div>
       )}
