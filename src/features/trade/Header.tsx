@@ -99,13 +99,16 @@ const ExchangeHeader: FC<ExchangeHeaderProps> = ({ input, output, allowedSlippag
               </div>
             </div>
           )*/}
-          {refreshPrice &&
-            <div onClick={refreshPrice} className="relative flex items-center justify-center rounded hover:bg-dark-800 w-8 h-8 rounded cursor-pointer">
-              <span className={refreshingPrice ? "animate-spin opacity-40" : undefined}>
-                <RefreshIcon className="w-[26px] h-[26px] transform" />
+          {refreshPrice && (
+            <button
+              onClick={refreshPrice}
+              className="relative flex items-center justify-center rounded hover:bg-dark-800 w-8 h-8 rounded cursor-pointer"
+            >
+              <span className={refreshingPrice ? 'animate-spin opacity-40' : undefined}>
+                <RefreshIcon aria-hidden className="w-[26px] h-[26px] transform" />
               </span>
-            </div>
-          }
+            </button>
+          )}
           <div className="relative flex items-center w-full h-full rounded hover:bg-dark-800">
             <Settings placeholderSlippage={allowedSlippage} />
           </div>
