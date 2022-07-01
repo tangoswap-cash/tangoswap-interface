@@ -446,7 +446,7 @@ export default function Farm(): JSX.Element {
       owner: {
         id: MASTERCHEF_ADDRESS[chainId],
         sushiPerBlock: "10000000000000000000",
-        totalAllocPoint: "999949984"
+        totalAllocPoint: "1010050488"
 
       },
       userCount: 1,
@@ -511,8 +511,7 @@ export default function Farm(): JSX.Element {
       owner: {
         id: MASTERCHEF_V2_ADDRESS[chainId],
         sushiPerBlock: "10000000000000000000",
-        totalAllocPoint: "999949984", // "999949984"
-
+        totalAllocPoint: "1010050488",
       },
 
       rewarder: {
