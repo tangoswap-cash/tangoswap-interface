@@ -100,25 +100,25 @@ export default function Farm(): JSX.Element {
       },
       "0xf8534BB9603c501Bbe16deF7D08D941F0241855b": {
         farmId: 1,
-        allocPoint: 205699999,
+        allocPoint: 0,
         token0: TANGO[ChainId.SMARTBCH],
         token1: FLEXUSD,
       },
       "0x4b773a2ea30C6A77564E4FaE60204e7Bc0a81A90": {
         farmId: 2,
-        allocPoint: 509999999,
+        allocPoint: 906450507,
         token0: TANGO[ChainId.SMARTBCH],
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0xA15F8102AB4723A4D1554363c0c8AFF471F16E21": {
         farmId: 3,
-        allocPoint: 170250512,
+        allocPoint: 0,
         token0: FLEXUSD,
         token1: WBCH[ChainId.SMARTBCH],
       },
       "0x1A2bdFF5bA942bF20f0db7218cdE28D19aC8dD20": {
         farmId: 4,
-        allocPoint: 14999999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x98Dd7eC28FB43b3C4c770AE532417015fa939Dd3', 18, 'FLEX', 'FLEX Coin'),
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -250,13 +250,13 @@ export default function Farm(): JSX.Element {
       },
       "0xC073d247f8FdB539Bc6653b6bfFEF8c61092738F": {
         farmId: 26,
-        allocPoint: 999999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x98Dd7eC28FB43b3C4c770AE532417015fa939Dd3', 18, 'FLEX', 'FLEX Coin'),
         token1: TANGO[ChainId.SMARTBCH],
       },
       "0xcdb6081DCb9fd2b3d48927790DF7757E8d137fF4": {
         farmId: 27,
-        allocPoint: 4499999,
+        allocPoint: 0,
         token0: new Token(ChainId.SMARTBCH, '0x98Ff640323C059d8C4CB846976973FEEB0E068aA', 18, 'XTANGO', 'TANGObar'),
         token1: FLEXUSD,
       },
@@ -290,6 +290,12 @@ export default function Farm(): JSX.Element {
         token0: new Token(ChainId.SMARTBCH, '0xe1e655be6f50344e6dd708c27bd8d66492d6ecaf', 18, 'LAWUSD', 'lawUSD'),
         token1: TANGO[ChainId.SMARTBCH],
       },
+      // "0x1c906EB496841B1e305Fd3ea36f670B39F3faE86": {
+      //   farmId: 34,
+      //   allocPoint: 10100504,
+      //   token0: new Token(ChainId.SMARTBCH, '0xaaC82e8931400fb955Bce783A8fD5bcFF99b4317', 18, 'TR1', 'Tango Reduction 1'),
+      //   token1: new Token(ChainId.SMARTBCH, '0x1D35f2Ea7DE9c3996616BAb03FEe7152FdcaACba', 18, 'TR1', 'Tango Reduction 2'),
+      // },
     },
     [ChainId.SMARTBCH_AMBER]: {
       "0x07DE6fc05597E0E4c92C83637A8a0CA411f3a769": {
