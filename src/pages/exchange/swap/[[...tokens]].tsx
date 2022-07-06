@@ -76,6 +76,7 @@ import * as gtag from '../../../functions/matomo'
 
 export default function Swap() {
   const { i18n } = useLingui()
+  const { theme } = useTheme();
 
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -510,7 +511,7 @@ export default function Swap() {
                       onMouseLeave={() => setAnimateSwapArrows(false)}
                     >
                       <Lottie
-                        animationData={swapArrowsAnimationData}
+                        animationData={theme ==='light' ? swapArrowsLightAnimationData : swapArrowsAnimationData}
                         autoplay={animateSwapArrows}
                         loop={false}
                         style={{ width: 32, height: 32 }}
@@ -629,7 +630,7 @@ export default function Swap() {
                     {approvalState === ApprovalState.PENDING ? (
                       <div className="flex items-center justify-center h-full space-x-2">
                         <div>Approving</div>
-                        <Loader stroke="white" />
+                        <Loader />
                       </div>
                     ) : (
                       i18n._(t`Approve ${currencies[Field.INPUT]?.symbol}`)

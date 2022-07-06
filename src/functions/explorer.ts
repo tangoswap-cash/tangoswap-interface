@@ -50,7 +50,7 @@ interface ChainObject {
 const chains: ChainObject = {
   [ChainId.SMARTBCH]: {
     chainName: '',
-    builder: builders.smartbit,
+    builder: builders.sonar,
   },
   [ChainId.SMARTBCH_AMBER]: {
     chainName: 'amber',

@@ -10,6 +10,8 @@ export enum Feature {
   ANALYTICS = 'Analytics',
   MIGRATE = 'Migrate',
   STAKING = 'Staking',
+  BRIDGE = 'Bridge',
+  GOVERNANCE = 'Governance',
 }
 
 const features = {
