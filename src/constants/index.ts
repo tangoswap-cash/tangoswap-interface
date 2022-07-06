@@ -64,9 +64,4 @@ export const LNS_METADATA_URL: { [chainId in ChainId]?: string } = {
   [ChainId.SMARTBCH_AMBER]: 'https://metadata.bch.domains/smartbch-amber',
 }
 
-export const LNS_METADATA_URL: { [chainId in ChainId]?: string } = {
-  [ChainId.SMARTBCH]: 'https://metadata.bch.domains/smartbch',
-  [ChainId.SMARTBCH_AMBER]: 'https://metadata.bch.domains/smartbch-amber',
-}
-
 export const EIP_1559_ACTIVATION_BLOCK: { [chainId in ChainId]?: number } = {}
