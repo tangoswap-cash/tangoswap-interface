@@ -4,7 +4,7 @@
  */
 export default function Loader({
   size = '16px',
-  stroke,
+  stroke = '#FFFFFF',
   ...rest
 }: {
   size?: string
@@ -26,7 +26,7 @@ export default function Loader({
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        stroke={stroke || defaultStroke}
+        stroke={stroke}
       />
     </svg>
   )

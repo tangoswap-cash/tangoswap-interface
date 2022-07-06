@@ -1,5 +1,5 @@
 import {
-  TANGO, XTANGO, LAWUSD, SBUSD, LAW, GOB, BCUSDT, BCBCH, GOC
+    TANGO, XTANGO, LAWUSD, SBUSD, LAW, GOB, BCUSDT, BCBCH, GOC
 } from '../config/tokens'
 // a list of tokens by chain
 import { ChainId, Currency, Token, WNATIVE } from '@tangoswapcash/sdk'
