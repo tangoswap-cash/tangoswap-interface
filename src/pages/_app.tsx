@@ -153,22 +153,20 @@ function MyApp({
             <Web3ReactManager>
               <ReduxProvider store={store}>
                 <PersistGate loading={<Dots>loading</Dots>} persistor={persistor}>
-                  <ThemeProvider>
-                    <>
-                      <ListsUpdater />
-                      <UserUpdater />
-                      <ApplicationUpdater />
-                      <TransactionUpdater />
-                      <MulticallUpdater />
-                    </>
-                    <Provider>
-                      <Layout>
-                        <Guard>
-                          <Component {...pageProps} />
-                        </Guard>
-                      </Layout>
-                    </Provider>
-                  </ThemeProvider>
+                  <>
+                    <ListsUpdater />
+                    <UserUpdater />
+                    <ApplicationUpdater />
+                    <TransactionUpdater />
+                    <MulticallUpdater />
+                  </>
+                  <Provider>
+                    <Layout>
+                      <Guard>
+                        <Component {...pageProps} />
+                      </Guard>
+                    </Layout>
+                  </Provider>
                 </PersistGate>
               </ReduxProvider>
             </Web3ReactManager>
