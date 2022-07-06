@@ -75,11 +75,6 @@ const nextConfig = {
         destination: '/analytics/portfolio',
         permanent: true,
       },
-      {
-        source: '/bridge',
-        destination: '/',
-        permanent: false,
-      },
     ]
   },
   async rewrites() {
@@ -87,14 +82,6 @@ const nextConfig = {
       {
         source: '/stake',
         destination: '/bar',
-      },
-      {
-        source: '/vote',
-        destination: '/governance',
-      },
-      {
-        source: '/vote/:proposalId',
-        destination: '/governance/proposal/:proposalId',
       },
       {
         source: '/add/:token*',
@@ -131,30 +118,6 @@ const nextConfig = {
       {
         source: '/find',
         destination: '/exchange/find',
-      },
-      {
-        source: '/lend',
-        destination: '/mistlend/lend',
-      },
-      {
-        source: '/lend/:pair',
-        destination: '/mistlend/lend/:pair',
-      },
-      {
-        source: '/borrow',
-        destination: '/mistlend/borrow',
-      },
-      {
-        source: '/borrow/:pair',
-        destination: '/mistlend/borrow/:pair',
-      },
-      {
-        source: '/create',
-        destination: '/mistlend/create',
-      },
-      {
-        source: '/balances',
-        destination: '/user/balances',
       },
     ]
   },
