@@ -76,7 +76,6 @@ import * as gtag from '../../../functions/matomo'
 
 export default function Swap() {
   const { i18n } = useLingui()
-  const { theme } = useTheme();
 
   const loadedUrlParams = useDefaultsFromURLSearch()
 
@@ -511,7 +510,7 @@ export default function Swap() {
                       onMouseLeave={() => setAnimateSwapArrows(false)}
                     >
                       <Lottie
-                        animationData={theme ==='light' ? swapArrowsLightAnimationData : swapArrowsAnimationData}
+                        animationData={swapArrowsAnimationData}
                         autoplay={animateSwapArrows}
                         loop={false}
                         style={{ width: 32, height: 32 }}
