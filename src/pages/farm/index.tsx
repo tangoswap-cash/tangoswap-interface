@@ -13,7 +13,7 @@ import {
 
 import { BigNumber } from '@ethersproject/bignumber'
 import { ChainId, WNATIVE, Token, CurrencyAmount, JSBI, WBCH, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS } from '@tangoswapcash/sdk'
-import { TANGO, FLEXUSD } from '../../config/tokens'
+import { TANGO, FLEXUSD, LAWUSD } from '../../config/tokens'
 import Container from '../../components/Container'
 import FarmList from '../../features/onsen/FarmList'
 import Head from 'next/head'
@@ -577,6 +577,14 @@ export default function Farm(): JSX.Element {
           tvl = reserve / totalSupply * chefBalance * 2;
         }
         else if (farms[i].pool.token1 === FLEXUSD.address) {
+          const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed());
+          tvl = reserve / totalSupply * chefBalance * 2;
+        }
+        else if (farms[i].pool.token0 === LAWUSD.address) {
+          const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed());
+          tvl = reserve / totalSupply * chefBalance * 2;
+        }
+        else if (farms[i].pool.token1 === LAWUSD.address) {
           const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed());
           tvl = reserve / totalSupply * chefBalance * 2;
         }
