@@ -629,7 +629,7 @@ export default function Swap() {
                     {approvalState === ApprovalState.PENDING ? (
                       <div className="flex items-center justify-center h-full space-x-2">
                         <div>Approving</div>
-                        <Loader />
+                        <Loader stroke="white" />
                       </div>
                     ) : (
                       i18n._(t`Approve ${currencies[Field.INPUT]?.symbol}`)

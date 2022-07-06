@@ -17,7 +17,6 @@ import { TANGO, FLEXUSD, LAWUSD } from '../../config/tokens'
 import Container from '../../components/Container'
 import FarmList from '../../features/onsen/FarmList'
 import Head from 'next/head'
-import Image from 'next/image'
 import Menu from '../../features/onsen/FarmMenu'
 import React, { useEffect } from 'react'
 import Search from '../../components/Search'
@@ -304,12 +303,6 @@ export default function Farm(): JSX.Element {
         allocPoint: 1000,
         token0: WBCH[ChainId.SMARTBCH_AMBER],
         token1: new Token(ChainId.SMARTBCH_AMBER, '0xC6F80cF669Ab9e4BE07B78032b4821ed5612A9ce', 18, 'sc', 'testcoin2'),
-      },
-      "0xcd4f24eD6d53d3CF342B6D7a1006ff209DdcC993": {
-        farmId: 1,
-        allocPoint: 500000,
-        token0: new Token(ChainId.SMARTBCH_AMBER, '0x9E93b1e6B6f169b793aFC72BB5241a0388418E2A', 18, 'FOG', 'FOGToken'),
-        token1: new Token(ChainId.SMARTBCH_AMBER, '0x19E75581Ce31219c78E7996aEa2714EE88e8f059', 18, 'TEST', 'TESTToken'),
       },
     }
   };
@@ -770,16 +763,13 @@ export default function Farm(): JSX.Element {
   })
 
   return (
-    <Container id="farm-page" className="h-full py-4 mx-auto lg:grid lg:grid-cols-4 md:py-8 lg:py-12 gap-9" maxWidth="7xl">
+    <Container id="farm-page" className="lg:grid lg:grid-cols-4 h-full py-4 mx-auto md:py-8 lg:py-12 gap-9" maxWidth="7xl">
       <Head>
         <title>Farm | Tango</title>
         <meta key="description" name="description" content="Farm TANGO" />
       </Head>
       <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>
         <Menu positionsLength={positions.length} />
-        <div className="relative hidden h-80 lg:block">
-          <Image layout="fill" objectFit="contain" objectPosition="bottom" src="/mist-machine.png" alt="" />
-        </div>
       </div>
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
         <Search
@@ -793,7 +783,7 @@ export default function Farm(): JSX.Element {
           }}
         />
 
-        <div className="flex items-center hidden text-lg font-bold md:block text-high-emphesis whitespace-nowrap">
+        <div className="hidden md:block flex items-center text-lg font-bold text-high-emphesis whitespace-nowrap">
           Farms{' '}
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
