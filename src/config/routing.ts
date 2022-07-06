@@ -2,7 +2,7 @@ import {
     TANGO, XTANGO, LAWUSD, LAW, BCUSDT, BCBCH, GOC
 } from '../config/tokens'
 // a list of tokens by chain
-import { ChainId, Currency, Token, WNATIVE } from '@tangoswapcash/sdk'
+import { ChainId, Currency, Token, WNATIVE, FLEXUSD } from '@tangoswapcash/sdk'
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[]
