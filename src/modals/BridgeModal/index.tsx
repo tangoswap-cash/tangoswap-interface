@@ -14,8 +14,6 @@ import { useActiveWeb3React } from "../../hooks";
 import { ShiftInProcess, ShiftOutProcess, ShiftStage } from "../../services/sideshift.ai";
 import Dots from "../../components/Dots";
 import Copy from "../../components/AccountDetails/Copy";
-import { useTransactionGetter, useTransactionUpdater } from "../../state/bridgeTransactions/hooks";
-import { TransactionDetails } from "../../state/bridgeTransactions/reducer";
 import { ExternalLinkIcon } from "@heroicons/react/outline";
 import { useWeb3React } from "@web3-react/core";
 import { NetworkContextName } from "../../constants";
