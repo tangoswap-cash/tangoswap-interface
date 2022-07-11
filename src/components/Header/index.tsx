@@ -58,7 +58,15 @@ function AppBar(): JSX.Element {
                           id={`smart-swap-nav-link`}
                           className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                         >
-                          {i18n._(t`SmartSwap`)} <sup>NEW</sup>
+                          {i18n._(t`SmartSwap`)}
+                        </a>
+                      </NavLink>
+                      <NavLink href="/limit-order">
+                        <a
+                          id={`smart-swap-nav-link`}
+                          className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                        >
+                          {i18n._(t`Limit`)} <sup>NEW</sup>
                         </a>
                       </NavLink>
                       <NavLink href="/pool">
@@ -246,10 +254,17 @@ function AppBar(): JSX.Element {
                     id={`smart-swap-nav-link`}
                     className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                   >
-                    {i18n._(t`SmartSwap`)} <sup>NEW</sup>
+                    {i18n._(t`SmartSwap`)}
                   </a>
                 </Link>
-
+                <Link href={'/limit-order'}>
+                  <a
+                    id={`limit-order-nav-link`}
+                    className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                  >
+                    {i18n._(t`Limit`)} <sup>NEW</sup>
+                  </a>
+                </Link>
                 <Link href={'/pool'}>
                   <a
                     id={`pool-nav-link`}
