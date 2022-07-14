@@ -16,7 +16,7 @@ import BalancePanel from '../../../features/exchange-v1/limit-order/BalancePanel
 import Button from '../../../components/Button'
 import Container from '../../../components/Container'
 import CurrencyInput from '../../../features/exchange-v1/limit-order/CurrencyInput'
-import CurrencyInputPanel from '../../../features/exchange-v1/limit-order/CurrencyInputPanel'
+import CurrencyInputPanel from '../../../components/CurrencyInputPanel'
 import CurrencySelect from '../../../features/exchange-v1/limit-order/CurrencySelect'
 import DoubleGlowShadow from '../../../components/DoubleGlowShadow'
 import ExchangeHeader from '../../../features/trade/Header'
@@ -236,18 +236,18 @@ function LimitOrder() {
           <div id="limit-order-page" className="flex flex-col gap-4 p-4 rounded bg-dark-900">
             <ExchangeHeader input={currencies[Field.INPUT]} output={currencies[Field.OUTPUT]} />
             <div className="flex flex-col gap-4">
-              <CurrencyInputPanel
-                className="rounded-t"
+              {/* <CurrencyInputPanel
+                className="rounded"
                 id="swap-currency-input"
-                topAdornment={<PayFromToggle />}
-                bottomAdornment={<BalancePanel />}
+                // topAdornment={<PayFromToggle />}
+                // bottomAdornment={<BalancePanel />}
                 selectComponent={
                   <CurrencySelect
                     currency={currencies[Field.INPUT]}
                     otherCurrency={currencies[Field.OUTPUT]}
                     label={i18n._(t`You pay`)}
                     onSelect={handleInputSelect}
-                    currencyList={inputTokenList}
+                    currencyList={Object.keys(defaultTokens)}
                     allowManageTokenList={false}
                   />
                 }
@@ -260,6 +260,20 @@ function LimitOrder() {
                     value={formattedAmounts[Field.INPUT]}
                   />
                 }
+              /> */}
+              <CurrencyInputPanel
+                // priceImpact={priceImpact}
+                label={i18n._(t`You pay`)}
+                value={formattedAmounts[Field.INPUT]}
+                showMaxButton={true}
+                currency={currencies[Field.INPUT]}
+                onUserInput={(value) => onUserInput(Field.INPUT, value)}
+                onMax={handleMaxInput}
+                // fiatValue={fiatValueInput ?? undefined}
+                onCurrencySelect={handleInputSelect}
+                otherCurrency={currencies[Field.OUTPUT]}
+                showCommonBases={true}
+                id="swap-currency-input"
               />
               <div className="flex flex-row gap-5">
                 <div />
@@ -287,7 +301,7 @@ function LimitOrder() {
                 </div>
                 <LimitPriceInputPanel onBlur={(val) => checkLimitPrice(val)} />
               </div>
-              <CurrencyInputPanel
+              {/* <CurrencyInputPanel
                 className="relative rounded z-1"
                 id="swap-currency-input"
                 selectComponent={
@@ -297,7 +311,7 @@ function LimitOrder() {
                     otherCurrency={currencies[Field.INPUT]}
                     label={i18n._(t`You receive:`)}
                     onSelect={handleOutputSelect}
-                    currencyList={outputTokenList}
+                    currencyList={Object.keys(defaultTokens)}
                     includeNativeCurrency={false}
                     allowManageTokenList={false}
                   />
@@ -332,6 +346,21 @@ function LimitOrder() {
                     <></>
                   )
                 }
+              /> */}
+              <CurrencyInputPanel
+                value={formattedAmounts[Field.OUTPUT]}
+                onUserInput={(value) => onUserInput(Field.OUTPUT, value)}
+                label={i18n._(t`You receive:`)}
+                showMaxButton={false}
+                hideBalance={true}
+                // fiatValue={fiatValueOutput ?? undefined}
+                // priceImpact={priceImpact}
+                currency={currencies[Field.OUTPUT]}
+                onCurrencySelect={handleOutputSelect}
+                otherCurrency={currencies[Field.INPUT]}
+                showCommonBases={true}
+                id="swap-currency-output"
+                readOnly={false}
               />
               {recipient !== null ? (
                 <>
@@ -381,14 +410,14 @@ function LimitOrder() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <Alert
+              {/* <Alert
                 type="information"
                 title="Upgrade Notice"
                 message={
                   'In order to incorporate more community filler bots the ability to add new limit orders is temporarily paused. Existing orders are unaffected and can be edited and cancelled at any time'
                 }
                 dismissable={false}
-              />
+              /> */}
               <Button disabled={true} color={'gray'}>
                 {i18n._(t`Limit Orders Disabled`)}
               </Button>

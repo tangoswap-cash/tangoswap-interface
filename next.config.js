@@ -58,7 +58,11 @@ const nextConfig = {
         destination: '/smart-swap',
         permanent: true,
       },
-
+      {
+        source: '/',
+        destination: '/limit-order',
+        permanent: true,
+      },
       {
         source: '/yield',
         destination: '/farm',
@@ -110,6 +114,10 @@ const nextConfig = {
       {
         source: '/smart-swap/:token*',
         destination: '/exchange/smart-swap/:token*',
+      },
+      {
+        source: '/limit-order/:token*',
+        destination: '/exchange/limit-order/:token*',
       },
       {
         source: '/pool',
