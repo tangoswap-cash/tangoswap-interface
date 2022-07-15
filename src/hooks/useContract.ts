@@ -17,6 +17,11 @@ import {
   TANGOROLL_ADDRESS,
   WNATIVE_ADDRESS,
 } from '@tangoswapcash/sdk'
+
+import {
+  AddressMap,
+} from '@tangoswapcash/sdk'
+
 import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
@@ -181,12 +186,21 @@ export function useComplexRewarderContract(address, withSignerIfPossible?: boole
   return useContract(address, COMPLEX_REWARDER_ABI, withSignerIfPossible)
 }
 
-export function useCloneRewarderContract(address, withSignerIfPossibe?: boolean): Contract | null {
-  return useContract(address, CLONE_REWARDER_ABI, withSignerIfPossibe)
+export function useCloneRewarderContract(address, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(address, CLONE_REWARDER_ABI, withSignerIfPossible)
 }
 
-export function useLimitOrderContract(withSignerIfPossibe?: boolean): Contract | null {
-  throw new Error('useLimitOrderContract disabled');
+//TODO(fernando)
+// const ORDERS_CASH_CONTRACT = '0x5eBE6bFcA42C8440c8DC6C688E449E0B26e8E243';
+const ORDERS_CASH_CONTRACT: AddressMap = {
+  [ChainId.SMARTBCH]: '0x5eBE6bFcA42C8440c8DC6C688E449E0B26e8E243',
+  [ChainId.SMARTBCH_AMBER]: ''
+}
+
+export function useLimitOrderContract(withSignerIfPossible?: boolean): Contract | null {
+  // throw new Error('useLimitOrderContract disabled');
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId && AGGREGATOR_ADDRESS[chainId], LIMIT_ORDER_ABI, withSignerIfPossible)
 }
 
 export function useLimitOrderHelperContract(withSignerIfPossible?: boolean): Contract | null {
