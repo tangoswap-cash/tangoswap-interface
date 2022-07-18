@@ -34,7 +34,8 @@ interface OpenOrder {
 
 const denominator = (decimals: number = 18) => JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals))
 
-const viewUrl = `${LAMBDA_URL}/orders/view`
+// const viewUrl = `${LAMBDA_URL}/orders/view`
+const viewUrl = undefined;
 const viewFetcher = (url, account, chainId, pendingPage, page) => {
   return fetch(url, {
     method: 'POST',

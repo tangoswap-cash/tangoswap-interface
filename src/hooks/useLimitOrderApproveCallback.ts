@@ -14,7 +14,7 @@ import { useActiveWeb3React } from './useActiveWeb3React'
 import { useCallback, useMemo } from 'react'
 
 //TODO(fernando)
-const ORDERS_CASH_CONTRACT: AddressMap = {
+const ORDERS_CASH_ADDRESS: AddressMap = {
   [ChainId.SMARTBCH]: '0x5eBE6bFcA42C8440c8DC6C688E449E0B26e8E243',
   [ChainId.SMARTBCH_AMBER]: ''
 }
@@ -36,7 +36,7 @@ export function useLimitOrderApproveCallback(
     chainId
       ? trade instanceof V2Trade
         ? !doArcher
-          ? ORDERS_CASH_CONTRACT[chainId]
+          ? ORDERS_CASH_ADDRESS[chainId]
           : undefined
         : undefined
       : undefined

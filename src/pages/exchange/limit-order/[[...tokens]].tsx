@@ -145,7 +145,11 @@ function LimitOrder() {
         (dependentField === Field.INPUT ? currencies[Field.INPUT] : currencies[Field.OUTPUT]) ?? undefined
       )
 
-      if (parsedLimitPrice?.lessThan(parsedCurrentPrice)) {
+      // console.log("parsedLimitPrice:   ", parsedLimitPrice);
+      // console.log("parsedCurrentPrice: ", parsedCurrentPrice);
+
+      if (parsedCurrentPrice && parsedLimitPrice?.lessThan(parsedCurrentPrice)) {
+        console.log("This transaction is below market rate");
         setCurrencyInputPanelError(i18n._(t`This transaction is below market rate`))
       } else {
         setCurrencyInputPanelError('')
@@ -245,7 +249,7 @@ function LimitOrder() {
                   <CurrencySelect
                     currency={currencies[Field.INPUT]}
                     otherCurrency={currencies[Field.OUTPUT]}
-                    label={i18n._(t`You pay`)}
+                    label={i18n._(t`You pay:`)}
                     onSelect={handleInputSelect}
                     currencyList={Object.keys(defaultTokens)}
                     allowManageTokenList={false}
@@ -263,7 +267,7 @@ function LimitOrder() {
               /> */}
               <CurrencyInputPanel
                 // priceImpact={priceImpact}
-                label={i18n._(t`You pay`)}
+                label={i18n._(t`You pay:`)}
                 value={formattedAmounts[Field.INPUT]}
                 showMaxButton={true}
                 currency={currencies[Field.INPUT]}
@@ -421,7 +425,7 @@ function LimitOrder() {
               {/* <Button disabled={true} color={'gray'}>
                 {i18n._(t`Limit Orders Disabled`)}
               </Button> */}
-              {/* <LimitOrderButton color="gradient" className="font-bold" currency={currencies[Field.INPUT]} /> */}
+              <LimitOrderButton color="gradient" className="font-bold" currency={currencies[Field.INPUT]} />
             </div>
           </div>
         </DoubleGlowShadow>

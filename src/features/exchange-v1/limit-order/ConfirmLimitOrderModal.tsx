@@ -50,6 +50,9 @@ const ConfirmLimitOrderTopContent = () => {
   )?.toFixed(18)
   const outputValueUSDC = formatNumber(Number(parsedAmounts[Field.OUTPUT].toSignificant(6)) * Number(outputUSDC))
 
+  console.log(currencies[Field.INPUT]);
+  console.log(currencies[Field.INPUT]?.symbol);
+
   return (
     <div className="py-8">
       <div className="flex flex-col gap-6">
@@ -61,7 +64,7 @@ const ConfirmLimitOrderTopContent = () => {
               <div className="text-xl font-bold text-white">{parsedAmounts[Field.INPUT]?.toSignificant(6)}</div>
               <div className="text-xl text-white">{currencies[Field.INPUT]?.symbol}</div>
             </div>
-            <div className="text-sm text-low-emphesis">≈ {inputValueUSDC} USDC</div>
+            {/* <div className="text-sm text-low-emphesis">≈ {inputValueUSDC} USDC</div> */}
           </div>
         </div>
         <div className="flex justify-between px-5 py-3 rounded bg-dark-800">
@@ -71,14 +74,14 @@ const ConfirmLimitOrderTopContent = () => {
           </span>
         </div>
         <div className="flex flex-col gap-3">
-          <div className="flex gap-2 text-xl font-bold text-white">{i18n._(t`You receive`)}</div>
+          <div className="flex gap-2 text-xl font-bold text-white">{i18n._(t`You receive:`)}</div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CurrencyLogo size={40} currency={currencies[Field.OUTPUT]} />
               <div className="text-xl font-bold text-white">{parsedAmounts[Field.OUTPUT]?.toSignificant(6)}</div>
               <div className="text-xl text-white">{currencies[Field.OUTPUT]?.symbol}</div>
             </div>
-            <div className="text-sm text-low-emphesis">≈ {outputValueUSDC} USDC</div>
+            {/* <div className="text-sm text-low-emphesis">≈ {outputValueUSDC} USDC</div> */}
           </div>
         </div>
       </div>

@@ -84,6 +84,7 @@ export function useDerivedLimitOrderInfo(): {
     orderExpiration,
   } = useLimitOrderState()
 
+  // console.log(inputCurrencyId)
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
   const recipientLookup = useENS(recipient ?? undefined)
@@ -198,6 +199,8 @@ export function useDerivedLimitOrderInfo(): {
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
     inputError = i18n._(t`Insufficient ${currencies[Field.INPUT]?.symbol} balance`)
   }
+
+  // console.log("parsedAmounts:           ", parsedAmounts)
 
   return {
     currencies,

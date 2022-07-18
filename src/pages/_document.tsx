@@ -74,7 +74,7 @@ export default class MyDocument extends Document {
           <link rel="shortcut icon" href="/favicon.ico" />
 
           <link rel="manifest" href="/manifest.json" />
-          <script
+          {/* <script
             dangerouslySetInnerHTML={{
               __html: `
                 var _paq = window._paq = window._paq || [];
@@ -89,7 +89,7 @@ export default class MyDocument extends Document {
                 })();
               `
             }}
-          />
+          /> */}
         </Head>
         <body>
           <Main />

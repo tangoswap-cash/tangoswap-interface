@@ -18,6 +18,7 @@ import {
   WNATIVE_ADDRESS,
 } from '@tangoswapcash/sdk'
 
+//TODO(fernando)
 import {
   AddressMap,
 } from '@tangoswapcash/sdk'
@@ -200,7 +201,7 @@ const ORDERS_CASH_CONTRACT: AddressMap = {
 export function useLimitOrderContract(withSignerIfPossible?: boolean): Contract | null {
   // throw new Error('useLimitOrderContract disabled');
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && AGGREGATOR_ADDRESS[chainId], LIMIT_ORDER_ABI, withSignerIfPossible)
+  return useContract(chainId && ORDERS_CASH_CONTRACT[chainId], LIMIT_ORDER_ABI, withSignerIfPossible)
 }
 
 export function useLimitOrderHelperContract(withSignerIfPossible?: boolean): Contract | null {
