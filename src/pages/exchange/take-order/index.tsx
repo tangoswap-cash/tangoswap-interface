@@ -341,11 +341,19 @@ function TakeOrderPage() {
 
   // const { id } = useParams();
 
+  let coinTypeToTaker = order.coinTypeToTaker
+  if (coinTypeToTaker == "0x0000000000000000000000000000000000002711") {
+    coinTypeToTaker = "BCH"
+  }
 
-
-  const inputCurrency = useCurrency(order.coinTypeToTaker)
+  const inputCurrency = useCurrency(coinTypeToTaker)
   const outputCurrency = useCurrency(order.coinTypeToMaker)
   let temp = parseUnits(order.amountToTakerBN.toString(), 0).toString()
+
+  console.log("coinTypeToTaker: ", coinTypeToTaker)
+  console.log("inputCurrency:   ", inputCurrency)
+  console.log("temp:            ", temp)
+
   const parsedInputAmount = CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(temp))
   temp = parseUnits(order.amountToMakerBN.toString(), 0).toString()
   const parsedOutputAmount = CurrencyAmount.fromRawAmount(outputCurrency, JSBI.BigInt(temp))
