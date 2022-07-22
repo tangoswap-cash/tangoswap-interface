@@ -7,7 +7,7 @@ import { ChainId } from '@tangoswapcash/sdk'
 const TangoPrice = () => {
   const [price, setPrice] = useState(null)
   const parsedAmount = tryParseAmount('1', TANGO[ChainId.SMARTBCH])
-  const bestTradeExactIn = useTradeExactIn(parsedAmount, FLEXUSD)
+  const bestTradeExactIn = useTradeExactIn(parsedAmount, BCUSDT)
 
   useEffect(() => {
     if (bestTradeExactIn) setPrice(bestTradeExactIn?.executionPrice?.toSignificant(6))
