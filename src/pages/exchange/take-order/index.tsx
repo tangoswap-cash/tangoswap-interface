@@ -363,74 +363,73 @@ function TakeOrderPage() {
   const limitPrice = 1;
 
   return (
-     <Container id="take-order-page" className="py-4 md:py-8 lg:py-12" maxWidth="2xl">
+     <Container id="take-order-page" className="py-4 md:py-8 lg:py-12" maxWidth='lg'>
       <Head>
         <title>Take Order | Tango</title>
         <meta name="description" content="Take order..." />
       </Head>
 
-      <div className="py-8">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-3">
-            <div className="text-xl font-bold text-white">{i18n._(t`You Pay:`)}</div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CurrencyLogo size={40} currency={inputCurrency} />
+      <DoubleGlowShadow>
+        <div className="p-4 space-y-4 rounded bg-dark-900 z-1">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
+              <div className="text-xl font-bold text-white">{i18n._(t`You Pay:`)}</div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CurrencyLogo size={40} currency={inputCurrency} />
 
-                <div className="text-xl font-bold text-white">{parsedInputAmount?.toSignificant(6)}</div>
-                <div className="text-xl text-white">{inputCurrency?.symbol}</div>
+                  <div className="text-xl font-bold text-white">{parsedInputAmount?.toSignificant(6)}</div>
+                  <div className="text-xl text-white">{inputCurrency?.symbol}</div>
+                </div>
+                {/* <div className="text-sm text-low-emphesis">≈ {inputValueUSDC} USDC</div> */}
               </div>
-              {/* <div className="text-sm text-low-emphesis">≈ {inputValueUSDC} USDC</div> */}
+            </div>
+            <div className="flex justify-between px-5 py-3 rounded bg-dark-800">
+              <span className="font-bold text-secondary">{i18n._(t`Rate`)}</span>
+              <span className="text-primary">
+                {limitPrice} {inputCurrency?.symbol} per {outputCurrency?.symbol}
+              </span>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-2 text-xl font-bold text-white">{i18n._(t`You receive:`)}</div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {/* <CurrencyLogo size={40} currency={currencies[Field.OUTPUT]} />
+                  <div className="text-xl font-bold text-white">{parsedAmounts[Field.OUTPUT]?.toSignificant(6)}</div>
+                  <div className="text-xl text-white">{currencies[Field.OUTPUT]?.symbol}</div> */}
+                  <CurrencyLogo size={40} currency={outputCurrency} />
+                  <div className="text-xl font-bold text-white">{parsedOutputAmount?.toSignificant(6)}</div>
+                  <div className="text-xl text-white">{outputCurrency?.symbol}</div>
+                </div>
+                {/* <div className="text-sm text-low-emphesis">≈ {outputValueUSDC} USDC</div> */}
+              </div>
             </div>
           </div>
-          <div className="flex justify-between px-5 py-3 rounded bg-dark-800">
-            <span className="font-bold text-secondary">{i18n._(t`Rate`)}</span>
-            <span className="text-primary">
-              {limitPrice} {inputCurrency?.symbol} per {outputCurrency?.symbol}
-            </span>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="flex gap-2 text-xl font-bold text-white">{i18n._(t`You receive:`)}</div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {/* <CurrencyLogo size={40} currency={currencies[Field.OUTPUT]} />
-                <div className="text-xl font-bold text-white">{parsedAmounts[Field.OUTPUT]?.toSignificant(6)}</div>
-                <div className="text-xl text-white">{currencies[Field.OUTPUT]?.symbol}</div> */}
-
-                <CurrencyLogo size={40} currency={outputCurrency} />
-                <div className="text-xl font-bold text-white">{parsedOutputAmount?.toSignificant(6)}</div>
-                <div className="text-xl text-white">{outputCurrency?.symbol}</div>
-
+          <div className="flex flex-col gap-6 px-6 py-8 bg-dark-800">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center justify-between">
+                <span className="text-secondary">{i18n._(t`Minimum Received`)}</span>
+                <span className="font-bold text-high-emphesis">
+                  {/* {parsedAmounts[Field.OUTPUT]?.toSignificant(6)} {currencies[Field.OUTPUT]?.symbol} */}
+                </span>
               </div>
-              {/* <div className="text-sm text-low-emphesis">≈ {outputValueUSDC} USDC</div> */}
+              <div className="flex items-center justify-between">
+                <span className="text-secondary">{i18n._(t`Order Expiration`)}</span>
+                {/* <span className="font-bold text-high-emphesis">{orderExpiration.label}</span> */}
+              </div>
+              {/* {recipient && (
+                <div className="flex items-center justify-between">
+                  <span className="text-secondary">{i18n._(t`Recipient`)}</span>
+                  <span className="font-bold text-high-emphesis">{shortenAddress(recipient, 6)}</span>
+                </div>
+              )} */}
             </div>
           </div>
+          <Button color="gradient" onClick={handler}>
+            {i18n._(t`Take Limit Order`)}
+          </Button>
         </div>
-      </div>
-
-      <div className="flex flex-col gap-6 px-6 py-8 -m-6 bg-dark-800">
-       <div className="flex flex-col gap-1">
-         <div className="flex items-center justify-between">
-           <span className="text-secondary">{i18n._(t`Minimum Received`)}</span>
-           <span className="font-bold text-high-emphesis">
-             {/* {parsedAmounts[Field.OUTPUT]?.toSignificant(6)} {currencies[Field.OUTPUT]?.symbol} */}
-           </span>
-         </div>
-         <div className="flex items-center justify-between">
-           <span className="text-secondary">{i18n._(t`Order Expiration`)}</span>
-           {/* <span className="font-bold text-high-emphesis">{orderExpiration.label}</span> */}
-         </div>
-         {/* {recipient && (
-           <div className="flex items-center justify-between">
-             <span className="text-secondary">{i18n._(t`Recipient`)}</span>
-             <span className="font-bold text-high-emphesis">{shortenAddress(recipient, 6)}</span>
-           </div>
-         )} */}
-       </div>
-       <Button color="gradient" onClick={handler}>
-         {i18n._(t`Take Limit Order`)}
-       </Button>
-     </div>
+      </DoubleGlowShadow>
 
      </Container>
    )
