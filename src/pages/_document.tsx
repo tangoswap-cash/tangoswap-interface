@@ -87,7 +87,7 @@ export default class MyDocument extends Document {
                   var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
                   g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
                 })();
-              `
+              `,
             }}
           />
         </Head>
