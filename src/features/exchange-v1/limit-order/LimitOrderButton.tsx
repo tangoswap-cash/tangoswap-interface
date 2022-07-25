@@ -133,28 +133,46 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       //   endTime = Number.MAX_SAFE_INTEGER
     }
 
-    console.log("Input:  ", parsedAmounts[Field.INPUT].wrapped.quotient.toString());
-    console.log("Input:  ", parsedAmounts[Field.INPUT].wrapped.currency.address);
-    console.log("Output: ", parsedAmounts[Field.OUTPUT].wrapped.quotient.toString());
-    console.log("Output: ", parsedAmounts[Field.OUTPUT].wrapped.currency.address);
 
-    console.log("Input1:  ", parsedAmounts[Field.INPUT].quotient.toString());
-    console.log("Input2:  ", parsedAmounts[Field.INPUT].currency.isNative);
-    console.log("Input3:  ", parsedAmounts[Field.INPUT].currency.name);
-    console.log("Input4:  ", parsedAmounts[Field.INPUT].currency.symbol);
-    console.log("Output1: ", parsedAmounts[Field.OUTPUT].quotient.toString());
-    console.log("Output2: ", parsedAmounts[Field.OUTPUT].currency.isNative);
-    console.log("Output3: ", parsedAmounts[Field.OUTPUT].currency.name);
-    console.log("Output4: ", parsedAmounts[Field.OUTPUT].currency.symbol);
+    // console.log("Input1:  ", parsedAmounts[Field.INPUT].quotient.toString());
+    // console.log("Input2:  ", parsedAmounts[Field.INPUT].currency.isNative);
+    // console.log("Input3:  ", parsedAmounts[Field.INPUT].currency.name);
+    // console.log("Input4:  ", parsedAmounts[Field.INPUT].currency.symbol);
+    // console.log("Output1: ", parsedAmounts[Field.OUTPUT].quotient.toString());
+    // console.log("Output2: ", parsedAmounts[Field.OUTPUT].currency.isNative);
+    // console.log("Output3: ", parsedAmounts[Field.OUTPUT].currency.name);
+    // console.log("Output4: ", parsedAmounts[Field.OUTPUT].currency.symbol);
+
+      //TODO(fernando): store the following address in the SDK (sep206 address)
+
+    let coinsToTakerAddr;
+    if (parsedAmounts[Field.INPUT].currency.isNative) {
+      coinsToTakerAddr = "0x0000000000000000000000000000000000002711";
+    } else {
+      coinsToTakerAddr = parsedAmounts[Field.INPUT].wrapped.currency.address;
+    }
 
     const twoPow96 = BigNumber.from(2).pow(96);
     const amtBN = parseUnits(parsedAmounts[Field.INPUT].wrapped.quotient.toString(), 0)
-    let coinsToTakerBN = BigNumber.from(parsedAmounts[Field.INPUT].wrapped.currency.address);
+    let coinsToTakerBN = BigNumber.from(coinsToTakerAddr);
     coinsToTakerBN = coinsToTakerBN.mul(twoPow96).add(amtBN);
     console.log("coinsToTakerBN:  ", coinsToTakerBN.toHexString());
 
+
+    let coinsToMakerAddr;
+    if (parsedAmounts[Field.OUTPUT].currency.isNative) {
+      coinsToMakerAddr = "0x0000000000000000000000000000000000002711";
+    } else {
+      coinsToMakerAddr = parsedAmounts[Field.OUTPUT].wrapped.currency.address;
+    }
+
+    console.log("Input:                     ", parsedAmounts[Field.INPUT].wrapped.quotient.toString());
+    console.log("Input (coinsToTakerAddr):  ", coinsToTakerAddr);
+    console.log("Output:                    ", parsedAmounts[Field.OUTPUT].wrapped.quotient.toString());
+    console.log("Output (coinsToMakerAddr): ", coinsToMakerAddr);
+
     const amtBNIn = parseUnits(parsedAmounts[Field.OUTPUT].wrapped.quotient.toString(), 0)
-    let coinsToMakerBN = BigNumber.from(parsedAmounts[Field.OUTPUT].wrapped.currency.address);
+    let coinsToMakerBN = BigNumber.from(coinsToMakerAddr);
     coinsToMakerBN = coinsToMakerBN.mul(twoPow96).add(amtBNIn);
     console.log("coinsToMakerBN:  ", coinsToMakerBN.toHexString());
 

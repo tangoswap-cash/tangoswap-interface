@@ -335,6 +335,7 @@ function TakeOrderPage() {
 
   // const { id } = useParams();
 
+  //TODO(fernando): store the following address in the SDK (sep206 address)
   let coinTypeToTaker = order.coinTypeToTaker
   if (coinTypeToTaker == "0x0000000000000000000000000000000000002711") {
     coinTypeToTaker = "BCH"
