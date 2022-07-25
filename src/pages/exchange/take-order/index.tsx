@@ -389,7 +389,7 @@ function TakeOrderPage() {
         <div className="p-4 space-y-4 rounded bg-dark-900 z-1">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
-              <div className="text-xl font-bold text-white">{i18n._(t`You Pay:`)}</div>
+              <div className="text-xl font-bold text-white">{i18n._(t`You pay:`)}</div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CurrencyLogo size={40} currency={inputCurrency} />
