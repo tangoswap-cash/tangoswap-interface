@@ -14,7 +14,6 @@ const OrderExpirationDropdown: FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { orderExpiration } = useLimitOrderState()
   const items = {
-    [OrderExpiration.never]: i18n._(t`Never`),
     [OrderExpiration.hour]: i18n._(t`1 Hour`),
     [OrderExpiration.day]: i18n._(t`24 Hours`),
     [OrderExpiration.week]: i18n._(t`1 Week`),

@@ -1,9 +1,12 @@
 import React, { FC, useCallback } from 'react'
+import { useBlockNumber } from '../../../state/application/hooks'
+
 // import { formatNumber, shortenAddress } from '../../../functions'
 // import { useActiveWeb3React, useUSDCPrice } from '../../../hooks'
 // import { useDerivedLimitOrderInfo, useLimitOrderState } from '../../../state/limit-order/hooks'
 
 import Button from '../../../components/Button'
+import { ButtonConfirmed, ButtonError } from '../../../components/Button'
 // import { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
 // import CurrencyLogo from '../../../components/CurrencyLogo'
 // import { Field } from '../../../state/limit-order/actions'
@@ -175,7 +178,6 @@ function b64ToUint6 (nChr) {
       0;
 }
 
-
 function base64DecToArr (sBase64, nBlocksSize: number | undefined) {
   var
     sB64Enc = sBase64.replace(/=/g, ""), nInLen = sB64Enc.length,
@@ -204,56 +206,48 @@ function useDefaultsFromURLSearch():
     }
   | undefined {
   const { chainId } = useActiveWeb3React()
-  const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
-  const [expertMode] = useExpertModeManager()
-  const [result, setResult] = useState<
-    | {
-        oParam: string | undefined
-      }
-    | undefined
-  >()
 
   if (!chainId) return
-
-  // console.log("parsedQs: ", parsedQs)
-
-  // const defaultState = defaultSwapState()
-  // const hadQuery = Object.keys(parsedQs).length
-  // const parsed = queryParametersToSwapState(parsedQs, chainId)
-
-  // if (!hadQuery && JSON.stringify(parsed) === JSON.stringify(defaultState)) {
-  //   return {
-  //     inputCurrencyId: defaultState[Field.INPUT].currencyId,
-  //     outputCurrencyId: defaultState[Field.OUTPUT].currencyId,
-  //   };
-  // }
 
   return {
     oParam: parsedQs.o,
   };
-
-
-  // useEffect(() => {
-  //   // dispatch(
-  //   //   replaceSwapState({
-  //   //     typedValue: parsed.typedValue,
-  //   //     field: parsed.independentField,
-  //   //     inputCurrencyId: parsed[Field.INPUT].currencyId,
-  //   //     outputCurrencyId: parsed[Field.OUTPUT].currencyId,
-  //   //     recipient: expertMode ? parsed.recipient : null,
-  //   //   })
-  //   // )
-
-  //   // setResult({
-  //   //   inputCurrencyId: parsed[Field.INPUT].currencyId,
-  //   //   outputCurrencyId: parsed[Field.OUTPUT].currencyId,
-  //   // })
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [dispatch, chainId])
-
-  // return result
 }
+
+function formatDateTime(ts: number) {
+  const d = new Date(ts);
+  return d.toLocaleString()
+}
+
+function timeDiff(dueTime: number, now: number) {
+  if (now > dueTime) return "(expired)"
+
+  const diff = dueTime - now;
+
+  let msec = diff;
+
+  const dd = Math.floor(msec / 1000 / 60 / 60 / 24);
+  if (dd > 0) return `(in ~${dd} days)`
+  msec -= dd * 1000 * 60 * 60 * 24;
+
+  const hh = Math.floor(msec / 1000 / 60 / 60);
+  if (hh > 0) return `(in ~${hh} hours)`
+  msec -= hh * 1000 * 60 * 60;
+
+  const mm = Math.floor(msec / 1000 / 60);
+  if (mm > 0) return `(in ~${mm} minutes)`
+  msec -= mm * 1000 * 60;
+
+  const ss = Math.floor(msec / 1000);
+  if (dd > 0)
+  msec -= ss * 1000;
+  return `(in ~${ss} seconds)`
+
+  // console.log(hh + ":" + mm + ":" + ss);
+  // return dd + " " + hh + ":" + mm + ":" + ss;
+}
+
 
 function TakeOrderPage() {
   /*
@@ -341,6 +335,7 @@ function TakeOrderPage() {
 
   // const { id } = useParams();
 
+  //TODO(fernando): store the following address in the SDK (sep206 address)
   let coinTypeToTaker = order.coinTypeToTaker
   if (coinTypeToTaker == "0x0000000000000000000000000000000000002711") {
     coinTypeToTaker = "BCH"
@@ -361,6 +356,27 @@ function TakeOrderPage() {
 
   //TODO(fernando)
   const limitPrice = 1;
+
+  const blockNumber = useBlockNumber()
+  // const [expiration, setExpiration] = useState<number>(null)
+  const [expiration, setExpiration] = useState<string>(null)
+  const [isValid, setIsValid] = useState<boolean>(null)
+
+  const dueTime = Math.floor(Number(order.dueTime.toString()) / 1000000);
+
+  useEffect(() => {
+    // getBalanceOf(sushi, burningAddress).then((balance) => setExpiration(balance))
+    const now = new Date().getTime()
+    // const diff = dueTime - now;
+    // console.log("new Date().getTime(): ", new Date().getTime());
+    // console.log("order.dueTime:        ", order.dueTime.toString());
+    // console.log("dueTime:              ", dueTime);
+    // console.log("diff:                 ", diff);
+
+    setExpiration(timeDiff(dueTime, now))
+    setIsValid(now <= dueTime)
+
+  }, [blockNumber])
 
   return (
      <Container id="take-order-page" className="py-4 md:py-8 lg:py-12" maxWidth='lg'>

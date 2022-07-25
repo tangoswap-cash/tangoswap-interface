@@ -1,7 +1,8 @@
 import { ApprovalState, useApproveCallback } from '../../../hooks'
-import { BENTOBOX_ADDRESS, ChainId, computeConstantProductPoolAddress, Currency } from '@tangoswapcash/sdk'
+import { ChainId, computeConstantProductPoolAddress, Currency } from '@tangoswapcash/sdk'
 import Button, { ButtonProps } from '../../../components/Button'
-import { Field, setFromBentoBalance } from '../../../state/limit-order/actions'
+import { ButtonError } from '../../../components/Button'
+import { Field } from '../../../state/limit-order/actions'
 import React, { FC, useCallback, useState } from 'react'
 import { useAddPopup, useWalletModalToggle } from '../../../state/application/hooks'
 import { useDerivedLimitOrderInfo, useLimitOrderState } from '../../../state/limit-order/hooks'
@@ -11,7 +12,6 @@ import useCopyClipboard from '../../../hooks/useCopyClipboard'
 // import useLimitOrderApproveCallback, { BentoApprovalState } from '../../../hooks/useLimitOrderApproveCallback'
 // import { ApprovalState, useLimitOrderApproveCallback } from '../../../hooks/useLimitOrderApproveCallback'
 import { useLimitOrderApproveCallback } from '../../../hooks/useLimitOrderApproveCallback'
-
 import Alert from '../../../components/Alert'
 import { AppDispatch } from '../../../state'
 import ConfirmLimitOrderModal from './ConfirmLimitOrderModal'
@@ -92,17 +92,14 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   const addPopup = useAddPopup()
   const toggleWalletModal = useWalletModalToggle()
 
-  const [depositPending, setDepositPending] = useState(false)
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false)
   const [takeOrderURL, setTakeOrderURL] = useState<string>(null); 
 
   const [isCopied, setCopied] = useCopyClipboard()
 
-  const { fromBentoBalance, orderExpiration, recipient } = useLimitOrderState()
+  const { orderExpiration, recipient } = useLimitOrderState()
   const { parsedAmounts, inputError } = useDerivedLimitOrderInfo()
 
-  // const [approvalState, fallback, permit, onApprove, execute] = useLimitOrderApproveCallback()
-  // const [approvalState, approveCallback] = useLimitOrderApproveCallback(trade, allowedSlippage, doArcher)
   const [approvalState, approveCallback] = useLimitOrderApproveCallback(undefined, undefined, undefined)
 
   const { mutate } = useLimitOrders()
@@ -112,31 +109,15 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     chainId && ORDERS_CASH_ADDRESS[chainId]
   )
 
-  // const showLimitApprove =
-  //   (approvalState === BentoApprovalState.NOT_APPROVED || approvalState === BentoApprovalState.PENDING) && !permit
-
-  // console.log("fromBentoBalance:  ", fromBentoBalance)
-  // console.log("chainId:           ", chainId)
-  // console.log("currency:          ", currency)
-  // console.log("currency.isNative: ", currency.isNative)
-  // console.log("parsedAmounts:           ", parsedAmounts)
-  // console.log("parsedAmounts[Field.INPUT]:           ", parsedAmounts[Field.INPUT])
-  // console.log("tokenApprovalState:           ", tokenApprovalState)
-
   const showTokenApprove =
-    // !fromBentoBalance &&
     chainId &&
     currency &&
     !currency.isNative &&
     parsedAmounts[Field.INPUT] &&
     (tokenApprovalState === ApprovalState.NOT_APPROVED || tokenApprovalState === ApprovalState.PENDING)
 
-  // console.log("showTokenApprove: ", showTokenApprove)
-
   const disabled =
     !!inputError ||
-    // approvalState === BentoApprovalState.PENDING ||
-    depositPending ||
     tokenApprovalState === ApprovalState.PENDING
 
   const handler = useCallback(async () => {
@@ -155,44 +136,52 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       case OrderExpiration.week:
         endTime = Math.floor(new Date().getTime() / 1000) + 604800
         break
-
-      // 30 days
-      case OrderExpiration.never:
-        // endTime = Number.MAX_SAFE_INTEGER
+      case OrderExpiration.month:
         endTime = Math.floor(new Date().getTime() / 1000) + 2592000
+      // case OrderExpiration.never:
+      //   endTime = Number.MAX_SAFE_INTEGER
     }
 
-    // console.log("endTime:                 ", endTime);
-    // console.log("Number.MAX_SAFE_INTEGER: ", Number.MAX_SAFE_INTEGER);
 
-    // const order = new LimitOrder(
-    //   account,
-    //   parsedAmounts[Field.INPUT].wrapped,
-    //   parsedAmounts[Field.OUTPUT].wrapped,
-    //   recipient ? recipient : account,
-    //   Math.floor(new Date().getTime() / 1000).toString(),
-    //   endTime.toString()
-    // )
+    // console.log("Input1:  ", parsedAmounts[Field.INPUT].quotient.toString());
+    // console.log("Input2:  ", parsedAmounts[Field.INPUT].currency.isNative);
+    // console.log("Input3:  ", parsedAmounts[Field.INPUT].currency.name);
+    // console.log("Input4:  ", parsedAmounts[Field.INPUT].currency.symbol);
+    // console.log("Output1: ", parsedAmounts[Field.OUTPUT].quotient.toString());
+    // console.log("Output2: ", parsedAmounts[Field.OUTPUT].currency.isNative);
+    // console.log("Output3: ", parsedAmounts[Field.OUTPUT].currency.name);
+    // console.log("Output4: ", parsedAmounts[Field.OUTPUT].currency.symbol);
 
-    // console.log("parsedAmounts[Field.INPUT].wrapped:                 ", parsedAmounts[Field.INPUT].wrapped);
-    // console.log("parsedAmounts[Field.OUTPUT].wrapped:                ", parsedAmounts[Field.OUTPUT].wrapped);
+      //TODO(fernando): store the following address in the SDK (sep206 address)
 
-    console.log("Input:  ", parsedAmounts[Field.INPUT].wrapped.quotient.toString());
-    console.log("Input:  ", parsedAmounts[Field.INPUT].wrapped.currency.address);
-    console.log("Output: ", parsedAmounts[Field.OUTPUT].wrapped.quotient.toString());
-    console.log("Output: ", parsedAmounts[Field.OUTPUT].wrapped.currency.address);
+    let coinsToTakerAddr;
+    if (parsedAmounts[Field.INPUT].currency.isNative) {
+      coinsToTakerAddr = "0x0000000000000000000000000000000000002711";
+    } else {
+      coinsToTakerAddr = parsedAmounts[Field.INPUT].wrapped.currency.address;
+    }
 
     const twoPow96 = BigNumber.from(2).pow(96);
-    // const amtBN = parseUnits(amount.toString(), decimals)
     const amtBN = parseUnits(parsedAmounts[Field.INPUT].wrapped.quotient.toString(), 0)
-    let coinsToTakerBN = BigNumber.from(parsedAmounts[Field.INPUT].wrapped.currency.address);
+    let coinsToTakerBN = BigNumber.from(coinsToTakerAddr);
     coinsToTakerBN = coinsToTakerBN.mul(twoPow96).add(amtBN);
-    // console.log("amtBN:  ", amtBN);
-    // console.log("amtBN:  ", amtBN.toString());
     console.log("coinsToTakerBN:  ", coinsToTakerBN.toHexString());
 
+
+    let coinsToMakerAddr;
+    if (parsedAmounts[Field.OUTPUT].currency.isNative) {
+      coinsToMakerAddr = "0x0000000000000000000000000000000000002711";
+    } else {
+      coinsToMakerAddr = parsedAmounts[Field.OUTPUT].wrapped.currency.address;
+    }
+
+    console.log("Input:                     ", parsedAmounts[Field.INPUT].wrapped.quotient.toString());
+    console.log("Input (coinsToTakerAddr):  ", coinsToTakerAddr);
+    console.log("Output:                    ", parsedAmounts[Field.OUTPUT].wrapped.quotient.toString());
+    console.log("Output (coinsToMakerAddr): ", coinsToMakerAddr);
+
     const amtBNIn = parseUnits(parsedAmounts[Field.OUTPUT].wrapped.quotient.toString(), 0)
-    let coinsToMakerBN = BigNumber.from(parsedAmounts[Field.OUTPUT].wrapped.currency.address);
+    let coinsToMakerBN = BigNumber.from(coinsToMakerAddr);
     coinsToMakerBN = coinsToMakerBN.mul(twoPow96).add(amtBNIn);
     console.log("coinsToMakerBN:  ", coinsToMakerBN.toHexString());
 
@@ -284,20 +273,6 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     }
   }, [account, addPopup, chainId, library, mutate, orderExpiration.value, parsedAmounts, recipient])
 
-    // https://orders.cash/take?o=ADdD7AZzRT5QCTEMcnuk6vezocwEAAAAAA3gtrOnZAAAN0PsBnNFPlAJMQxye6Tq97OhzAQAAAAADeC2s6dkAAAAABcLO5TvAupAfB_5tXs94HqnUExC2Xi6DL2cE4G17nurR2R1zZ-J3Yo080zriab_sxczqbZ__z8C-M64bE8XR2mWEl3ryrU-xRs=
-    // http://localhost:3000/exchange/take-order?o=ADdD7AZzRT5QCTEMcnuk6vezocwEAAAAAA3gtrOnZAAAN0PsBnNFPlAJMQxye6Tq97OhzAQAAAAADeC2s6dkAAAAABcLO5TvAupAfB_5tXs94HqnUExC2Xi6DL2cE4G17nurR2R1zZ-J3Yo080zriab_sxczqbZ__z8C-M64bE8XR2mWEl3ryrU-xRs=
-
-  // const deposit = useCallback(async () => {
-  //   const tx = await execute(currency)
-  //   setDepositPending(true)
-  //   await tx.wait()
-  //   setDepositPending(false)
-  //   dispatch(setFromBentoBalance(true))
-  // }, [currency, dispatch, execute])
-
-
-  // console.log("disabled: ", disabled);
-
   let button = (
     <>
       <ConfirmLimitOrderModal
@@ -305,24 +280,31 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
         onConfirm={() => handler()}
         onDismiss={() => setOpenConfirmationModal(false)}
       />
-      <Button
+      {/* <Button
         disabled={disabled}
         color={disabled ? 'gray' : 'blue'}
         onClick={() => setOpenConfirmationModal(true)}
         {...rest}
       >
         {i18n._(t`Create Limit Order`)}
-      </Button>
+      </Button> */}
+
+
+      <ButtonError
+        onClick={() => setOpenConfirmationModal(true)}
+        style={{
+          width: '100%',
+        }}
+        id="swap-button"
+        disabled={disabled}
+        // error={isValid && priceImpactSeverity > 2}
+      >
+        {i18n._(t`Create Limit Order`)}
+      </ButtonError>
+
     </>
   )
 
-  // if (depositPending)
-  //   button = (
-  //     <Button disabled={disabled} color={disabled ? 'gray' : color} onClick={deposit} {...rest}>
-  //       <Dots>{i18n._(t`Depositing ${currency.symbol} into Mirror`)}</Dots>
-  //     </Button>
-  //   )
-  // else
   if (!account)
     button = (
       <Button disabled={disabled} color="pink" onClick={toggleWalletModal} {...rest}>
@@ -345,25 +327,6 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
         )}
       </Button>
     )
-  // else if (showLimitApprove)
-  //   button = (
-  //     <Button disabled={disabled} color={disabled ? 'gray' : 'pink'} onClick={onApprove} {...rest}>
-  //       {approvalState === BentoApprovalState.PENDING ? (
-  //         <Dots>{i18n._(t`Approving Limit Order`)}</Dots>
-  //       ) : (
-  //         i18n._(t`Approve Limit Order`)
-  //       )}
-  //     </Button>
-  //   )
-  // else if (
-  //   (permit && !fromBentoBalance) ||
-  //   (!permit && approvalState === BentoApprovalState.APPROVED && !fromBentoBalance)
-  // )
-    // button = (
-    //   <Button disabled={disabled} color={disabled ? 'gray' : 'blue'} /*onClick={deposit}*/ {...rest}>
-    //     {i18n._(t`Deposit ${currency.symbol} into Mirror`)}
-    //   </Button>
-    // )
 
   return (
     <div className="flex flex-col flex-1">
