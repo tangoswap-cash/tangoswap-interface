@@ -421,25 +421,13 @@ function TakeOrderPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-6 px-6 py-8 bg-dark-800">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between">
-                <span className="text-secondary">{i18n._(t`Minimum Received`)}</span>
-                <span className="font-bold text-high-emphesis">
-                  {/* {parsedAmounts[Field.OUTPUT]?.toSignificant(6)} {currencies[Field.OUTPUT]?.symbol} */}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-secondary">{i18n._(t`Order Expiration`)}</span>
-                {/* <span className="font-bold text-high-emphesis">{orderExpiration.label}</span> */}
-              </div>
-              {/* {recipient && (
-                <div className="flex items-center justify-between">
-                  <span className="text-secondary">{i18n._(t`Recipient`)}</span>
-                  <span className="font-bold text-high-emphesis">{shortenAddress(recipient, 6)}</span>
-                </div>
-              )} */}
-            </div>
+
+          <div className="flex justify-between px-5 py-3 rounded bg-dark-800">
+              <span className="font-bold text-secondary">{i18n._(t`Order Expiration`)}</span>
+              <span className="text-primary">
+                {formatDateTime(dueTime) + " " + expiration}
+                {/* {limitPrice} {inputCurrency?.symbol} per {outputCurrency?.symbol} */}
+              </span>
           </div>
           <Button color="gradient" onClick={handler}>
             {i18n._(t`Take Limit Order`)}
