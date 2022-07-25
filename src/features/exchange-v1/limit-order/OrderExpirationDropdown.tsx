@@ -8,10 +8,8 @@ import { t } from '@lingui/macro'
 import { useDispatch } from 'react-redux'
 import { useLimitOrderState } from '../../../state/limit-order/hooks'
 import { useLingui } from '@lingui/react'
-import CustomTime from './CustomTime'
 
 const OrderExpirationDropdown: FC = () => {
-  const [showCustomTimeModal, setShowCustomTimeModal] = useState(false); 
   const { i18n } = useLingui()
   const dispatch = useDispatch<AppDispatch>()
   const { orderExpiration } = useLimitOrderState()
@@ -35,18 +33,6 @@ const OrderExpirationDropdown: FC = () => {
     [dispatch, items]
   )
 
-  const customTimeHandler = useCallback(
-    (label, value) => {
-      dispatch(
-        setOrderExpiration({
-          label,
-          value,
-        })
-      )
-    },
-    [dispatch]
-  )
-
   return (
     <>
       <div className="flex items-center text-secondary gap-3 cursor-pointer">
@@ -61,13 +47,9 @@ const OrderExpirationDropdown: FC = () => {
                 {v}
               </NeonSelectItem>
             ))}
-            <NeonSelectItem key="custom" value="custom" onClick={() => setShowCustomTimeModal(true)}>
-              Custom
-            </NeonSelectItem>
           </>
         </NeonSelect>
       </div>
-      <CustomTime isOpen={showCustomTimeModal} onDismiss={() => setShowCustomTimeModal(false)} onSubmit={customTimeHandler} />
     </>
   )
 }
