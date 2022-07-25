@@ -8,9 +8,6 @@ import { useAddPopup, useWalletModalToggle } from '../../../state/application/ho
 import { useDerivedLimitOrderInfo, useLimitOrderState } from '../../../state/limit-order/hooks'
 import { ClipboardCopyIcon } from '@heroicons/react/solid'
 import useCopyClipboard from '../../../hooks/useCopyClipboard'
-
-// import useLimitOrderApproveCallback, { BentoApprovalState } from '../../../hooks/useLimitOrderApproveCallback'
-// import { ApprovalState, useLimitOrderApproveCallback } from '../../../hooks/useLimitOrderApproveCallback'
 import { useLimitOrderApproveCallback } from '../../../hooks/useLimitOrderApproveCallback'
 import Alert from '../../../components/Alert'
 import { AppDispatch } from '../../../state'
