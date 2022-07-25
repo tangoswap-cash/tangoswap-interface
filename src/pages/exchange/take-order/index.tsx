@@ -432,8 +432,8 @@ function TakeOrderPage() {
 
           {/* <Button color="gradient" onClick={handler}>
             {i18n._(t`Take Limit Order`)}
-           </Button> */}
-	   
+          </Button> */}
+
           <ButtonError
                 onClick={handler}
                 id="swap-button"
@@ -444,7 +444,7 @@ function TakeOrderPage() {
                   ? i18n._(t`Take Limit Order`)
                   : i18n._(t`Order Expired`)
                   }
-          </ButtonError>	   
+          </ButtonError>
         </div>
       </DoubleGlowShadow>
 
