@@ -1,9 +1,12 @@
 import React, { FC, useCallback } from 'react'
+import { useBlockNumber } from '../../../state/application/hooks'
+
 // import { formatNumber, shortenAddress } from '../../../functions'
 // import { useActiveWeb3React, useUSDCPrice } from '../../../hooks'
 // import { useDerivedLimitOrderInfo, useLimitOrderState } from '../../../state/limit-order/hooks'
 
 import Button from '../../../components/Button'
+import { ButtonConfirmed, ButtonError } from '../../../components/Button'
 // import { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
 // import CurrencyLogo from '../../../components/CurrencyLogo'
 // import { Field } from '../../../state/limit-order/actions'
@@ -175,7 +178,6 @@ function b64ToUint6 (nChr) {
       0;
 }
 
-
 function base64DecToArr (sBase64, nBlocksSize: number | undefined) {
   var
     sB64Enc = sBase64.replace(/=/g, ""), nInLen = sB64Enc.length,
@@ -204,56 +206,48 @@ function useDefaultsFromURLSearch():
     }
   | undefined {
   const { chainId } = useActiveWeb3React()
-  const dispatch = useAppDispatch()
   const parsedQs = useParsedQueryString()
-  const [expertMode] = useExpertModeManager()
-  const [result, setResult] = useState<
-    | {
-        oParam: string | undefined
-      }
-    | undefined
-  >()
 
   if (!chainId) return
-
-  // console.log("parsedQs: ", parsedQs)
-
-  // const defaultState = defaultSwapState()
-  // const hadQuery = Object.keys(parsedQs).length
-  // const parsed = queryParametersToSwapState(parsedQs, chainId)
-
-  // if (!hadQuery && JSON.stringify(parsed) === JSON.stringify(defaultState)) {
-  //   return {
-  //     inputCurrencyId: defaultState[Field.INPUT].currencyId,
-  //     outputCurrencyId: defaultState[Field.OUTPUT].currencyId,
-  //   };
-  // }
 
   return {
     oParam: parsedQs.o,
   };
-
-
-  // useEffect(() => {
-  //   // dispatch(
-  //   //   replaceSwapState({
-  //   //     typedValue: parsed.typedValue,
-  //   //     field: parsed.independentField,
-  //   //     inputCurrencyId: parsed[Field.INPUT].currencyId,
-  //   //     outputCurrencyId: parsed[Field.OUTPUT].currencyId,
-  //   //     recipient: expertMode ? parsed.recipient : null,
-  //   //   })
-  //   // )
-
-  //   // setResult({
-  //   //   inputCurrencyId: parsed[Field.INPUT].currencyId,
-  //   //   outputCurrencyId: parsed[Field.OUTPUT].currencyId,
-  //   // })
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [dispatch, chainId])
-
-  // return result
 }
+
+function formatDateTime(ts: number) {
+  const d = new Date(ts);
+  return d.toLocaleString()
+}
+
+function timeDiff(dueTime: number, now: number) {
+  if (now > dueTime) return "(expired)"
+
+  const diff = dueTime - now;
+
+  let msec = diff;
+
+  const dd = Math.floor(msec / 1000 / 60 / 60 / 24);
+  if (dd > 0) return `(in ~${dd} days)`
+  msec -= dd * 1000 * 60 * 60 * 24;
+
+  const hh = Math.floor(msec / 1000 / 60 / 60);
+  if (hh > 0) return `(in ~${hh} hours)`
+  msec -= hh * 1000 * 60 * 60;
+
+  const mm = Math.floor(msec / 1000 / 60);
+  if (mm > 0) return `(in ~${mm} minutes)`
+  msec -= mm * 1000 * 60;
+
+  const ss = Math.floor(msec / 1000);
+  if (dd > 0)
+  msec -= ss * 1000;
+  return `(in ~${ss} seconds)`
+
+  // console.log(hh + ":" + mm + ":" + ss);
+  // return dd + " " + hh + ":" + mm + ":" + ss;
+}
+
 
 function TakeOrderPage() {
   /*
@@ -362,6 +356,27 @@ function TakeOrderPage() {
   //TODO(fernando)
   const limitPrice = 1;
 
+  const blockNumber = useBlockNumber()
+  // const [expiration, setExpiration] = useState<number>(null)
+  const [expiration, setExpiration] = useState<string>(null)
+  const [isValid, setIsValid] = useState<boolean>(null)
+
+  const dueTime = Math.floor(Number(order.dueTime.toString()) / 1000000);
+
+  useEffect(() => {
+    // getBalanceOf(sushi, burningAddress).then((balance) => setExpiration(balance))
+    const now = new Date().getTime()
+    // const diff = dueTime - now;
+    // console.log("new Date().getTime(): ", new Date().getTime());
+    // console.log("order.dueTime:        ", order.dueTime.toString());
+    // console.log("dueTime:              ", dueTime);
+    // console.log("diff:                 ", diff);
+
+    setExpiration(timeDiff(dueTime, now))
+    setIsValid(now <= dueTime)
+
+  }, [blockNumber])
+
   return (
      <Container id="take-order-page" className="py-4 md:py-8 lg:py-12" maxWidth='lg'>
       <Head>
@@ -373,7 +388,7 @@ function TakeOrderPage() {
         <div className="p-4 space-y-4 rounded bg-dark-900 z-1">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
-              <div className="text-xl font-bold text-white">{i18n._(t`You Pay:`)}</div>
+              <div className="text-xl font-bold text-white">{i18n._(t`You pay:`)}</div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CurrencyLogo size={40} currency={inputCurrency} />
@@ -405,29 +420,30 @@ function TakeOrderPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-6 px-6 py-8 bg-dark-800">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between">
-                <span className="text-secondary">{i18n._(t`Minimum Received`)}</span>
-                <span className="font-bold text-high-emphesis">
-                  {/* {parsedAmounts[Field.OUTPUT]?.toSignificant(6)} {currencies[Field.OUTPUT]?.symbol} */}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-secondary">{i18n._(t`Order Expiration`)}</span>
-                {/* <span className="font-bold text-high-emphesis">{orderExpiration.label}</span> */}
-              </div>
-              {/* {recipient && (
-                <div className="flex items-center justify-between">
-                  <span className="text-secondary">{i18n._(t`Recipient`)}</span>
-                  <span className="font-bold text-high-emphesis">{shortenAddress(recipient, 6)}</span>
-                </div>
-              )} */}
-            </div>
+
+          <div className="flex justify-between px-5 py-3 rounded bg-dark-800">
+              <span className="font-bold text-secondary">{i18n._(t`Order Expiration`)}</span>
+              <span className="text-primary">
+                {formatDateTime(dueTime) + " " + expiration}
+                {/* {limitPrice} {inputCurrency?.symbol} per {outputCurrency?.symbol} */}
+              </span>
           </div>
-          <Button color="gradient" onClick={handler}>
+
+          {/* <Button color="gradient" onClick={handler}>
             {i18n._(t`Take Limit Order`)}
-          </Button>
+          </Button> */}
+
+          <ButtonError
+                onClick={handler}
+                id="swap-button"
+                disabled={!isValid}
+                error={isValid}
+              >
+                {isValid
+                  ? i18n._(t`Take Limit Order`)
+                  : i18n._(t`Order Expired`)
+                  }
+          </ButtonError>
         </div>
       </DoubleGlowShadow>
 

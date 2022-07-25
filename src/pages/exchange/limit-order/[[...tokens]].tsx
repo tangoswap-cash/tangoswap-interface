@@ -240,31 +240,6 @@ function LimitOrder() {
           <div id="limit-order-page" className="flex flex-col gap-4 p-4 rounded bg-dark-900">
             <ExchangeHeader input={currencies[Field.INPUT]} output={currencies[Field.OUTPUT]} />
             <div className="flex flex-col gap-4">
-              {/* <CurrencyInputPanel
-                className="rounded"
-                id="swap-currency-input"
-                // topAdornment={<PayFromToggle />}
-                // bottomAdornment={<BalancePanel />}
-                selectComponent={
-                  <CurrencySelect
-                    currency={currencies[Field.INPUT]}
-                    otherCurrency={currencies[Field.OUTPUT]}
-                    label={i18n._(t`You pay:`)}
-                    onSelect={handleInputSelect}
-                    currencyList={Object.keys(defaultTokens)}
-                    allowManageTokenList={false}
-                  />
-                }
-                inputComponent={
-                  <CurrencyInput
-                    id="token-amount-input"
-                    onMax={handleMaxInput}
-                    showMaxButton={!atMaxAmountInput}
-                    onUserInput={(value) => onUserInput(Field.INPUT, value)}
-                    value={formattedAmounts[Field.INPUT]}
-                  />
-                }
-              /> */}
               <CurrencyInputPanel
                 // priceImpact={priceImpact}
                 label={i18n._(t`You pay:`)}
@@ -305,60 +280,12 @@ function LimitOrder() {
                 </div>
                 <LimitPriceInputPanel onBlur={(val) => checkLimitPrice(val)} />
               </div>
-              {/* <CurrencyInputPanel
-                className="relative rounded z-1"
-                id="swap-currency-input"
-                selectComponent={
-                  <CurrencySelect
-                    disabled={!currencies[Field.INPUT]}
-                    currency={currencies[Field.OUTPUT]}
-                    otherCurrency={currencies[Field.INPUT]}
-                    label={i18n._(t`You receive:`)}
-                    onSelect={handleOutputSelect}
-                    currencyList={Object.keys(defaultTokens)}
-                    includeNativeCurrency={false}
-                    allowManageTokenList={false}
-                  />
-                }
-                inputComponent={
-                  <CurrencyInput
-                    id="token-amount-output"
-                    showMaxButton={false}
-                    onUserInput={(value) => onUserInput(Field.OUTPUT, value)}
-                    value={formattedAmounts[Field.OUTPUT]}
-                    error={currencyInputPanelError}
-                    endAdornment={
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold text-right text-high-emphesis">
-                          {currencyInputPanelHelperText}
-                        </span>
-                      </div>
-                    }
-                  />
-                }
-                bottomAdornment={
-                  currencyInputPanelError ? (
-                    <div className="z-0 flex items-center justify-center py-2 -mt-2 rounded-b bg-red bg-opacity-20">
-                      <div className="flex items-center gap-2 pt-2">
-                        <ExclamationIcon className="text-red" width={24} height={24} />
-                        <Typography variant="xs" weight={700}>
-                          {currencyInputPanelError}
-                        </Typography>
-                      </div>
-                    </div>
-                  ) : (
-                    <></>
-                  )
-                }
-              /> */}
               <CurrencyInputPanel
                 value={formattedAmounts[Field.OUTPUT]}
                 onUserInput={(value) => onUserInput(Field.OUTPUT, value)}
                 label={i18n._(t`You receive:`)}
                 showMaxButton={false}
                 hideBalance={true}
-                // fiatValue={fiatValueOutput ?? undefined}
-                // priceImpact={priceImpact}
                 currency={currencies[Field.OUTPUT]}
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT]}
@@ -414,17 +341,6 @@ function LimitOrder() {
             </div>
 
             <div className="flex flex-col gap-3">
-              {/* <Alert
-                type="information"
-                title="Upgrade Notice"
-                message={
-                  'In order to incorporate more community filler bots the ability to add new limit orders is temporarily paused. Existing orders are unaffected and can be edited and cancelled at any time'
-                }
-                dismissable={false}
-              /> */}
-              {/* <Button disabled={true} color={'gray'}>
-                {i18n._(t`Limit Orders Disabled`)}
-              </Button> */}
               <LimitOrderButton color="gradient" className="font-bold" currency={currencies[Field.INPUT]} />
             </div>
           </div>
