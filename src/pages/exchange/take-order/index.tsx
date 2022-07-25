@@ -429,9 +429,22 @@ function TakeOrderPage() {
                 {/* {limitPrice} {inputCurrency?.symbol} per {outputCurrency?.symbol} */}
               </span>
           </div>
-          <Button color="gradient" onClick={handler}>
+
+          {/* <Button color="gradient" onClick={handler}>
             {i18n._(t`Take Limit Order`)}
-          </Button>
+           </Button> */}
+	   
+          <ButtonError
+                onClick={handler}
+                id="swap-button"
+                disabled={!isValid}
+                error={isValid}
+              >
+                {isValid
+                  ? i18n._(t`Take Limit Order`)
+                  : i18n._(t`Order Expired`)
+                  }
+          </ButtonError>	   
         </div>
       </DoubleGlowShadow>
 
