@@ -6,6 +6,8 @@ import { Field } from '../../../state/limit-order/actions'
 import React, { FC, useCallback, useState } from 'react'
 import { useAddPopup, useWalletModalToggle } from '../../../state/application/hooks'
 import { useDerivedLimitOrderInfo, useLimitOrderState } from '../../../state/limit-order/hooks'
+import { ClipboardCopyIcon } from '@heroicons/react/solid'
+import useCopyClipboard from '../../../hooks/useCopyClipboard'
 import { useLimitOrderApproveCallback } from '../../../hooks/useLimitOrderApproveCallback'
 import Alert from '../../../components/Alert'
 import { AppDispatch } from '../../../state'
@@ -76,6 +78,9 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   const toggleWalletModal = useWalletModalToggle()
 
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false)
+  const [takeOrderURL, setTakeOrderURL] = useState<string>(null);
+
+  const [isCopied, setCopied] = useCopyClipboard()
 
   const { orderExpiration, recipient } = useLimitOrderState()
   const { parsedAmounts, inputError } = useDerivedLimitOrderInfo()
@@ -226,9 +231,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
       const url = "https://orders.cash/take?o="+base64EncArr(hexToArr(order))
       console.log("url: ", url);
-      // document.getElementById("url").innerText = url
-      // document.getElementById("urlP").style.display = "block"
-
+      setTakeOrderURL(url);
 
       // await order.signOrderWithProvider(chainId, library)
       setOpenConfirmationModal(false)
@@ -310,6 +313,12 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
   return (
     <div className="flex flex-col flex-1">
+      {takeOrderURL && (
+        <div data-tooltip-target="tooltip-copy" className="copy-button pl-1 text-sm flex cursor-pointer mb-2 hover:text-high-emphesis focus:text-high-emphesis" onClick={() => setCopied(takeOrderURL)}>
+          <p className="text-sm mr-1">{`${takeOrderURL.substring(0,40)}...`}</p>
+          <ClipboardCopyIcon width={16} height={16} />
+        </div>
+      )}
       {/* {fallback && (
         <Alert
           message={i18n._(
@@ -319,6 +328,15 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
         />
       )} */}
       {button}
+      <style jsx>{`
+        .copy-button {
+          width: fit-content;
+          transition: transform .1s;
+        }
+        .copy-button:active, .copy-button:focus {
+          transform: scale(0.98);
+        }
+      `}</style>
     </div>
   )
 
