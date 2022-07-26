@@ -129,7 +129,7 @@ export function useGetSigner(
   dueTime80: string,
   r: string,
   s: string
-): string {
+): string | undefined {
   const limitOrderContract = useLimitOrderContract()
 
   const args = useMemo(() => {
@@ -140,7 +140,21 @@ export function useGetSigner(
 
   const result = useSingleCallResult(args ? limitOrderContract : null, 'getSigner', args)?.result
   // console.log('****** result: ', result)
-  return result[0]
+  return result?.at(0)
+}
+
+export function useIsReplay(makerAddress: string, dueTime: string): boolean | undefined {
+  const limitOrderContract = useLimitOrderContract()
+
+  const args = useMemo(() => {
+    if (!makerAddress || !dueTime || !limitOrderContract) return
+    const { methodName, args, value } = LimitOrder.isReplayCallParameters(makerAddress, dueTime)
+    return args
+  }, [makerAddress, dueTime])
+
+  const result = useSingleCallResult(args ? limitOrderContract : null, 'isReplay', args)?.result
+  // console.log('****** result: ', result)
+  return result?.at(0)
 }
 
 function bnToHex(n: bigint) {
@@ -220,16 +234,13 @@ function TakeOrderPage() {
   const [expiration, setExpiration] = useState<string>(null)
   const [isExpired, setIsExpired] = useState<boolean>(null)
 
-  // const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
   const [{ showConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean
-    // tradeToConfirm: TradeSmart<Currency, Currency> | undefined
     attemptingTxn: boolean
     swapErrorMessage: string | undefined
     txHash: string | undefined
   }>({
     showConfirm: false,
-    // tradeToConfirm: undefined,
     attemptingTxn: false,
     swapErrorMessage: undefined,
     txHash: undefined,
@@ -265,7 +276,6 @@ function TakeOrderPage() {
     parsedOutputAmount,
     order.coinsToMaker,
     order.coinsToTaker,
-    // order.dueTime.mul(1000).toString(),
     order.dueTime.toString(),
     order.r,
     order.s,
@@ -278,8 +288,8 @@ function TakeOrderPage() {
     (BigInt(dueTime80) << 16n) | (BigInt(order.v.toString()) << 8n) | BigInt(version)
   )
 
-  // const xxx = useGetSigner(order.coinsToMaker, order.coinsToTaker, dueTime80_v8_version8, order.r, order.s)
-  // console.log('xxx: ', xxx)
+  const makerAddress = useGetSigner(order.coinsToMaker, order.coinsToTaker, dueTime80_v8_version8, order.r, order.s)
+  console.log('makerAddress: ', makerAddress)
 
   const handleSwap = useCallback(() => {
     if (!swapCallback) {
@@ -287,7 +297,6 @@ function TakeOrderPage() {
     }
     setSwapState({
       attemptingTxn: true,
-      // tradeToConfirm,
       showConfirm,
       swapErrorMessage: undefined,
       txHash: undefined,
@@ -296,7 +305,6 @@ function TakeOrderPage() {
       .then((hash) => {
         setSwapState({
           attemptingTxn: false,
-          // tradeToConfirm,
           showConfirm,
           swapErrorMessage: undefined,
           txHash: hash,
@@ -305,23 +313,12 @@ function TakeOrderPage() {
       .catch((error) => {
         setSwapState({
           attemptingTxn: false,
-          // tradeToConfirm,
           showConfirm,
           swapErrorMessage: error.message,
           txHash: undefined,
         })
       })
-  }, [
-    swapCallback,
-    // priceImpact,
-    // tradeToConfirm,
-    showConfirm,
-    // recipient,
-    // recipientAddress,
-    account,
-    parsedInputAmount?.currency?.symbol,
-    parsedOutputAmount?.currency?.symbol,
-  ])
+  }, [swapCallback, showConfirm, account, parsedInputAmount?.currency?.symbol, parsedOutputAmount?.currency?.symbol])
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -351,6 +348,12 @@ function TakeOrderPage() {
 
   if (isExpired) {
     inputError = i18n._(t`Order Expired`)
+  }
+
+  const isReplayed = useIsReplay(makerAddress, order.dueTime.toString())
+  console.log('isReplayed: ', isReplayed)
+  if (isReplayed) {
+    inputError = i18n._(t`Order already dealt`)
   }
 
   const disabled = !!inputError || tokenApprovalState === ApprovalState.PENDING

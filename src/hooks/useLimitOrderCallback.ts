@@ -130,7 +130,7 @@ export function useLimitOrderCallArguments(
       )
     )
 
-    console.log('methods: ', methods)
+    // console.log('methods: ', methods)
 
     return methods.map(({ methodName, args, value }) => {
       if (argentWalletContract && inputAmount.currency.isToken) {
