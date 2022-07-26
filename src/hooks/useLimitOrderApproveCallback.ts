@@ -7,18 +7,12 @@ import {
   TradeType,
   Trade as V2Trade,
   AddressMap,
+  ORDERS_CASH_ADDRESS,
 } from '@tangoswapcash/sdk'
 
 import { ApprovalState, useApproveCallback } from '.'
 import { useActiveWeb3React } from './useActiveWeb3React'
 import { useCallback, useMemo } from 'react'
-
-//TODO(fernando)
-const ORDERS_CASH_ADDRESS: AddressMap = {
-  [ChainId.SMARTBCH]: '0x5eBE6bFcA42C8440c8DC6C688E449E0B26e8E243',
-  [ChainId.SMARTBCH_AMBER]: ''
-}
-
 
 // wraps useApproveCallback in the context of a swap
 export function useLimitOrderApproveCallback(

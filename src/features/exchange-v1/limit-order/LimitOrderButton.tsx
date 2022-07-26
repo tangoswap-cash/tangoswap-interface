@@ -1,5 +1,5 @@
 import { ApprovalState, useApproveCallback } from '../../../hooks'
-import { ChainId, computeConstantProductPoolAddress, Currency } from '@tangoswapcash/sdk'
+import { ChainId, computeConstantProductPoolAddress, Currency, ORDERS_CASH_ADDRESS, SEP206_ADDRESS } from '@tangoswapcash/sdk'
 import Button, { ButtonProps } from '../../../components/Button'
 import { ButtonError } from '../../../components/Button'
 import { Field } from '../../../state/limit-order/actions'
@@ -23,17 +23,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from "@ethersproject/units";
 import { id } from "@ethersproject/hash";
 import { hexZeroPad } from "@ethersproject/bytes";
-
-//TODO(fernando)
-import {
-  AddressMap,
-} from '@tangoswapcash/sdk'
-
-//TODO(fernando)
-const ORDERS_CASH_ADDRESS: AddressMap = {
-  [ChainId.SMARTBCH]: '0x5eBE6bFcA42C8440c8DC6C688E449E0B26e8E243',
-  [ChainId.SMARTBCH_AMBER]: ''
-}
 
 interface LimitOrderButtonProps extends ButtonProps {
   currency: Currency
@@ -91,7 +80,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   const { orderExpiration, recipient } = useLimitOrderState()
   const { parsedAmounts, inputError } = useDerivedLimitOrderInfo()
 
-  const [approvalState, approveCallback] = useLimitOrderApproveCallback(undefined, undefined, undefined)
+  // const [approvalState, approveCallback] = useLimitOrderApproveCallback(undefined, undefined, undefined)
 
   const { mutate } = useLimitOrders()
 
@@ -143,11 +132,9 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     // console.log("Output3: ", parsedAmounts[Field.OUTPUT].currency.name);
     // console.log("Output4: ", parsedAmounts[Field.OUTPUT].currency.symbol);
 
-      //TODO(fernando): store the following address in the SDK (sep206 address)
-
     let coinsToTakerAddr;
     if (parsedAmounts[Field.INPUT].currency.isNative) {
-      coinsToTakerAddr = "0x0000000000000000000000000000000000002711";
+      coinsToTakerAddr = SEP206_ADDRESS;
     } else {
       coinsToTakerAddr = parsedAmounts[Field.INPUT].wrapped.currency.address;
     }
@@ -161,7 +148,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
     let coinsToMakerAddr;
     if (parsedAmounts[Field.OUTPUT].currency.isNative) {
-      coinsToMakerAddr = "0x0000000000000000000000000000000000002711";
+      coinsToMakerAddr = SEP206_ADDRESS;
     } else {
       coinsToMakerAddr = parsedAmounts[Field.OUTPUT].wrapped.currency.address;
     }
