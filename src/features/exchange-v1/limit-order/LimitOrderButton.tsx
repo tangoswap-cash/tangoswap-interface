@@ -1,5 +1,11 @@
 import { ApprovalState, useApproveCallback } from '../../../hooks'
-import { ChainId, computeConstantProductPoolAddress, Currency, ORDERS_CASH_ADDRESS, SEP206_ADDRESS } from '@tangoswapcash/sdk'
+import {
+  ChainId,
+  computeConstantProductPoolAddress,
+  Currency,
+  ORDERS_CASH_ADDRESS,
+  SEP206_ADDRESS,
+} from '@tangoswapcash/sdk'
 import Button, { ButtonProps } from '../../../components/Button'
 import { ButtonError } from '../../../components/Button'
 import { Field } from '../../../state/limit-order/actions'
@@ -22,9 +28,9 @@ import useLimitOrders from '../../../hooks/useLimitOrders'
 import { useLingui } from '@lingui/react'
 
 import { BigNumber } from '@ethersproject/bignumber'
-import { parseUnits } from "@ethersproject/units";
-import { id } from "@ethersproject/hash";
-import { hexZeroPad } from "@ethersproject/bytes";
+import { parseUnits } from '@ethersproject/units'
+import { id } from '@ethersproject/hash'
+import { hexZeroPad } from '@ethersproject/bytes'
 import { Chain } from '@ethereumjs/common'
 
 interface LimitOrderButtonProps extends ButtonProps {
@@ -32,43 +38,46 @@ interface LimitOrderButtonProps extends ButtonProps {
 }
 
 function hexToArr(hexString) {
-	return new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+  return new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
 }
 
 function hexStr32(bn) {
-	return hexZeroPad(bn.toHexString(), 32);
+  return hexZeroPad(bn.toHexString(), 32)
 }
 
-function uint6ToB64 (nUint6) {
-
-  return nUint6 < 26 ?
-      nUint6 + 65
-    : nUint6 < 52 ?
-      nUint6 + 71
-    : nUint6 < 62 ?
-      nUint6 - 4
-    : nUint6 === 62 ?
-      45 // "-"
-    : nUint6 === 63 ?
-      95 // "_"
-    :
-      65;
-
+function uint6ToB64(nUint6) {
+  return nUint6 < 26
+    ? nUint6 + 65
+    : nUint6 < 52
+    ? nUint6 + 71
+    : nUint6 < 62
+    ? nUint6 - 4
+    : nUint6 === 62
+    ? 45 // "-"
+    : nUint6 === 63
+    ? 95 // "_"
+    : 65
 }
 
-function base64EncArr (aBytes) {
-  var nMod3 = 2, sB64Enc = "";
+function base64EncArr(aBytes) {
+  var nMod3 = 2,
+    sB64Enc = ''
 
   for (var nLen = aBytes.length, nUint24 = 0, nIdx = 0; nIdx < nLen; nIdx++) {
-    nMod3 = nIdx % 3;
+    nMod3 = nIdx % 3
     //if (nIdx > 0 && (nIdx * 4 / 3) % 76 === 0) { sB64Enc += "\r\n"; }
-    nUint24 |= aBytes[nIdx] << (16 >>> nMod3 & 24);
+    nUint24 |= aBytes[nIdx] << ((16 >>> nMod3) & 24)
     if (nMod3 === 2 || aBytes.length - nIdx === 1) {
-      sB64Enc += String.fromCharCode(uint6ToB64(nUint24 >>> 18 & 63), uint6ToB64(nUint24 >>> 12 & 63), uint6ToB64(nUint24 >>> 6 & 63), uint6ToB64(nUint24 & 63));
-      nUint24 = 0;
+      sB64Enc += String.fromCharCode(
+        uint6ToB64((nUint24 >>> 18) & 63),
+        uint6ToB64((nUint24 >>> 12) & 63),
+        uint6ToB64((nUint24 >>> 6) & 63),
+        uint6ToB64(nUint24 & 63)
+      )
+      nUint24 = 0
     }
   }
-  return sB64Enc.substr(0, sB64Enc.length - 2 + nMod3) + (nMod3 === 2 ? '' : nMod3 === 1 ? '=' : '==');
+  return sB64Enc.substr(0, sB64Enc.length - 2 + nMod3) + (nMod3 === 2 ? '' : nMod3 === 1 ? '=' : '==')
 }
 
 const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest }) => {
@@ -79,14 +88,12 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   const toggleWalletModal = useWalletModalToggle()
 
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false)
-  const [takeOrderURL, setTakeOrderURL] = useState<string>(null);
+  const [takeOrderURL, setTakeOrderURL] = useState<string>(null)
 
   const [isCopied, setCopied] = useCopyClipboard()
 
   const { orderExpiration, recipient } = useLimitOrderState()
   const { parsedAmounts, inputError } = useDerivedLimitOrderInfo()
-
-  // const [approvalState, approveCallback] = useLimitOrderApproveCallback(undefined, undefined, undefined)
 
   const { mutate } = useLimitOrders()
 
@@ -102,14 +109,10 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     parsedAmounts[Field.INPUT] &&
     (tokenApprovalState === ApprovalState.NOT_APPROVED || tokenApprovalState === ApprovalState.PENDING)
 
-  const disabled =
-    !!inputError ||
-    tokenApprovalState === ApprovalState.PENDING
+  const disabled = !!inputError || tokenApprovalState === ApprovalState.PENDING
 
   const handler = useCallback(async () => {
-    console.log("callback");
-    const signer = library.getSigner();
-    // console.log("signer: ", signer);
+    const signer = library.getSigner()
 
     let endTime
     switch (orderExpiration.value) {
@@ -128,112 +131,74 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       //   endTime = Number.MAX_SAFE_INTEGER
     }
 
-
-    // console.log("Input1:  ", parsedAmounts[Field.INPUT].quotient.toString());
-    // console.log("Input2:  ", parsedAmounts[Field.INPUT].currency.isNative);
-    // console.log("Input3:  ", parsedAmounts[Field.INPUT].currency.name);
-    // console.log("Input4:  ", parsedAmounts[Field.INPUT].currency.symbol);
-    // console.log("Output1: ", parsedAmounts[Field.OUTPUT].quotient.toString());
-    // console.log("Output2: ", parsedAmounts[Field.OUTPUT].currency.isNative);
-    // console.log("Output3: ", parsedAmounts[Field.OUTPUT].currency.name);
-    // console.log("Output4: ", parsedAmounts[Field.OUTPUT].currency.symbol);
-
-    let coinsToTakerAddr;
+    let coinsToTakerAddr
     if (parsedAmounts[Field.INPUT].currency.isNative) {
-      coinsToTakerAddr = SEP206_ADDRESS[chainId];
+      coinsToTakerAddr = SEP206_ADDRESS[chainId]
     } else {
-      coinsToTakerAddr = parsedAmounts[Field.INPUT].wrapped.currency.address;
+      coinsToTakerAddr = parsedAmounts[Field.INPUT].wrapped.currency.address
     }
-    console.log("coinsToTakerAddr:  ", coinsToTakerAddr);
 
-    const twoPow96 = BigNumber.from(2).pow(96);
+    const twoPow96 = BigNumber.from(2).pow(96)
     const amtBN = parseUnits(parsedAmounts[Field.INPUT].wrapped.quotient.toString(), 0)
-    let coinsToTakerBN = BigNumber.from(coinsToTakerAddr);
-    coinsToTakerBN = coinsToTakerBN.mul(twoPow96).add(amtBN);
-    console.log("coinsToTakerBN:  ", coinsToTakerBN.toHexString());
+    let coinsToTakerBN = BigNumber.from(coinsToTakerAddr)
+    coinsToTakerBN = coinsToTakerBN.mul(twoPow96).add(amtBN)
 
-
-    let coinsToMakerAddr;
+    let coinsToMakerAddr
     if (parsedAmounts[Field.OUTPUT].currency.isNative) {
-      coinsToMakerAddr = SEP206_ADDRESS[chainId];
+      coinsToMakerAddr = SEP206_ADDRESS[chainId]
     } else {
-      coinsToMakerAddr = parsedAmounts[Field.OUTPUT].wrapped.currency.address;
+      coinsToMakerAddr = parsedAmounts[Field.OUTPUT].wrapped.currency.address
     }
-
-    console.log("Input:                     ", parsedAmounts[Field.INPUT].wrapped.quotient.toString());
-
-    console.log("Output:                    ", parsedAmounts[Field.OUTPUT].wrapped.quotient.toString());
-    console.log("Output (coinsToMakerAddr): ", coinsToMakerAddr);
 
     const amtBNIn = parseUnits(parsedAmounts[Field.OUTPUT].wrapped.quotient.toString(), 0)
-    let coinsToMakerBN = BigNumber.from(coinsToMakerAddr);
-    coinsToMakerBN = coinsToMakerBN.mul(twoPow96).add(amtBNIn);
-    console.log("coinsToMakerBN:  ", coinsToMakerBN.toHexString());
+    let coinsToMakerBN = BigNumber.from(coinsToMakerAddr)
+    coinsToMakerBN = coinsToMakerBN.mul(twoPow96).add(amtBNIn)
 
-    console.log("endTime:             ", endTime);
-
-    // const expireDate = new Date(document.getElementById("expireDate").value).getTime()
     const expireDate = new Date(endTime).getTime()
-    console.log("expireDate:          ", expireDate);
-
-    const expireTimestamp =  Math.floor(expireDate / 1000)
-    const expireNanosecondsBN = BigNumber.from(expireTimestamp).mul(1000*1000*1000)
-    const expirePicosecondsBN = expireNanosecondsBN.add(Math.floor(Math.random()*1000*1000*1000)).mul(1000)
-
-    console.log("expireTimestamp:     ", expireTimestamp);
-    console.log("expireNanosecondsBN: ", expireNanosecondsBN);
-    console.log("expirePicosecondsBN: ", expirePicosecondsBN);
-
+    const expireTimestamp = Math.floor(expireDate / 1000)
+    const expireNanosecondsBN = BigNumber.from(expireTimestamp).mul(1000 * 1000 * 1000)
+    const expirePicosecondsBN = expireNanosecondsBN.add(Math.floor(Math.random() * 1000 * 1000 * 1000)).mul(1000)
 
     const msg = {
-        coinsToMaker: coinsToMakerBN,
-        coinsToTaker: coinsToTakerBN,
-        dueTime80: expirePicosecondsBN,
-    };
+      coinsToMaker: coinsToMakerBN,
+      coinsToTaker: coinsToTakerBN,
+      dueTime80: expirePicosecondsBN,
+    }
 
     const Domain = {
-      name: "exchange dapp",
-      version: "v0.1.0",
+      name: 'exchange dapp',
+      version: 'v0.1.0',
       chainId: 10000,
       verifyingContract: ORDERS_CASH_ADDRESS[chainId],
-      salt: id("Exchange"),
+      salt: id('Exchange'),
     }
 
     const Types = {
       Exchange: [
-        { name: "coinsToMaker", type: "uint256" },
-        { name: "coinsToTaker", type: "uint256" },
-        { name: "dueTime80", type: "uint256" },
-      ]
+        { name: 'coinsToMaker', type: 'uint256' },
+        { name: 'coinsToTaker', type: 'uint256' },
+        { name: 'dueTime80', type: 'uint256' },
+      ],
     }
 
-
-    // console.log(`Domain:         ${JSON.stringify(Domain)}`);
-    // console.log(`Types:          ${JSON.stringify(Types)}`);
-    // console.log(`msg:            ${JSON.stringify(msg)}`);
-    // console.log(`coinsToMakerBN: ${hexStr32(coinsToMakerBN)}`);
-    // const sig = await signer._signTypedData(Domain, Types, msg);
-
-
     try {
-      const sig = await signer._signTypedData(Domain, Types, msg);
-      console.log(`sig:         ${sig}`);
-
+      const sig = await signer._signTypedData(Domain, Types, msg)
+      // console.log(`sig:         ${sig}`)
 
       // o=ver8,coinsToMaker256,coinsToTaker256,dueTime80,r256,s256,v8
-      let order = "00"
+      let order = '01'
       order += hexStr32(coinsToMakerBN).substr(2)
       order += hexStr32(coinsToTakerBN).substr(2)
-      order += hexStr32(expirePicosecondsBN).substr(64+2-20)
+      order += hexStr32(expirePicosecondsBN).substr(64 + 2 - 20)
       order += sig.substr(2)
 
-      console.log(`order:         ${order}`);
-      console.log(`order:         ${hexToArr(order)}`);
-      console.log(`order:         ${base64EncArr(hexToArr(order))}`);
+      // console.log(`order:         ${order}`)
+      // console.log(`order:         ${hexToArr(order)}`)
+      // console.log(`order:         ${base64EncArr(hexToArr(order))}`)
 
-      const url = "https://orders.cash/take?o="+base64EncArr(hexToArr(order))
-      console.log("url: ", url);
-      setTakeOrderURL(url);
+      const url = 'https://orders.cash/take?o=' + base64EncArr(hexToArr(order))
+      console.log('url: ', url)
+      setTakeOrderURL(url)
 
       // await order.signOrderWithProvider(chainId, library)
       setOpenConfirmationModal(false)
@@ -247,7 +212,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
         await mutate()
       }
     } catch (e) {
-      console.log("error: ", e)
+      console.log('error: ', e)
       addPopup({
         txn: {
           hash: null,
@@ -265,15 +230,6 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
         onConfirm={() => handler()}
         onDismiss={() => setOpenConfirmationModal(false)}
       />
-      {/* <Button
-        disabled={disabled}
-        color={disabled ? 'gray' : 'blue'}
-        onClick={() => setOpenConfirmationModal(true)}
-        {...rest}
-      >
-        {i18n._(t`Create Limit Order`)}
-      </Button> */}
-
 
       <ButtonError
         onClick={() => setOpenConfirmationModal(true)}
@@ -286,7 +242,6 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       >
         {i18n._(t`Create Limit Order`)}
       </ButtonError>
-
     </>
   )
 
@@ -316,8 +271,12 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   return (
     <div className="flex flex-col flex-1">
       {takeOrderURL && (
-        <div data-tooltip-target="tooltip-copy" className="copy-button pl-1 text-sm flex cursor-pointer mb-2 hover:text-high-emphesis focus:text-high-emphesis" onClick={() => setCopied(takeOrderURL)}>
-          <p className="text-sm mr-1">{`${takeOrderURL.substring(0,40)}...`}</p>
+        <div
+          data-tooltip-target="tooltip-copy"
+          className="flex pl-1 mb-2 text-sm cursor-pointer copy-button hover:text-high-emphesis focus:text-high-emphesis"
+          onClick={() => setCopied(takeOrderURL)}
+        >
+          <p className="mr-1 text-sm">{`${takeOrderURL.substring(0, 40)}...`}</p>
           <ClipboardCopyIcon width={16} height={16} />
         </div>
       )}
@@ -327,9 +286,10 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       <style jsx>{`
         .copy-button {
           width: fit-content;
-          transition: transform .1s;
+          transition: transform 0.1s;
         }
-        .copy-button:active, .copy-button:focus {
+        .copy-button:active,
+        .copy-button:focus {
           transform: scale(0.98);
         }
       `}</style>

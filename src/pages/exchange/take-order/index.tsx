@@ -16,9 +16,7 @@ import { useLingui } from '@lingui/react'
 import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React'
 import { useAppDispatch, useAppSelector } from '../../../state/hooks'
 import useParsedQueryString from '../../../hooks/useParsedQueryString'
-import {
-  useExpertModeManager,
-} from '../../../state/user/hooks'
+import { useExpertModeManager } from '../../../state/user/hooks'
 
 import { useEffect, useState } from 'react'
 
@@ -30,50 +28,54 @@ import { arrayify, hexlify, splitSignature } from '@ethersproject/bytes'
 import { useCurrency } from '../../../hooks/Tokens'
 import CurrencyLogo from '../../../components/CurrencyLogo'
 import { tryParseAmount } from '../../../functions/parse'
-import { CurrencyAmount, JSBI, ORDERS_CASH_ADDRESS, SEP206_ADDRESS } from '@tangoswapcash/sdk'
-import { useV2TradeExactIn as useTradeExactIn, useV2TradeExactOut as useTradeExactOut } from '../../../hooks/useV2Trades'
+import { CurrencyAmount, JSBI, ORDERS_CASH_ADDRESS, SEP206_ADDRESS, LimitOrder } from '@tangoswapcash/sdk'
+import {
+  useV2TradeExactIn as useTradeExactIn,
+  useV2TradeExactOut as useTradeExactOut,
+} from '../../../hooks/useV2Trades'
 import { Currency } from '@tangoswapcash/sdk'
-import { ApprovalState, useApproveCallback } from '../../../hooks'
+import { ApprovalState, useApproveCallback, useLimitOrderContract } from '../../../hooks'
 import Dots from '../../../components/Dots'
 import { useWalletModalToggle } from '../../../state/application/hooks'
 import PriceRatio2 from '../../../features/exchange-v1/limit-order/PriceRatio2'
 import { Field } from '../../../state/limit-order/actions'
 import { useLimitOrderCallback } from '../../../hooks/useLimitOrderCallback'
+import { useCurrencyBalances } from '../../../state/wallet/hooks'
+import { useMemo } from 'react'
+import { useSingleCallResult } from '../../../state/multicall/hooks'
 
-function b64ToUint6 (nChr) {
-  return nChr > 64 && nChr < 91 ?
-      nChr - 65
-    : nChr > 96 && nChr < 123 ?
-      nChr - 71
-    : nChr > 47 && nChr < 58 ?
-      nChr + 4
-    : nChr === 45 ?
-      62
-    : nChr === 95 ?
-      63
-    :
-      0;
+function b64ToUint6(nChr) {
+  return nChr > 64 && nChr < 91
+    ? nChr - 65
+    : nChr > 96 && nChr < 123
+    ? nChr - 71
+    : nChr > 47 && nChr < 58
+    ? nChr + 4
+    : nChr === 45
+    ? 62
+    : nChr === 95
+    ? 63
+    : 0
 }
 
-function base64DecToArr (sBase64, nBlocksSize: number | undefined) {
-  var
-    sB64Enc = sBase64.replace(/=/g, ""), nInLen = sB64Enc.length,
-    nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2,
-    taBytes = new Uint8Array(nOutLen);
+function base64DecToArr(sBase64, nBlocksSize: number | undefined) {
+  var sB64Enc = sBase64.replace(/=/g, ''),
+    nInLen = sB64Enc.length,
+    nOutLen = nBlocksSize ? Math.ceil(((nInLen * 3 + 1) >> 2) / nBlocksSize) * nBlocksSize : (nInLen * 3 + 1) >> 2,
+    taBytes = new Uint8Array(nOutLen)
 
   for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
-    nMod4 = nInIdx & 3;
-    nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 6 * (3 - nMod4);
+    nMod4 = nInIdx & 3
+    nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << (6 * (3 - nMod4))
     if (nMod4 === 3 || nInLen - nInIdx === 1) {
       for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
-        taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
+        taBytes[nOutIdx] = (nUint24 >>> ((16 >>> nMod3) & 24)) & 255
       }
-      nUint24 = 0;
-
+      nUint24 = 0
     }
   }
 
-  return taBytes;
+  return taBytes
 }
 
 // updates the swap state to use the defaults for a given network
@@ -82,7 +84,6 @@ function useDefaultsFromURLSearch():
       oParam: string | undefined
     }
   | undefined {
-
   const { chainId } = useActiveWeb3React()
   const parsedQs = useParsedQueryString()
 
@@ -90,69 +91,77 @@ function useDefaultsFromURLSearch():
 
   return {
     oParam: parsedQs.o,
-  };
+  }
 }
 
 function formatDateTime(ts: number) {
-  const d = new Date(ts);
+  const d = new Date(ts)
   return d.toLocaleString()
 }
 
 function timeDiff(dueTime: number, now: number) {
-  if (now > dueTime) return "(expired)"
+  if (now > dueTime) return '(expired)'
 
-  const diff = dueTime - now;
+  const diff = dueTime - now
 
-  let msec = diff;
+  let msec = diff
 
-  const dd = Math.floor(msec / 1000 / 60 / 60 / 24);
+  const dd = Math.floor(msec / 1000 / 60 / 60 / 24)
   if (dd > 0) return `(in ~${dd} days)`
-  msec -= dd * 1000 * 60 * 60 * 24;
+  msec -= dd * 1000 * 60 * 60 * 24
 
-  const hh = Math.floor(msec / 1000 / 60 / 60);
+  const hh = Math.floor(msec / 1000 / 60 / 60)
   if (hh > 0) return `(in ~${hh} hours)`
-  msec -= hh * 1000 * 60 * 60;
+  msec -= hh * 1000 * 60 * 60
 
-  const mm = Math.floor(msec / 1000 / 60);
+  const mm = Math.floor(msec / 1000 / 60)
   if (mm > 0) return `(in ~${mm} minutes)`
-  msec -= mm * 1000 * 60;
+  msec -= mm * 1000 * 60
 
-  const ss = Math.floor(msec / 1000);
-  if (dd > 0)
-  msec -= ss * 1000;
+  const ss = Math.floor(msec / 1000)
+  if (dd > 0) msec -= ss * 1000
   return `(in ~${ss} seconds)`
 }
 
-// export interface IMessage {
-//   coinsToMaker: string
-//   coinsToTaker: string
-//   dueTime80: string
-// }
+export function useGetSigner(
+  coinsToMaker: string,
+  coinsToTaker: string,
+  dueTime80: string,
+  r: string,
+  s: string
+): string {
+  const limitOrderContract = useLimitOrderContract()
 
+  const args = useMemo(() => {
+    if (!coinsToMaker || !coinsToTaker || !dueTime80 || !r || !s || !limitOrderContract) return
+    const { methodName, args, value } = LimitOrder.getSignerCallParameters(coinsToMaker, coinsToTaker, dueTime80, r, s)
+    return args
+  }, [coinsToMaker, coinsToTaker, dueTime80, r, s])
 
-// export declare class TradeLimitOrder<TInput extends Currency, TOutput extends Currency> {
-//   readonly inputAmount: CurrencyAmount<TInput>;
-//   readonly outputAmount: CurrencyAmount<TOutput>;
-//   readonly executionPrice: Price<TInput, TOutput>;
-//   readonly distribution: string[];
-//   constructor(inputAmount: CurrencyAmount<TInput>, outputAmount: CurrencyAmount<TOutput>, distribution: string[], flags: number);
-// }
+  const result = useSingleCallResult(args ? limitOrderContract : null, 'getSigner', args)?.result
+  // console.log('****** result: ', result)
+  return result[0]
+}
+
+function bnToHex(n: bigint) {
+  return '0x' + n.toString(16)
+}
 
 function TakeOrderPage() {
-  const { oParam } = useDefaultsFromURLSearch();
-	const u8arr = base64DecToArr(oParam, undefined);
+  const { oParam } = useDefaultsFromURLSearch()
+  const u8arr = base64DecToArr(oParam, undefined)
   const toggleWalletModal = useWalletModalToggle()
 
   const CoinTypeToMakerStart = 1
-  const AmountToMakerStart   = 1+20
-  const CoinTypeToTakerStart = 1+20+12
-  const AmountToTakerStart   = 1+20+12+20
-  const DueTimeStart         = 1+20+12+20+12
-  const SigRStart            = 1+20+12+20+12+10
-  const SigSStart            = 1+20+12+20+12+10+32
-  const SigVStart            = 1+20+12+20+12+10+32+32
+  const AmountToMakerStart = 1 + 20
+  const CoinTypeToTakerStart = 1 + 20 + 12
+  const AmountToTakerStart = 1 + 20 + 12 + 20
+  const DueTimeStart = 1 + 20 + 12 + 20 + 12
+  const SigRStart = 1 + 20 + 12 + 20 + 12 + 10
+  const SigSStart = 1 + 20 + 12 + 20 + 12 + 10 + 32
+  const SigVStart = 1 + 20 + 12 + 20 + 12 + 10 + 32 + 32
 
-	const order = {
+  const order = {
     coinTypeToMaker: getAddress(hexlify(u8arr.slice(CoinTypeToMakerStart, AmountToMakerStart))),
     amountToMakerBN: BigNumber.from(hexlify(u8arr.slice(AmountToMakerStart, CoinTypeToTakerStart))),
     coinsToMaker: hexlify(u8arr.slice(CoinTypeToMakerStart, CoinTypeToTakerStart)),
@@ -165,27 +174,16 @@ function TakeOrderPage() {
     r: BigNumber.from(hexlify(u8arr.slice(SigRStart, SigSStart))).toHexString(),
     s: BigNumber.from(hexlify(u8arr.slice(SigSStart, SigVStart))).toHexString(),
     v: BigNumber.from(hexlify(u8arr.slice(SigVStart))),
-  };
-  // console.log("order: ", order);
-  console.log("order.dueTime: ", order.dueTime.toString());
-  console.log("dueTime temp:  ", hexlify(u8arr.slice(DueTimeStart, SigRStart)));
+  }
 
-	// window.order = order
-
+  // window.order = order
 
   const { i18n } = useLingui()
-
-  // const handler = useCallback(async () => {
-  //   // console.log("callback");
-  // }, [])
-  // // }, [account, addPopup, chainId, library, mutate, orderExpiration.value, parsedAmounts, recipient])
-
-  // const { id } = useParams();
 
   const { account, chainId, library } = useActiveWeb3React()
   let coinTypeToMaker = order.coinTypeToMaker
   if (coinTypeToMaker == SEP206_ADDRESS[chainId]) {
-    coinTypeToMaker = "BCH"
+    coinTypeToMaker = 'BCH'
   }
 
   const inputCurrency = useCurrency(coinTypeToMaker)
@@ -193,7 +191,7 @@ function TakeOrderPage() {
 
   let coinTypeToTaker = order.coinTypeToTaker
   if (coinTypeToTaker == SEP206_ADDRESS[chainId]) {
-    coinTypeToTaker = "BCH"
+    coinTypeToTaker = 'BCH'
   }
   const outputCurrency = useCurrency(coinTypeToTaker)
 
@@ -204,11 +202,6 @@ function TakeOrderPage() {
 
   const parsedInputAmount = CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(inputAmountTemp.toString()))
   const outputAmountTemp = parseUnits(order.amountToTakerBN.toString(), 0)
-
-  // console.log("coinTypeToTaker:   ", coinTypeToTaker)
-  // console.log("outputCurrency:    ", outputCurrency)
-  // console.log("outputAmountTemp:  ", outputAmountTemp.toString())
-
   const parsedOutputAmount = CurrencyAmount.fromRawAmount(outputCurrency, JSBI.BigInt(outputAmountTemp.toString()))
 
   const parsedAmounts = {
@@ -225,7 +218,7 @@ function TakeOrderPage() {
 
   const blockNumber = useBlockNumber()
   const [expiration, setExpiration] = useState<string>(null)
-  const [isValid, setIsValid] = useState<boolean>(null)
+  const [isExpired, setIsExpired] = useState<boolean>(null)
 
   // const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
   const [{ showConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -242,14 +235,12 @@ function TakeOrderPage() {
     txHash: undefined,
   })
 
-
-  const dueTime = Math.floor(Number(order.dueTime.toString()) / 1000000);
+  const dueTime = Math.floor(Number(order.dueTime.toString()) / 1_000_000_000)
 
   useEffect(() => {
     const now = new Date().getTime()
     setExpiration(timeDiff(dueTime, now))
-    setIsValid(now <= dueTime)
-
+    setIsExpired(now > dueTime)
   }, [blockNumber])
 
   const [tokenApprovalState, tokenApprove] = useApproveCallback(
@@ -265,11 +256,8 @@ function TakeOrderPage() {
     parsedInputAmount &&
     (tokenApprovalState === ApprovalState.NOT_APPROVED || tokenApprovalState === ApprovalState.PENDING)
 
-  const disabled =
-    tokenApprovalState === ApprovalState.PENDING
-
   // TODO(fernando): ver de donde sacamos el VERSION
-  const version = 1;
+  const version = 1
 
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useLimitOrderCallback(
@@ -277,12 +265,21 @@ function TakeOrderPage() {
     parsedOutputAmount,
     order.coinsToMaker,
     order.coinsToTaker,
+    // order.dueTime.mul(1000).toString(),
     order.dueTime.toString(),
     order.r,
     order.s,
     Number(order.v.toString()),
     version
   )
+
+  const dueTime80 = order.dueTime.toString()
+  const dueTime80_v8_version8 = bnToHex(
+    (BigInt(dueTime80) << 16n) | (BigInt(order.v.toString()) << 8n) | BigInt(version)
+  )
+
+  // const xxx = useGetSigner(order.coinsToMaker, order.coinsToTaker, dueTime80_v8_version8, order.r, order.s)
+  // console.log('xxx: ', xxx)
 
   const handleSwap = useCallback(() => {
     if (!swapCallback) {
@@ -326,32 +323,54 @@ function TakeOrderPage() {
     parsedOutputAmount?.currency?.symbol,
   ])
 
-  // let button = (
-  //   <ButtonError
-  //     onClick={handleSwap}
-  //     id="swap-button"
-  //     disabled={!isValid}
-  //     error={!isValid}
-  //   >
-  //     {isValid
-  //       ? i18n._(t`Take Limit Order`)
-  //       : i18n._(t`Order Expired`)
-  //       }
-  //   </ButtonError>
-  // )
+  const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
+    inputCurrency ?? undefined,
+    outputCurrency ?? undefined,
+  ])
+
+  const walletBalances = {
+    [Field.INPUT]: relevantTokenBalances[0],
+    [Field.OUTPUT]: relevantTokenBalances[1],
+  }
+
+  let inputError: string | undefined
+  if (!account) {
+    inputError = 'Connect Wallet'
+  }
+
+  // compare input balance to max input based on version
+  const [balanceIn, amountIn] = [walletBalances[Field.INPUT], parsedAmounts[Field.INPUT]]
+
+  if (!balanceIn) {
+    inputError = i18n._(t`Loading balance`)
+  }
+
+  if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
+    inputError = i18n._(t`Insufficient ${currencies[Field.INPUT]?.symbol} balance`)
+  }
+
+  if (isExpired) {
+    inputError = i18n._(t`Order Expired`)
+  }
+
+  const disabled = !!inputError || tokenApprovalState === ApprovalState.PENDING
 
   let button = (
     <Button disabled={true} color={true ? 'gray' : 'pink'} className="mb-4">
-      (
-        <Dots>{i18n._(t`Loading order`)}</Dots>
-      )
+      (<Dots>{i18n._(t`Loading order`)}</Dots>)
     </Button>
   )
 
   if (!account)
     button = (
-      <Button disabled={disabled} color="pink" onClick={toggleWalletModal} >
+      <Button disabled={disabled} color="pink" onClick={toggleWalletModal}>
         {i18n._(t`Connect Wallet`)}
+      </Button>
+    )
+  else if (inputError)
+    button = (
+      <Button disabled={true} color="gray">
+        {inputError}
       </Button>
     )
   else if (showTokenApprove)
@@ -366,22 +385,14 @@ function TakeOrderPage() {
     )
   else {
     button = (
-      <ButtonError
-        onClick={handleSwap}
-        id="swap-button"
-        disabled={!isValid}
-        error={!isValid}
-      >
-        {isValid
-          ? i18n._(t`Take Limit Order`)
-          : i18n._(t`Order Expired`)
-          }
+      <ButtonError onClick={handleSwap} id="swap-button" disabled={disabled} error={disabled}>
+        {i18n._(t`Take Limit Order`)}
       </ButtonError>
     )
   }
 
   return (
-     <Container id="take-order-page" className="py-4 md:py-8 lg:py-12" maxWidth='lg'>
+    <Container id="take-order-page" className="py-4 md:py-8 lg:py-12" maxWidth="lg">
       <Head>
         <title>Take Order | Tango</title>
         <meta name="description" content="Take order..." />
@@ -425,18 +436,15 @@ function TakeOrderPage() {
           </div>
 
           <div className="flex justify-between px-5 py-3 rounded bg-dark-800">
-              <span className="font-bold text-secondary">{i18n._(t`Order Expiration`)}</span>
-              <span className="text-primary">
-                {formatDateTime(dueTime) + " " + expiration}
-              </span>
+            <span className="font-bold text-secondary">{i18n._(t`Order Expiration`)}</span>
+            <span className="text-primary">{formatDateTime(dueTime) + ' ' + expiration}</span>
           </div>
 
           {button}
         </div>
       </DoubleGlowShadow>
-
-     </Container>
-   )
+    </Container>
+  )
 }
 
 export default TakeOrderPage

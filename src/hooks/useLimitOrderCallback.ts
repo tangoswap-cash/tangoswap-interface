@@ -1,14 +1,5 @@
 import { BIPS_BASE, EIP_1559_ACTIVATION_BLOCK } from '../constants'
-import {
-  LimitOrder,
-  ChainId,
-  Currency,
-  CurrencyAmount,
-  SmartBCH,
-  JSBI,
-  Percent,
-  TradeSmart,
-} from '@tangoswapcash/sdk'
+import { LimitOrder, ChainId, Currency, CurrencyAmount, SmartBCH, JSBI, Percent, TradeSmart } from '@tangoswapcash/sdk'
 import { arrayify, hexlify, splitSignature } from '@ethersproject/bytes'
 import { isAddress, isZero } from '../functions/validate'
 import { useLimitOrderContract } from './useContract'
@@ -60,7 +51,7 @@ interface FailedCall extends SwapCallEstimate {
 export type EstimatedSwapCall = SuccessfulCall | FailedCall
 
 function bnToHex(n: bigint) {
-  return "0x" + n.toString(16)
+  return '0x' + n.toString(16)
 }
 
 /**
@@ -86,34 +77,44 @@ export function useLimitOrderCallArguments(
   const argentWalletContract = useArgentWalletContract()
 
   return useMemo(() => {
-    if (!inputAmount || !outputAmount || !coinsToMaker || !coinsToTaker || !dueTime80 || !r || !s || !v || !version || !library || !account || !chainId ) return []
+    if (
+      !inputAmount ||
+      !outputAmount ||
+      !coinsToMaker ||
+      !coinsToTaker ||
+      !dueTime80 ||
+      !r ||
+      !s ||
+      !v ||
+      !version ||
+      !library ||
+      !account ||
+      !chainId
+    )
+      return []
 
     if (!limitOrderContract) return []
     const methods = []
 
-    const dueTime80_v8_version8 = bnToHex(
-      (BigInt(dueTime80) << 16n) |
-      (BigInt(v) << 8n) |
-      BigInt(version)
-    );
+    const dueTime80_v8_version8 = bnToHex((BigInt(dueTime80) << 16n) | (BigInt(v) << 8n) | BigInt(version))
 
-    console.log("coinsToMaker:          ", coinsToMaker);
-    console.log("coinsToTaker:          ", coinsToTaker);
-    console.log("r:                     ", r);
-    console.log("s:                     ", s);
+    // console.log('coinsToMaker:          ', coinsToMaker)
+    // console.log('coinsToTaker:          ', coinsToTaker)
+    // console.log('r:                     ', r)
+    // console.log('s:                     ', s)
 
-    console.log("dueTime80:             ", dueTime80);
-    console.log("dueTime80 hex:         ", bnToHex(BigInt(dueTime80)));
-    console.log("dueTime80 << 16n hex:  ", bnToHex(BigInt(dueTime80) << 16n));
+    // console.log('dueTime80:             ', dueTime80)
+    // console.log('dueTime80 hex:         ', bnToHex(BigInt(dueTime80)))
+    // console.log('dueTime80 << 16n hex:  ', bnToHex(BigInt(dueTime80) << 16n))
 
-    console.log("v:                     ", v);
-    console.log("v hex:                 ", bnToHex(BigInt(v)));
-    console.log("v << 8n hex:           ", bnToHex(BigInt(v) << 8n));
+    // console.log('v:                     ', v)
+    // console.log('v hex:                 ', bnToHex(BigInt(v)))
+    // console.log('v << 8n hex:           ', bnToHex(BigInt(v) << 8n))
 
-    console.log("version:               ", version);
-    console.log("version hex:           ", bnToHex(BigInt(version)));
+    // console.log('version:               ', version)
+    // console.log('version hex:           ', bnToHex(BigInt(version)))
 
-    console.log("dueTime80_v8_version8: ", dueTime80_v8_version8);
+    // console.log('dueTime80_v8_version8: ', dueTime80_v8_version8)
 
     methods.push(
       LimitOrder.directExchangeCallParameters(
@@ -125,10 +126,11 @@ export function useLimitOrderCallArguments(
         r,
         s,
         v,
-        version)
+        version
+      )
     )
 
-    console.log("methods: ", methods);
+    console.log('methods: ', methods)
 
     return methods.map(({ methodName, args, value }) => {
       if (argentWalletContract && inputAmount.currency.isToken) {
@@ -169,7 +171,7 @@ export function useLimitOrderCallArguments(
     r,
     s,
     v,
-    version
+    version,
   ])
 }
 
@@ -218,11 +220,6 @@ export function swapErrorToUserReadableMessage(error: any): string {
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
 export function useLimitOrderCallback(
-  // trade: TradeSmart<Currency, Currency> | undefined, // trade to execute, required
-  // allowedSlippage: Percent, // in bips
-  // feePercent: Percent, // in bips
-  // signatureData: SignatureData | undefined | null
-
   inputAmount: CurrencyAmount<Currency>,
   outputAmount: CurrencyAmount<Currency>,
   coinsToMaker: string,
@@ -232,7 +229,6 @@ export function useLimitOrderCallback(
   s: string,
   v: number,
   version: number
-
 ): {
   state: SwapCallbackState
   callback: null | (() => Promise<string>)
@@ -256,15 +252,28 @@ export function useLimitOrderCallback(
     r,
     s,
     v,
-    version)
-
+    version
+  )
 
   const addTransaction = useTransactionAdder()
 
   const recipient = account
 
   return useMemo(() => {
-    if (!inputAmount || !outputAmount || !coinsToMaker || !coinsToTaker || !dueTime80 || !r || !s || !v || !version || !library || !account || !chainId) {
+    if (
+      !inputAmount ||
+      !outputAmount ||
+      !coinsToMaker ||
+      !coinsToTaker ||
+      !dueTime80 ||
+      !r ||
+      !s ||
+      !v ||
+      !version ||
+      !library ||
+      !account ||
+      !chainId
+    ) {
       return {
         state: SwapCallbackState.INVALID,
         callback: null,
@@ -353,9 +362,7 @@ export function useLimitOrderCallback(
         } = bestCallOption
 
         // console.log({ bestCallOption })
-        console.log(
-          'gasEstimate' in bestCallOption ? { gasLimit: calculateGasMargin(bestCallOption.gasEstimate) } : {}
-        )
+        console.log('gasEstimate' in bestCallOption ? { gasLimit: calculateGasMargin(bestCallOption.gasEstimate) } : {})
         return library
           .getSigner()
           .sendTransaction({
@@ -396,7 +403,8 @@ export function useLimitOrderCallback(
       },
       error: null,
     }
-  }, [inputAmount,
+  }, [
+    inputAmount,
     outputAmount,
     coinsToMaker,
     coinsToTaker,
@@ -410,5 +418,6 @@ export function useLimitOrderCallback(
     chainId,
     recipient,
     swapCalls,
-    addTransaction])
+    addTransaction,
+  ])
 }

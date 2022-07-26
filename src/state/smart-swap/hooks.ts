@@ -52,7 +52,10 @@ import { useCurrencyBalances } from '../wallet/hooks'
 import useENS from '../../hooks/useENS'
 import { useLingui } from '@lingui/react'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
-import { useSmartSwapFeePercent, useSmartSwapSlippageTolerance } from '../../hooks/useSmartSwapSlippageTollerenceAndFeePercent'
+import {
+  useSmartSwapFeePercent,
+  useSmartSwapSlippageTolerance,
+} from '../../hooks/useSmartSwapSlippageTollerenceAndFeePercent'
 import { initialState } from './reducer'
 
 export function useSwapState(): AppState['swap'] {
@@ -123,8 +126,8 @@ export function useDerivedSmartSwapInfo(doArcher = false): {
   parsedAmount: CurrencyAmount<Currency> | undefined
   inputError?: string
   trade: TradeSmart<Currency, Currency> | undefined
-  allowedSlippage: Percent,
-  feePercent: Percent,
+  allowedSlippage: Percent
+  feePercent: Percent
 } {
   const { i18n } = useLingui()
 
@@ -185,9 +188,7 @@ export function useDerivedSmartSwapInfo(doArcher = false): {
     }
   }
 
-  const trade = useSmartTrade(parsedAmount, outputCurrency ?? undefined,
-    {parts: undefined},
-    {flags: undefined})
+  const trade = useSmartTrade(parsedAmount, outputCurrency ?? undefined, { parts: undefined }, { flags: undefined })
 
   const allowedSlippage = useSmartSwapSlippageTolerance(trade)
   const feePercent = useSmartSwapFeePercent(trade)
@@ -289,7 +290,7 @@ export function useDerivedSmartSwapInfo(doArcher = false): {
     inputError,
     trade: trade ?? undefined,
     allowedSlippage,
-    feePercent
+    feePercent,
   }
 }
 
@@ -322,7 +323,7 @@ function validatedRecipient(recipient: any): string | null {
 }
 
 export function defaultSwapState(): SmartSwapState {
-  return queryParametersToSwapState(initialState);
+  return queryParametersToSwapState(initialState)
 }
 
 export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId = ChainId.SMARTBCH): SmartSwapState {
@@ -382,7 +383,7 @@ export function useDefaultsFromURLSearch():
     return {
       inputCurrencyId: defaultState[Field.INPUT].currencyId,
       outputCurrencyId: defaultState[Field.OUTPUT].currencyId,
-    };
+    }
   }
 
   useEffect(() => {
