@@ -480,7 +480,6 @@ export default function Farm(): JSX.Element {
   .then(response => {
     return setTangoPriceUSD(response.data.tangoswap.usd)
   })
-  console.log(tangoPriceUSD);
 
   if (bchFlexUSDPool.reserves) {
     bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
