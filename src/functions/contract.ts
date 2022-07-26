@@ -1,6 +1,6 @@
 // NOTE: Try not to add anything to thie file, it's almost entirely refactored out.
 
-import { AGGREGATOR_ADDRESS, ChainId, ROUTER_ADDRESS } from '@tangoswapcash/sdk'
+import { AGGREGATOR_ADDRESS, ChainId, ORDERS_CASH_ADDRESS, ROUTER_ADDRESS } from '@tangoswapcash/sdk'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
 import { AddressZero } from '@ethersproject/constants'
@@ -9,6 +9,7 @@ import { Contract } from '@ethersproject/contracts'
 import IUniswapV2Router02ABI from '../constants/abis/uniswap-v2-router-02.json'
 import IUniswapV2Router02NoETHABI from '../constants/abis/uniswap-v2-router-02-no-eth.json'
 import SmartSwapABI from '../constants/abis/smart-swap.json'
+import OrdersCashABI from '../constants/abis/limit-order.json'
 import { isAddress } from '../functions/validate'
 
 // account is not optional
@@ -63,6 +64,23 @@ export function getAggregatorContract(chainId: number, library: Web3Provider, ac
   return getContract(
     getAggregatorAddress(chainId),
     SmartSwapABI,
+    library,
+    account
+  )
+}
+
+export function getOrdersCashAddress(chainId?: ChainId) {
+  if (!chainId) {
+    throw Error(`Undefined 'chainId' parameter '${chainId}'.`)
+  }
+  return ORDERS_CASH_ADDRESS[chainId]
+}
+
+// account is optional
+export function getOrdersCashContract(chainId: number, library: Web3Provider, account?: string): Contract {
+  return getContract(
+    getOrdersCashAddress(chainId),
+    OrdersCashABI,
     library,
     account
   )

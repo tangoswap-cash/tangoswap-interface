@@ -109,59 +109,59 @@ const useLimitOrders = () => {
     )
       return
 
-    const transform = async (order: any) => {
-      const limitOrder = LimitOrder.getLimitOrder({
-        ...order,
-        chainId: +order.chainId,
-        tokenInDecimals: +order.tokenInDecimals,
-        tokenOutDecimals: +order.tokenOutDecimals,
-      })
+    // const transform = async (order: any) => {
+    //   const limitOrder = LimitOrder.getLimitOrder({
+    //     ...order,
+    //     chainId: +order.chainId,
+    //     tokenInDecimals: +order.tokenInDecimals,
+    //     tokenOutDecimals: +order.tokenOutDecimals,
+    //   })
 
-      const tokenIn = limitOrder.amountIn.currency
-      const tokenOut = limitOrder.amountOut.currency
+    //   const tokenIn = limitOrder.amountIn.currency
+    //   const tokenOut = limitOrder.amountOut.currency
 
-      const openOrder = {
-        tokenIn:
-          tokens[tokenIn.address] ||
-          new Token(chainId, tokenIn.address.toLowerCase(), tokenIn.decimals, tokenIn.symbol),
-        tokenOut:
-          tokens[tokenOut.address] ||
-          new Token(chainId, tokenOut.address.toLowerCase(), tokenOut.decimals, tokenOut.symbol),
-        limitOrder,
-        filledPercent: order.filledAmount
-          ? order.filledAmount.mul(BigNumber.from('100')).div(BigNumber.from(order.amountIn)).toString()
-          : '0',
-        status: order.status,
-        rate: new Percent(limitOrder.amountOut.quotient, denominator(tokenOut.decimals))
-          .divide(new Percent(limitOrder.amountIn.quotient, denominator(tokenIn.decimals)))
-          .divide(denominator(2))
-          .toSignificant(6),
-      }
+    //   const openOrder = {
+    //     tokenIn:
+    //       tokens[tokenIn.address] ||
+    //       new Token(chainId, tokenIn.address.toLowerCase(), tokenIn.decimals, tokenIn.symbol),
+    //     tokenOut:
+    //       tokens[tokenOut.address] ||
+    //       new Token(chainId, tokenOut.address.toLowerCase(), tokenOut.decimals, tokenOut.symbol),
+    //     limitOrder,
+    //     filledPercent: order.filledAmount
+    //       ? order.filledAmount.mul(BigNumber.from('100')).div(BigNumber.from(order.amountIn)).toString()
+    //       : '0',
+    //     status: order.status,
+    //     rate: new Percent(limitOrder.amountOut.quotient, denominator(tokenOut.decimals))
+    //       .divide(new Percent(limitOrder.amountIn.quotient, denominator(tokenIn.decimals)))
+    //       .divide(denominator(2))
+    //       .toSignificant(6),
+    //   }
 
-      return openOrder as OpenOrder
-    }
+    //   return openOrder as OpenOrder
+    // }
 
-    ;(async () => {
-      const openOrders = await Promise.all<OpenOrder>(ordersData.pendingOrders.orders.map((el) => transform(el)))
-      const completedOrders = await Promise.all<OpenOrder>(ordersData.otherOrders.orders.map((el) => transform(el)))
+    // ;(async () => {
+    //   const openOrders = await Promise.all<OpenOrder>(ordersData.pendingOrders.orders.map((el) => transform(el)))
+    //   const completedOrders = await Promise.all<OpenOrder>(ordersData.otherOrders.orders.map((el) => transform(el)))
 
-      setState((prevState) => ({
-        pending: {
-          ...prevState.pending,
-          data: openOrders,
-          maxPages: ordersData.pendingOrders.pendingOrderMaxPage,
-          loading: false,
-          totalOrders: ordersData.pendingOrders.totalPendingOrders,
-        },
-        completed: {
-          ...prevState.completed,
-          data: completedOrders,
-          maxPages: ordersData.otherOrders.maxPage,
-          loading: false,
-          totalOrders: ordersData.otherOrders.totalOrders,
-        },
-      }))
-    })()
+    //   setState((prevState) => ({
+    //     pending: {
+    //       ...prevState.pending,
+    //       data: openOrders,
+    //       maxPages: ordersData.pendingOrders.pendingOrderMaxPage,
+    //       loading: false,
+    //       totalOrders: ordersData.pendingOrders.totalPendingOrders,
+    //     },
+    //     completed: {
+    //       ...prevState.completed,
+    //       data: completedOrders,
+    //       maxPages: ordersData.otherOrders.maxPage,
+    //       loading: false,
+    //       totalOrders: ordersData.otherOrders.totalOrders,
+    //     },
+    //   }))
+    // })()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, chainId, ordersData, limitOrderContract, setPendingPage, setCompletedPage])

@@ -25,6 +25,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from "@ethersproject/units";
 import { id } from "@ethersproject/hash";
 import { hexZeroPad } from "@ethersproject/bytes";
+import { Chain } from '@ethereumjs/common'
 
 interface LimitOrderButtonProps extends ButtonProps {
   currency: Currency
@@ -108,7 +109,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   const handler = useCallback(async () => {
     console.log("callback");
     const signer = library.getSigner();
-    console.log("signer: ", signer);
+    // console.log("signer: ", signer);
 
     let endTime
     switch (orderExpiration.value) {
@@ -139,10 +140,11 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
     let coinsToTakerAddr;
     if (parsedAmounts[Field.INPUT].currency.isNative) {
-      coinsToTakerAddr = SEP206_ADDRESS;
+      coinsToTakerAddr = SEP206_ADDRESS[chainId];
     } else {
       coinsToTakerAddr = parsedAmounts[Field.INPUT].wrapped.currency.address;
     }
+    console.log("coinsToTakerAddr:  ", coinsToTakerAddr);
 
     const twoPow96 = BigNumber.from(2).pow(96);
     const amtBN = parseUnits(parsedAmounts[Field.INPUT].wrapped.quotient.toString(), 0)
@@ -153,13 +155,13 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
     let coinsToMakerAddr;
     if (parsedAmounts[Field.OUTPUT].currency.isNative) {
-      coinsToMakerAddr = SEP206_ADDRESS;
+      coinsToMakerAddr = SEP206_ADDRESS[chainId];
     } else {
       coinsToMakerAddr = parsedAmounts[Field.OUTPUT].wrapped.currency.address;
     }
 
     console.log("Input:                     ", parsedAmounts[Field.INPUT].wrapped.quotient.toString());
-    console.log("Input (coinsToTakerAddr):  ", coinsToTakerAddr);
+
     console.log("Output:                    ", parsedAmounts[Field.OUTPUT].wrapped.quotient.toString());
     console.log("Output (coinsToMakerAddr): ", coinsToMakerAddr);
 
@@ -319,15 +321,9 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
           <ClipboardCopyIcon width={16} height={16} />
         </div>
       )}
-      {/* {fallback && (
-        <Alert
-          message={i18n._(
-            t`Something went wrong during signing of the approval. This is expected for hardware wallets, such as Trezor and Ledger. Click again and the fallback method will be used`
-          )}
-          className="flex flex-row w-full mb-4"
-        />
-      )} */}
+
       {button}
+
       <style jsx>{`
         .copy-button {
           width: fit-content;
@@ -339,12 +335,6 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       `}</style>
     </div>
   )
-
-
-  // return (
-  //   <div className="flex flex-col flex-1">
-  //   </div>
-  // )
 }
 
 export default LimitOrderButton

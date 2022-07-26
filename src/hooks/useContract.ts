@@ -11,6 +11,7 @@ import {
   MASTERCHEF_ADDRESS,
   MASTERCHEF_V2_ADDRESS,
   MULTICALL2_ADDRESS,
+  ORDERS_CASH_ADDRESS,
   ROUTER_ADDRESS,
   STOP_LIMIT_ORDER_ADDRESS,
   TANGO_ADDRESS,
@@ -47,6 +48,7 @@ import MAKER_ABI from '../constants/abis/maker.json'
 import MASTERCHEF_ABI from '../constants/abis/masterchef.json'
 import MASTERCHEF_V2_ABI from '../constants/abis/masterchef-v2.json'
 import MULTICALL2_ABI from '../constants/abis/multicall2.json'
+import ORDERS_CASH_ABI from '../constants/abis/limit-order.json'
 import ROUTER_ABI from '../constants/abis/router.json'
 import SMARTSWAP_ABI from '../constants/abis/smart-swap.json'
 import SUSHI_ABI from '../constants/abis/sushi.json'
@@ -153,6 +155,11 @@ export function useRouterContract(useArcher = false, withSignerIfPossible?: bool
 export function useSmartSwapContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
   return useContract(chainId && AGGREGATOR_ADDRESS[chainId], SMARTSWAP_ABI, withSignerIfPossible)
+}
+
+export function useOrdersCashContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId && ORDERS_CASH_ADDRESS[chainId], ORDERS_CASH_ABI, withSignerIfPossible)
 }
 
 export function useSushiBarContract(withSignerIfPossible?: boolean): Contract | null {

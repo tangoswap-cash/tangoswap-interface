@@ -12,6 +12,7 @@ import { Trans } from '@lingui/react'
 import { FLEXUSD } from '@tangoswapcash/sdk'
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
+import PriceRatio from '../../../features/exchange-v1/limit-order/PriceRatio'
 
 interface ConfirmLimitOrderModalProps {
   open: boolean
@@ -36,7 +37,7 @@ const ConfirmLimitOrderModal: FC<ConfirmLimitOrderModalProps> = ({ open, onDismi
 
 const ConfirmLimitOrderTopContent = () => {
   const { i18n } = useLingui()
-  const { limitPrice } = useLimitOrderState()
+  // const { limitPrice } = useLimitOrderState()
   const { currencies, parsedAmounts } = useDerivedLimitOrderInfo()
   const { chainId } = useActiveWeb3React()
 
@@ -49,9 +50,6 @@ const ConfirmLimitOrderTopContent = () => {
     currencies[Field.OUTPUT] && chainId in FLEXUSD ? currencies[Field.OUTPUT] : undefined
   )?.toFixed(18)
   const outputValueUSDC = formatNumber(Number(parsedAmounts[Field.OUTPUT].toSignificant(6)) * Number(outputUSDC))
-
-  // console.log(currencies[Field.INPUT]);
-  // console.log(currencies[Field.INPUT]?.symbol);
 
   return (
     <div className="py-8">
@@ -70,7 +68,7 @@ const ConfirmLimitOrderTopContent = () => {
         <div className="flex justify-between px-5 py-3 rounded bg-dark-800">
           <span className="font-bold text-secondary">{i18n._(t`Rate`)}</span>
           <span className="text-primary">
-            {limitPrice} {currencies[Field.OUTPUT]?.symbol} per {currencies[Field.INPUT]?.symbol}
+            <PriceRatio />
           </span>
         </div>
         <div className="flex flex-col gap-3">

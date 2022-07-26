@@ -11,7 +11,6 @@ import Head from 'next/head'
 import NavLink from '../../../components/NavLink'
 import NetworkGuard from '../../../guards/Network'
 import { t } from '@lingui/macro'
-import useLimitOrders from '../../../hooks/useLimitOrders'
 import { useLingui } from '@lingui/react'
 
 import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React'
@@ -37,6 +36,9 @@ import { Currency } from '@tangoswapcash/sdk'
 import { ApprovalState, useApproveCallback } from '../../../hooks'
 import Dots from '../../../components/Dots'
 import { useWalletModalToggle } from '../../../state/application/hooks'
+import PriceRatio2 from '../../../features/exchange-v1/limit-order/PriceRatio2'
+import { Field } from '../../../state/limit-order/actions'
+import { useLimitOrderCallback } from '../../../hooks/useLimitOrderCallback'
 
 function b64ToUint6 (nChr) {
   return nChr > 64 && nChr < 91 ?
@@ -121,6 +123,21 @@ function timeDiff(dueTime: number, now: number) {
   return `(in ~${ss} seconds)`
 }
 
+// export interface IMessage {
+//   coinsToMaker: string
+//   coinsToTaker: string
+//   dueTime80: string
+// }
+
+
+// export declare class TradeLimitOrder<TInput extends Currency, TOutput extends Currency> {
+//   readonly inputAmount: CurrencyAmount<TInput>;
+//   readonly outputAmount: CurrencyAmount<TOutput>;
+//   readonly executionPrice: Price<TInput, TOutput>;
+//   readonly distribution: string[];
+//   constructor(inputAmount: CurrencyAmount<TInput>, outputAmount: CurrencyAmount<TOutput>, distribution: string[], flags: number);
+// }
+
 function TakeOrderPage() {
   const { oParam } = useDefaultsFromURLSearch();
 	const u8arr = base64DecToArr(oParam, undefined);
@@ -150,22 +167,24 @@ function TakeOrderPage() {
     v: BigNumber.from(hexlify(u8arr.slice(SigVStart))),
   };
   // console.log("order: ", order);
+  console.log("order.dueTime: ", order.dueTime.toString());
+  console.log("dueTime temp:  ", hexlify(u8arr.slice(DueTimeStart, SigRStart)));
 
 	// window.order = order
 
 
   const { i18n } = useLingui()
 
-  const handler = useCallback(async () => {
-    // console.log("callback");
-  }, [])
-  // }, [account, addPopup, chainId, library, mutate, orderExpiration.value, parsedAmounts, recipient])
+  // const handler = useCallback(async () => {
+  //   // console.log("callback");
+  // }, [])
+  // // }, [account, addPopup, chainId, library, mutate, orderExpiration.value, parsedAmounts, recipient])
 
   // const { id } = useParams();
 
-
+  const { account, chainId, library } = useActiveWeb3React()
   let coinTypeToMaker = order.coinTypeToMaker
-  if (coinTypeToMaker == SEP206_ADDRESS) {
+  if (coinTypeToMaker == SEP206_ADDRESS[chainId]) {
     coinTypeToMaker = "BCH"
   }
 
@@ -173,20 +192,29 @@ function TakeOrderPage() {
   const inputAmountTemp = parseUnits(order.amountToMakerBN.toString(), 0)
 
   let coinTypeToTaker = order.coinTypeToTaker
-  if (coinTypeToTaker == SEP206_ADDRESS) {
+  if (coinTypeToTaker == SEP206_ADDRESS[chainId]) {
     coinTypeToTaker = "BCH"
   }
   const outputCurrency = useCurrency(coinTypeToTaker)
 
+  const currencies: { [field in Field]?: Currency } = {
+    [Field.INPUT]: inputCurrency ?? undefined,
+    [Field.OUTPUT]: outputCurrency ?? undefined,
+  }
+
   const parsedInputAmount = CurrencyAmount.fromRawAmount(inputCurrency, JSBI.BigInt(inputAmountTemp.toString()))
   const outputAmountTemp = parseUnits(order.amountToTakerBN.toString(), 0)
 
-  console.log("coinTypeToTaker:   ", coinTypeToTaker)
-  console.log("outputCurrency:    ", outputCurrency)
-  console.log("outputAmountTemp:  ", outputAmountTemp.toString())
-
+  // console.log("coinTypeToTaker:   ", coinTypeToTaker)
+  // console.log("outputCurrency:    ", outputCurrency)
+  // console.log("outputAmountTemp:  ", outputAmountTemp.toString())
 
   const parsedOutputAmount = CurrencyAmount.fromRawAmount(outputCurrency, JSBI.BigInt(outputAmountTemp.toString()))
+
+  const parsedAmounts = {
+    [Field.INPUT]: parsedInputAmount,
+    [Field.OUTPUT]: parsedOutputAmount,
+  }
 
   const limitPrice = new Price(
     parsedInputAmount.currency,
@@ -195,25 +223,25 @@ function TakeOrderPage() {
     parsedOutputAmount.quotient
   )
 
-  const limitPriceInv = new Price(
-    parsedOutputAmount.currency,
-    parsedInputAmount.currency,
-    parsedOutputAmount.quotient,
-    parsedInputAmount.quotient
-  )
-
-  // console.log("limitPrice:    ", limitPrice.toSignificant(6))
-  // console.log("limitPriceInv: ", limitPriceInv.toSignificant(6))
-
-  // console.log("coinTypeToMaker:   ", coinTypeToMaker)
-  // console.log("inputCurrency:     ", inputCurrency)
-  // console.log("outputCurrency:    ", outputCurrency)
-  // console.log("inputAmountTemp:   ", inputAmountTemp.toString())
-
-
   const blockNumber = useBlockNumber()
   const [expiration, setExpiration] = useState<string>(null)
   const [isValid, setIsValid] = useState<boolean>(null)
+
+  // const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
+  const [{ showConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
+    showConfirm: boolean
+    // tradeToConfirm: TradeSmart<Currency, Currency> | undefined
+    attemptingTxn: boolean
+    swapErrorMessage: string | undefined
+    txHash: string | undefined
+  }>({
+    showConfirm: false,
+    // tradeToConfirm: undefined,
+    attemptingTxn: false,
+    swapErrorMessage: undefined,
+    txHash: undefined,
+  })
+
 
   const dueTime = Math.floor(Number(order.dueTime.toString()) / 1000000);
 
@@ -223,8 +251,6 @@ function TakeOrderPage() {
     setIsValid(now <= dueTime)
 
   }, [blockNumber])
-
-  const { account, chainId, library } = useActiveWeb3React()
 
   const [tokenApprovalState, tokenApprove] = useApproveCallback(
     parsedInputAmount,
@@ -239,23 +265,87 @@ function TakeOrderPage() {
     parsedInputAmount &&
     (tokenApprovalState === ApprovalState.NOT_APPROVED || tokenApprovalState === ApprovalState.PENDING)
 
-
   const disabled =
     tokenApprovalState === ApprovalState.PENDING
 
+  // TODO(fernando): ver de donde sacamos el VERSION
+  const version = 1;
+
+  // the callback to execute the swap
+  const { callback: swapCallback, error: swapCallbackError } = useLimitOrderCallback(
+    parsedInputAmount,
+    parsedOutputAmount,
+    order.coinsToMaker,
+    order.coinsToTaker,
+    order.dueTime.toString(),
+    order.r,
+    order.s,
+    Number(order.v.toString()),
+    version
+  )
+
+  const handleSwap = useCallback(() => {
+    if (!swapCallback) {
+      return
+    }
+    setSwapState({
+      attemptingTxn: true,
+      // tradeToConfirm,
+      showConfirm,
+      swapErrorMessage: undefined,
+      txHash: undefined,
+    })
+    swapCallback()
+      .then((hash) => {
+        setSwapState({
+          attemptingTxn: false,
+          // tradeToConfirm,
+          showConfirm,
+          swapErrorMessage: undefined,
+          txHash: hash,
+        })
+      })
+      .catch((error) => {
+        setSwapState({
+          attemptingTxn: false,
+          // tradeToConfirm,
+          showConfirm,
+          swapErrorMessage: error.message,
+          txHash: undefined,
+        })
+      })
+  }, [
+    swapCallback,
+    // priceImpact,
+    // tradeToConfirm,
+    showConfirm,
+    // recipient,
+    // recipientAddress,
+    account,
+    parsedInputAmount?.currency?.symbol,
+    parsedOutputAmount?.currency?.symbol,
+  ])
+
+  // let button = (
+  //   <ButtonError
+  //     onClick={handleSwap}
+  //     id="swap-button"
+  //     disabled={!isValid}
+  //     error={!isValid}
+  //   >
+  //     {isValid
+  //       ? i18n._(t`Take Limit Order`)
+  //       : i18n._(t`Order Expired`)
+  //       }
+  //   </ButtonError>
+  // )
 
   let button = (
-    <ButtonError
-      onClick={handler}
-      id="swap-button"
-      disabled={!isValid}
-      error={!isValid}
-    >
-      {isValid
-        ? i18n._(t`Take Limit Order`)
-        : i18n._(t`Order Expired`)
-        }
-    </ButtonError>
+    <Button disabled={true} color={true ? 'gray' : 'pink'} className="mb-4">
+      (
+        <Dots>{i18n._(t`Loading order`)}</Dots>
+      )
+    </Button>
   )
 
   if (!account)
@@ -274,6 +364,21 @@ function TakeOrderPage() {
         )}
       </Button>
     )
+  else {
+    button = (
+      <ButtonError
+        onClick={handleSwap}
+        id="swap-button"
+        disabled={!isValid}
+        error={!isValid}
+      >
+        {isValid
+          ? i18n._(t`Take Limit Order`)
+          : i18n._(t`Order Expired`)
+          }
+      </ButtonError>
+    )
+  }
 
   return (
      <Container id="take-order-page" className="py-4 md:py-8 lg:py-12" maxWidth='lg'>
@@ -300,7 +405,7 @@ function TakeOrderPage() {
             <div className="flex justify-between px-5 py-3 rounded bg-dark-800">
               <span className="font-bold text-secondary">{i18n._(t`Rate`)}</span>
               <span className="text-primary">
-                {limitPrice?.toSignificant(6)} {outputCurrency?.symbol} per {inputCurrency?.symbol} - {limitPriceInv?.toSignificant(6)} {inputCurrency?.symbol} per {outputCurrency?.symbol}
+                <PriceRatio2 currentPrice={limitPrice} currencies={currencies} parsedAmounts={parsedAmounts} />
               </span>
             </div>
             <div className="flex flex-col gap-3">
