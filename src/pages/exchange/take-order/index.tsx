@@ -28,7 +28,7 @@ import { arrayify, hexlify, splitSignature } from '@ethersproject/bytes'
 import { useCurrency } from '../../../hooks/Tokens'
 import CurrencyLogo from '../../../components/CurrencyLogo'
 import { tryParseAmount } from '../../../functions/parse'
-import { CurrencyAmount, JSBI, ORDERS_CASH_ADDRESS, SEP206_ADDRESS, LimitOrder } from '@tangoswapcash/sdk'
+import { CurrencyAmount, JSBI, ORDERS_CASH_V1_ADDRESS, SEP206_ADDRESS, LimitOrder } from '@tangoswapcash/sdk'
 import {
   useV2TradeExactIn as useTradeExactIn,
   useV2TradeExactOut as useTradeExactOut,
@@ -256,7 +256,7 @@ function TakeOrderPage() {
 
   const [tokenApprovalState, tokenApprove] = useApproveCallback(
     parsedInputAmount,
-    chainId && ORDERS_CASH_ADDRESS[chainId]
+    chainId && ORDERS_CASH_V1_ADDRESS[chainId]
   )
 
   const currency = inputCurrency

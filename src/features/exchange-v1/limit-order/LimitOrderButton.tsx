@@ -3,7 +3,7 @@ import {
   ChainId,
   computeConstantProductPoolAddress,
   Currency,
-  ORDERS_CASH_ADDRESS,
+  ORDERS_CASH_V1_ADDRESS,
   SEP206_ADDRESS,
 } from '@tangoswapcash/sdk'
 import Button, { ButtonProps } from '../../../components/Button'
@@ -99,7 +99,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
   const [tokenApprovalState, tokenApprove] = useApproveCallback(
     parsedAmounts[Field.INPUT],
-    chainId && ORDERS_CASH_ADDRESS[chainId]
+    chainId && ORDERS_CASH_V1_ADDRESS[chainId]
   )
 
   const showTokenApprove =
@@ -169,7 +169,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       name: 'exchange dapp',
       version: 'v0.1.0',
       chainId: 10000,
-      verifyingContract: ORDERS_CASH_ADDRESS[chainId],
+      verifyingContract: ORDERS_CASH_V1_ADDRESS[chainId],
       salt: id('Exchange'),
     }
 

@@ -11,7 +11,7 @@ import {
   MASTERCHEF_ADDRESS,
   MASTERCHEF_V2_ADDRESS,
   MULTICALL2_ADDRESS,
-  ORDERS_CASH_ADDRESS,
+  ORDERS_CASH_V1_ADDRESS,
   ROUTER_ADDRESS,
   STOP_LIMIT_ORDER_ADDRESS,
   TANGO_ADDRESS,
@@ -20,9 +20,7 @@ import {
 } from '@tangoswapcash/sdk'
 
 //TODO(fernando)
-import {
-  AddressMap,
-} from '@tangoswapcash/sdk'
+import { AddressMap } from '@tangoswapcash/sdk'
 
 import {
   ARGENT_WALLET_DETECTOR_ABI,
@@ -52,7 +50,7 @@ import ORDERS_CASH_ABI from '../constants/abis/limit-order.json'
 import ROUTER_ABI from '../constants/abis/router.json'
 import SMARTSWAP_ABI from '../constants/abis/smart-swap.json'
 import SUSHI_ABI from '../constants/abis/sushi.json'
-import SUSHIROLL_ABI from "@tangoswapcash/core/abi/SushiRoll.json";
+import SUSHIROLL_ABI from '@tangoswapcash/core/abi/SushiRoll.json'
 import WBCH_ABI from '../constants/abis/weth.json'
 import ZENKO_ABI from '../constants/abis/zenko.json'
 import { getContract } from '../functions/contract'
@@ -89,11 +87,7 @@ export function useWBCHContract(withSignerIfPossible?: boolean): Contract | null
 
 export function useArgentWalletDetectorContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(
-    undefined,
-    ARGENT_WALLET_DETECTOR_ABI,
-    false
-  )
+  return useContract(undefined, ARGENT_WALLET_DETECTOR_ABI, false)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
@@ -114,7 +108,7 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 }
 
 export function useMerkleDistributorContract(): Contract | null {
-  throw new Error('useMerkleDistributorContract disabled');
+  throw new Error('useMerkleDistributorContract disabled')
 }
 
 export function useBoringHelperContract(): Contract | null {
@@ -159,7 +153,7 @@ export function useSmartSwapContract(withSignerIfPossible?: boolean): Contract |
 
 export function useOrdersCashContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && ORDERS_CASH_ADDRESS[chainId], ORDERS_CASH_ABI, withSignerIfPossible)
+  return useContract(chainId && ORDERS_CASH_V1_ADDRESS[chainId], ORDERS_CASH_ABI, withSignerIfPossible)
 }
 
 export function useSushiBarContract(withSignerIfPossible?: boolean): Contract | null {
@@ -173,7 +167,7 @@ export function useMakerContract(): Contract | null {
 }
 
 export function useTimelockContract(): Contract | null {
-  throw new Error('useTimelockContract disabled');
+  throw new Error('useTimelockContract disabled')
 }
 
 export function useBentoBoxContract(withSignerIfPossible?: boolean): Contract | null {
@@ -182,12 +176,12 @@ export function useBentoBoxContract(withSignerIfPossible?: boolean): Contract | 
 }
 
 export function useChainlinkOracle(): Contract | null {
-  throw new Error('useChainlinkOracle disabled');
+  throw new Error('useChainlinkOracle disabled')
 }
 
 export function useSushiRollContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && TANGOROLL_ADDRESS[chainId], SUSHIROLL_ABI, false);
+  return useContract(chainId && TANGOROLL_ADDRESS[chainId], SUSHIROLL_ABI, false)
 }
 
 export function useComplexRewarderContract(address, withSignerIfPossible?: boolean): Contract | null {
@@ -202,7 +196,7 @@ export function useCloneRewarderContract(address, withSignerIfPossible?: boolean
 // const ORDERS_CASH_CONTRACT = '0x5eBE6bFcA42C8440c8DC6C688E449E0B26e8E243';
 const ORDERS_CASH_CONTRACT: AddressMap = {
   [ChainId.SMARTBCH]: '0x5eBE6bFcA42C8440c8DC6C688E449E0B26e8E243',
-  [ChainId.SMARTBCH_AMBER]: ''
+  [ChainId.SMARTBCH_AMBER]: '',
 }
 
 export function useLimitOrderContract(withSignerIfPossible?: boolean): Contract | null {
@@ -212,5 +206,5 @@ export function useLimitOrderContract(withSignerIfPossible?: boolean): Contract 
 }
 
 export function useLimitOrderHelperContract(withSignerIfPossible?: boolean): Contract | null {
-  throw new Error('useLimitOrderHelperContract disabled');
+  throw new Error('useLimitOrderHelperContract disabled')
 }

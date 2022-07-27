@@ -2677,10 +2677,10 @@
     commitlint "^13.1.0"
     lint-staged "^11.1.2"
 
-"@tangoswapcash/sdk@^0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@tangoswapcash/sdk/-/sdk-0.0.26.tgz#a7e0695e2c355c7b3cc34f1f280e69e00a666764"
-  integrity sha512-25TuIXPp7Hf4jiYCwv2fnna7Tmn3utMhsLNCg+3yxxJoUBcsgK4inRohrSmU518C7sgdwrcJOay4icZhN9Ca3w==
+"@tangoswapcash/sdk@^0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/sdk/-/sdk-0.0.27.tgz#fec3914cfd68e4d6fc920817df20b296c58ab6ef"
+  integrity sha512-L8Xq+AG1FsEcl+DZ1Eg201xXLFWolcNtMk4tfehvrgYoyWfGtLvxvWk1vD7TCq8tCw/bz3v20NzCbCGqT6Pe5Q==
   dependencies:
     big.js "^6.1.0"
     decimal.js-light "^2.5.0"

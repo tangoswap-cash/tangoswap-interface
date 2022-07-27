@@ -7,7 +7,7 @@ import {
   TradeType,
   Trade as V2Trade,
   AddressMap,
-  ORDERS_CASH_ADDRESS,
+  ORDERS_CASH_V1_ADDRESS,
 } from '@tangoswapcash/sdk'
 
 import { ApprovalState, useApproveCallback } from '.'
@@ -30,7 +30,7 @@ export function useLimitOrderApproveCallback(
     chainId
       ? trade instanceof V2Trade
         ? !doArcher
-          ? ORDERS_CASH_ADDRESS[chainId]
+          ? ORDERS_CASH_V1_ADDRESS[chainId]
           : undefined
         : undefined
       : undefined
