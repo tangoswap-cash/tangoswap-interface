@@ -154,7 +154,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     let coinsToMakerBN = BigNumber.from(coinsToMakerAddr)
     coinsToMakerBN = coinsToMakerBN.mul(twoPow96).add(amtBNIn)
 
-    const expireDate = new Date(endTime).getTime()
+    const expireDate = new Date(endTime).getTime() * 1000
     const expireTimestamp = Math.floor(expireDate / 1000)
     const expireNanosecondsBN = BigNumber.from(expireTimestamp).mul(1000 * 1000 * 1000)
     const expirePicosecondsBN = expireNanosecondsBN.add(Math.floor(Math.random() * 1000 * 1000 * 1000)).mul(1000)

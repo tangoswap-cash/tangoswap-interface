@@ -250,6 +250,9 @@ function TakeOrderPage() {
 
   useEffect(() => {
     const now = new Date().getTime()
+    console.log('order.dueTime.toString(): ', order.dueTime.toString())
+    console.log('now:                      ', now)
+    console.log('dueTime:                  ', dueTime)
     setExpiration(timeDiff(dueTime, now))
     setIsExpired(now > dueTime)
   }, [blockNumber])
