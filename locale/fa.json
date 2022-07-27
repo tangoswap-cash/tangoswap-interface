@@ -152,6 +152,7 @@
   "Open main menu": "منوی اصلی را باز کنید",
   "Order Expiration": "انقضای سفارش",
   "Order Expired": "",
+  "Order already dealt": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "نتیجه برآوردی است. در صورت تغییر قیمت تا بیش از {0}% تراکنش شما برگشت داده خواهد شد",
   "Output is estimated. You will receive at least": "خروجی برآوردی است. حداقل مبلغی که دریافت خواهید کرد",

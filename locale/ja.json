@@ -152,6 +152,7 @@
   "Open main menu": "メインメニューを開く",
   "Order Expiration": "注文の有効期限",
   "Order Expired": "",
+  "Order already dealt": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "出力は推定値です。価格が{0}％を超えて変化した場合、トランザクションは元に戻ります。",
   "Output is estimated. You will receive at least": "入力は推定値です。 最低で以下を受け取ります",

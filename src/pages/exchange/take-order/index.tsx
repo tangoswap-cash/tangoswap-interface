@@ -250,9 +250,6 @@ function TakeOrderPage() {
 
   useEffect(() => {
     const now = new Date().getTime()
-    console.log('order.dueTime.toString(): ', order.dueTime.toString())
-    console.log('now:                      ', now)
-    console.log('dueTime:                  ', dueTime)
     setExpiration(timeDiff(dueTime, now))
     setIsExpired(now > dueTime)
   }, [blockNumber])
@@ -270,7 +267,7 @@ function TakeOrderPage() {
     parsedInputAmount &&
     (tokenApprovalState === ApprovalState.NOT_APPROVED || tokenApprovalState === ApprovalState.PENDING)
 
-  // TODO(fernando): ver de donde sacamos el VERSION
+  // TODO(BitcoinIsCash): ver de donde sacamos el VERSION
   const version = 1
 
   // the callback to execute the swap
@@ -354,7 +351,7 @@ function TakeOrderPage() {
   }
 
   const isReplayed = useIsReplay(makerAddress, order.dueTime.toString())
-  console.log('isReplayed: ', isReplayed)
+  // console.log('isReplayed: ', isReplayed)
   if (isReplayed) {
     inputError = i18n._(t`Order already dealt`)
   }

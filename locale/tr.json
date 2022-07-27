@@ -152,6 +152,7 @@
   "Open main menu": "Ana menüyü aç",
   "Order Expiration": "Emrin Sona Erme Tarihi",
   "Order Expired": "",
+  "Order already dealt": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "Çıktı tahminidir. Eğer fiyat %{0} oranından daha fazla değişirse işlem\n geri alınacaktır.",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "Çıktı tahminidir. Eğer fiyat %{0} oranından daha fazla değişirse işlem geri alınacaktır.",
   "Output is estimated. You will receive at least": "Çıktı tahminidir. En az şu miktarı alacaksın:",

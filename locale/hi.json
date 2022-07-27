@@ -152,6 +152,7 @@
   "Open main menu": "मुख्य मेनू खोलें",
   "Order Expiration": "ऑर्डर समाप्ति",
   "Order Expired": "",
+  "Order already dealt": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "आउटपुट अनुमानित है। यदि मूल्य {0} % से अधिक बदलता है तो आपका लेनदेन वापस हो जाएगा।",
   "Output is estimated. You will receive at least": "उत्पादन अनुमानित है। आप कम से कम प्राप्त करेंगे",

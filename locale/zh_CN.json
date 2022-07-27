@@ -152,6 +152,7 @@
   "Open main menu": "打开主选单",
   "Order Expiration": "订单到期",
   "Order Expired": "",
+  "Order already dealt": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "估计输出。如果价格变化超过{0} ％，您的交易将被取消。",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "估计输出。如果价格变化超过{0} ％，您的交易将被取消。",
   "Output is estimated. You will receive at least": "输出值已计算。您至少将收到",

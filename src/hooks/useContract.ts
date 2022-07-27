@@ -19,9 +19,6 @@ import {
   WNATIVE_ADDRESS,
 } from '@tangoswapcash/sdk'
 
-//TODO(fernando)
-import { AddressMap } from '@tangoswapcash/sdk'
-
 import {
   ARGENT_WALLET_DETECTOR_ABI,
   ARGENT_WALLET_DETECTOR_MAINNET_ADDRESS,
@@ -192,17 +189,9 @@ export function useCloneRewarderContract(address, withSignerIfPossible?: boolean
   return useContract(address, CLONE_REWARDER_ABI, withSignerIfPossible)
 }
 
-//TODO(fernando)
-// const ORDERS_CASH_CONTRACT = '0x5eBE6bFcA42C8440c8DC6C688E449E0B26e8E243';
-const ORDERS_CASH_CONTRACT: AddressMap = {
-  [ChainId.SMARTBCH]: '0x5eBE6bFcA42C8440c8DC6C688E449E0B26e8E243',
-  [ChainId.SMARTBCH_AMBER]: '',
-}
-
 export function useLimitOrderContract(withSignerIfPossible?: boolean): Contract | null {
-  // throw new Error('useLimitOrderContract disabled');
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && ORDERS_CASH_CONTRACT[chainId], LIMIT_ORDER_ABI, withSignerIfPossible)
+  return useContract(chainId && ORDERS_CASH_V1_ADDRESS[chainId], LIMIT_ORDER_ABI, withSignerIfPossible)
 }
 
 export function useLimitOrderHelperContract(withSignerIfPossible?: boolean): Contract | null {

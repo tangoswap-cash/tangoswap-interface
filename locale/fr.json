@@ -152,6 +152,7 @@
   "Open main menu": "Ouvrir le menu principal",
   "Order Expiration": "Expiration de la commande",
   "Order Expired": "",
+  "Order already dealt": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "Montant total estimé. Si le prix évolue au-delà de {0} %, votre transaction sera annulée.",
   "Output is estimated. You will receive at least": "Montant total estimé. Vous recevrez au moins",

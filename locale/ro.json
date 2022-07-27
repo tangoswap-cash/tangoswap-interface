@@ -152,6 +152,7 @@
   "Open main menu": "Deschideți meniul principal",
   "Order Expiration": "Data de expirare a comenzii",
   "Order Expired": "",
+  "Order already dealt": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "Rezultatul este estimat. Dacă prețul suferă modificări mai mari de {0}%, tranzacția dvs. se va anula.",
   "Output is estimated. You will receive at least": "Rezultatul este estimat. Veți primi cel puțin",

@@ -1,4 +1,4 @@
-import { ApprovalState, useApproveCallback } from '../../../hooks'
+import { ApprovalState, useApproveSep206Callback } from '../../../hooks'
 import {
   ChainId,
   computeConstantProductPoolAddress,
@@ -97,15 +97,17 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
   const { mutate } = useLimitOrders()
 
-  const [tokenApprovalState, tokenApprove] = useApproveCallback(
+  const [tokenApprovalState, tokenApprove] = useApproveSep206Callback(
     parsedAmounts[Field.INPUT],
     chainId && ORDERS_CASH_V1_ADDRESS[chainId]
   )
 
+  console.log('tokenApprovalState: ', tokenApprovalState)
+
   const showTokenApprove =
     chainId &&
     currency &&
-    !currency.isNative &&
+    // !currency.isNative &&
     parsedAmounts[Field.INPUT] &&
     (tokenApprovalState === ApprovalState.NOT_APPROVED || tokenApprovalState === ApprovalState.PENDING)
 

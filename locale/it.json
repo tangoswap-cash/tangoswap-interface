@@ -152,6 +152,7 @@
   "Open main menu": "Apri menu principale",
   "Order Expiration": "Scadenza ordini",
   "Order Expired": "",
+  "Order already dealt": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "L'output è stimato. Se il prezzo cambia per più del {0}% la tua transazione verrà annullata.",
   "Output is estimated. You will receive at least": "L'output è stimato. Riceverai almeno",

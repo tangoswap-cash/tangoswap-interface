@@ -152,6 +152,7 @@
   "Open main menu": "Открыть главное меню",
   "Order Expiration": "Срок действия заявки",
   "Order Expired": "",
+  "Order already dealt": "",
   "Output is estimated. If the price changes by more than {0}% your transaction\nwill revert.": "",
   "Output is estimated. If the price changes by more than {0}% your transaction will revert.": "Вывод оценен. Если цена изменится более чем на {0}%, транзакция будет отменена.",
   "Output is estimated. You will receive at least": "Вывод оценен. Вы получите не менее",
