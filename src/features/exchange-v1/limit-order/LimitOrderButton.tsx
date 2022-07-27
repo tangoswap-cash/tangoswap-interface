@@ -199,7 +199,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       // console.log(`order:         ${base64EncArr(hexToArr(order))}`)
 
       // const url = 'https://orders.cash/take?o=' + base64EncArr(hexToArr(order))
-      const url = 'http://localhost:3000/take-order??o=' + base64EncArr(hexToArr(order))
+      const url = 'http://localhost:3000/take-order?o=' + base64EncArr(hexToArr(order))
       console.log('url: ', url)
       setTakeOrderURL(url)
 
