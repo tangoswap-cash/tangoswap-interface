@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "start": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
+    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts build", 
     "analyze": "ANALYZE=true yarn build && serve .next -n",
     "dev": "next dev",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
@@ -164,6 +166,7 @@
     "not op_mini all"
   ],
   "dependencies": {
+    "axios": "^0.27.2",
     "bchaddrjs": "^0.5.2",
     "mainnet-js": "^0.4.34",
     "moment": "^2.29.1",

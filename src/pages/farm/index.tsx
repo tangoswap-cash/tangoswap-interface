@@ -18,7 +18,7 @@ import Container from '../../components/Container'
 import FarmList from '../../features/onsen/FarmList'
 import Head from 'next/head'
 import Menu from '../../features/onsen/FarmMenu'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Search from '../../components/Search'
 import { classNames } from '../../functions'
 import dynamic from 'next/dynamic'
@@ -32,6 +32,7 @@ import { updateUserFarmFilter } from '../../state/user/actions'
 import { getFarmFilter, useUpdateFarmFilter } from '../../state/user/hooks'
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
+import axios from 'axios'
 
 function getTokensSorted(pool, pair) {
   if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
@@ -78,6 +79,8 @@ export default function Farm(): JSX.Element {
   const { i18n } = useLingui()
   const { chainId } = useActiveWeb3React()
   const router = useRouter()
+
+  const [tangoPriceUSD, setTangoPriceUSD] = useState(0);
 
   const type = router.query.filter as string
 
@@ -464,19 +467,26 @@ export default function Farm(): JSX.Element {
     farms.push(f);
   }
 
+  
   // console.log(farms);
   const flexUSDTangoPool = farms[1].pool;
   const bchFlexUSDPool = farms[3].pool;
   const bchTangoPool = farms[2].pool;
-  let bchPriceUSD = 0;
-  let tangoPriceUSD = 0;
+  let bchPriceUSD = 0;  
   let tangoPriceBCH = 0;
+  
+  // tangoPriceUSD 
+  axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tangoswap&vs_currencies=usd')
+  .then(response => {
+    return setTangoPriceUSD(response.data.tangoswap.usd)
+  })
+
   if (bchFlexUSDPool.reserves) {
     bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
   }
-  if (flexUSDTangoPool.reserves) {
-    tangoPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
-  }
+  // if (flexUSDTangoPool.reserves) {
+  //   tangoPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
+  // }
   if (bchTangoPool.reserves) {
     tangoPriceBCH = Number.parseFloat(bchTangoPool.reserves[0].toFixed()) / Number.parseFloat(bchTangoPool.reserves[1].toFixed())
   }
