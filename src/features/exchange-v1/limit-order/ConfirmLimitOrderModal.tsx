@@ -12,6 +12,7 @@ import { Trans } from '@lingui/react'
 import { FLEXUSD } from '@tangoswapcash/sdk'
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
+import PriceRatio from '../../../features/exchange-v1/limit-order/PriceRatio'
 
 interface ConfirmLimitOrderModalProps {
   open: boolean
@@ -36,7 +37,7 @@ const ConfirmLimitOrderModal: FC<ConfirmLimitOrderModalProps> = ({ open, onDismi
 
 const ConfirmLimitOrderTopContent = () => {
   const { i18n } = useLingui()
-  const { limitPrice } = useLimitOrderState()
+  // const { limitPrice } = useLimitOrderState()
   const { currencies, parsedAmounts } = useDerivedLimitOrderInfo()
   const { chainId } = useActiveWeb3React()
 
@@ -61,24 +62,24 @@ const ConfirmLimitOrderTopContent = () => {
               <div className="text-xl font-bold text-white">{parsedAmounts[Field.INPUT]?.toSignificant(6)}</div>
               <div className="text-xl text-white">{currencies[Field.INPUT]?.symbol}</div>
             </div>
-            <div className="text-sm text-low-emphesis">≈ {inputValueUSDC} USDC</div>
+            {/* <div className="text-sm text-low-emphesis">≈ {inputValueUSDC} USDC</div> */}
           </div>
         </div>
         <div className="flex justify-between px-5 py-3 rounded bg-dark-800">
           <span className="font-bold text-secondary">{i18n._(t`Rate`)}</span>
           <span className="text-primary">
-            {limitPrice} {currencies[Field.OUTPUT]?.symbol} per {currencies[Field.INPUT]?.symbol}
+            <PriceRatio />
           </span>
         </div>
         <div className="flex flex-col gap-3">
-          <div className="flex gap-2 text-xl font-bold text-white">{i18n._(t`You receive`)}</div>
+          <div className="flex gap-2 text-xl font-bold text-white">{i18n._(t`You receive:`)}</div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CurrencyLogo size={40} currency={currencies[Field.OUTPUT]} />
               <div className="text-xl font-bold text-white">{parsedAmounts[Field.OUTPUT]?.toSignificant(6)}</div>
               <div className="text-xl text-white">{currencies[Field.OUTPUT]?.symbol}</div>
             </div>
-            <div className="text-sm text-low-emphesis">≈ {outputValueUSDC} USDC</div>
+            {/* <div className="text-sm text-low-emphesis">≈ {outputValueUSDC} USDC</div> */}
           </div>
         </div>
       </div>
@@ -98,12 +99,6 @@ const ConfirmLimitOrderBottomContent: FC<ConfirmLimitOrderBottomContentProps> = 
   return (
     <div className="flex flex-col gap-6 px-6 py-8 -m-6 bg-dark-800">
       <div className="flex flex-col gap-1">
-        <div className="flex items-center justify-between">
-          <span className="text-secondary">{i18n._(t`Minimum Received`)}</span>
-          <span className="font-bold text-high-emphesis">
-            {parsedAmounts[Field.OUTPUT]?.toSignificant(6)} {currencies[Field.OUTPUT]?.symbol}
-          </span>
-        </div>
         <div className="flex items-center justify-between">
           <span className="text-secondary">{i18n._(t`Order Expiration`)}</span>
           <span className="font-bold text-high-emphesis">{orderExpiration.label}</span>

@@ -16,7 +16,7 @@ import BalancePanel from '../../../features/exchange-v1/limit-order/BalancePanel
 import Button from '../../../components/Button'
 import Container from '../../../components/Container'
 import CurrencyInput from '../../../features/exchange-v1/limit-order/CurrencyInput'
-import CurrencyInputPanel from '../../../features/exchange-v1/limit-order/CurrencyInputPanel'
+import CurrencyInputPanel from '../../../components/CurrencyInputPanel'
 import CurrencySelect from '../../../features/exchange-v1/limit-order/CurrencySelect'
 import DoubleGlowShadow from '../../../components/DoubleGlowShadow'
 import ExchangeHeader from '../../../features/trade/Header'
@@ -145,7 +145,11 @@ function LimitOrder() {
         (dependentField === Field.INPUT ? currencies[Field.INPUT] : currencies[Field.OUTPUT]) ?? undefined
       )
 
-      if (parsedLimitPrice?.lessThan(parsedCurrentPrice)) {
+      // console.log("parsedLimitPrice:   ", parsedLimitPrice);
+      // console.log("parsedCurrentPrice: ", parsedCurrentPrice);
+
+      if (parsedCurrentPrice && parsedLimitPrice?.lessThan(parsedCurrentPrice)) {
+        console.log("This transaction is below market rate");
         setCurrencyInputPanelError(i18n._(t`This transaction is below market rate`))
       } else {
         setCurrencyInputPanelError('')
@@ -237,29 +241,18 @@ function LimitOrder() {
             <ExchangeHeader input={currencies[Field.INPUT]} output={currencies[Field.OUTPUT]} />
             <div className="flex flex-col gap-4">
               <CurrencyInputPanel
-                className="rounded-t"
+                // priceImpact={priceImpact}
+                label={i18n._(t`You pay:`)}
+                value={formattedAmounts[Field.INPUT]}
+                showMaxButton={true}
+                currency={currencies[Field.INPUT]}
+                onUserInput={(value) => onUserInput(Field.INPUT, value)}
+                onMax={handleMaxInput}
+                // fiatValue={fiatValueInput ?? undefined}
+                onCurrencySelect={handleInputSelect}
+                otherCurrency={currencies[Field.OUTPUT]}
+                showCommonBases={true}
                 id="swap-currency-input"
-                topAdornment={<PayFromToggle />}
-                bottomAdornment={<BalancePanel />}
-                selectComponent={
-                  <CurrencySelect
-                    currency={currencies[Field.INPUT]}
-                    otherCurrency={currencies[Field.OUTPUT]}
-                    label={i18n._(t`You pay`)}
-                    onSelect={handleInputSelect}
-                    currencyList={inputTokenList}
-                    allowManageTokenList={false}
-                  />
-                }
-                inputComponent={
-                  <CurrencyInput
-                    id="token-amount-input"
-                    onMax={handleMaxInput}
-                    showMaxButton={!atMaxAmountInput}
-                    onUserInput={(value) => onUserInput(Field.INPUT, value)}
-                    value={formattedAmounts[Field.INPUT]}
-                  />
-                }
               />
               <div className="flex flex-row gap-5">
                 <div />
@@ -288,50 +281,17 @@ function LimitOrder() {
                 <LimitPriceInputPanel onBlur={(val) => checkLimitPrice(val)} />
               </div>
               <CurrencyInputPanel
-                className="relative rounded z-1"
-                id="swap-currency-input"
-                selectComponent={
-                  <CurrencySelect
-                    disabled={!currencies[Field.INPUT]}
-                    currency={currencies[Field.OUTPUT]}
-                    otherCurrency={currencies[Field.INPUT]}
-                    label={i18n._(t`You receive:`)}
-                    onSelect={handleOutputSelect}
-                    currencyList={outputTokenList}
-                    includeNativeCurrency={false}
-                    allowManageTokenList={false}
-                  />
-                }
-                inputComponent={
-                  <CurrencyInput
-                    id="token-amount-output"
-                    showMaxButton={false}
-                    onUserInput={(value) => onUserInput(Field.OUTPUT, value)}
-                    value={formattedAmounts[Field.OUTPUT]}
-                    error={currencyInputPanelError}
-                    endAdornment={
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold text-right text-high-emphesis">
-                          {currencyInputPanelHelperText}
-                        </span>
-                      </div>
-                    }
-                  />
-                }
-                bottomAdornment={
-                  currencyInputPanelError ? (
-                    <div className="z-0 flex items-center justify-center py-2 -mt-2 rounded-b bg-red bg-opacity-20">
-                      <div className="flex items-center gap-2 pt-2">
-                        <ExclamationIcon className="text-red" width={24} height={24} />
-                        <Typography variant="xs" weight={700}>
-                          {currencyInputPanelError}
-                        </Typography>
-                      </div>
-                    </div>
-                  ) : (
-                    <></>
-                  )
-                }
+                value={formattedAmounts[Field.OUTPUT]}
+                onUserInput={(value) => onUserInput(Field.OUTPUT, value)}
+                label={i18n._(t`You receive:`)}
+                showMaxButton={false}
+                hideBalance={true}
+                currency={currencies[Field.OUTPUT]}
+                onCurrencySelect={handleOutputSelect}
+                otherCurrency={currencies[Field.INPUT]}
+                showCommonBases={true}
+                id="swap-currency-output"
+                readOnly={false}
               />
               {recipient !== null ? (
                 <>
@@ -381,18 +341,7 @@ function LimitOrder() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <Alert
-                type="information"
-                title="Upgrade Notice"
-                message={
-                  'In order to incorporate more community filler bots the ability to add new limit orders is temporarily paused. Existing orders are unaffected and can be edited and cancelled at any time'
-                }
-                dismissable={false}
-              />
-              <Button disabled={true} color={'gray'}>
-                {i18n._(t`Limit Orders Disabled`)}
-              </Button>
-              {/*<LimitOrderButton color="gradient" className="font-bold" currency={currencies[Field.INPUT]} />*/}
+              <LimitOrderButton color="gradient" className="font-bold" currency={currencies[Field.INPUT]} />
             </div>
           </div>
         </DoubleGlowShadow>

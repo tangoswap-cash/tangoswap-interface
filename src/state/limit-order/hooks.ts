@@ -84,6 +84,7 @@ export function useDerivedLimitOrderInfo(): {
     orderExpiration,
   } = useLimitOrderState()
 
+  // console.log(inputCurrencyId)
   const inputCurrency = useCurrency(inputCurrencyId)
   const outputCurrency = useCurrency(outputCurrencyId)
   const recipientLookup = useENS(recipient ?? undefined)
@@ -199,6 +200,8 @@ export function useDerivedLimitOrderInfo(): {
     inputError = i18n._(t`Insufficient ${currencies[Field.INPUT]?.symbol} balance`)
   }
 
+  // console.log("parsedAmounts:           ", parsedAmounts)
+
   return {
     currencies,
     parsedAmounts,
@@ -269,7 +272,7 @@ export function queryParametersToSwapState(chainId: ChainId, parsedQs: ParsedQs)
     recipient: validatedRecipient(parsedQs.recipient),
     limitPrice: parseTokenAmountURLParameter(parsedQs.exactRate),
     fromBentoBalance: parseBooleanFieldParameter(parsedQs.fromBento),
-    orderExpiration: { value: OrderExpiration.never, label: i18n._(t`Never`) },
+    orderExpiration: { value: OrderExpiration.day, label: i18n._(t`24 Hours`) },
   }
 }
 

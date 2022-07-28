@@ -36,8 +36,8 @@ const LimitPriceInputPanel: FC<LimitPriceInputPanelProps> = ({ onBlur }) => {
       <div className="flex w-full md:w-[220px] p-4 gap-4 items-center">
         <span className="font-bold text-secondary">{i18n._(t`Rate`)}:</span>
         <span
-          className={`uppercase border border-blue bg-blue text-blue bg-opacity-30 border-opacity-50 py-0.5 px-1.5 text-xs rounded-3xl flex items-center justify-center ${
-            !disabled ? 'cursor-pointer hover:border-opacity-100' : ''
+          className={`uppercase border border-green bg-transparent text-green border-opacity-50 py-0.5 px-1.5 text-xs rounded-3xl flex items-center justify-center ${
+            !disabled ? 'cursor-pointer hover:border-opacity-100 hover:bg-green hover:bg-opacity-10' : ''
           }`}
           onClick={() => handleInput(currentPrice?.toSignificant(6))}
         >

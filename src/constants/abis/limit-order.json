@@ -1,43 +1,51 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_externalOrderFee",
-        "type": "uint256"
-      },
-      {
-        "internalType": "contract IBentoBoxV1",
-        "name": "_bentoBox",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
         "indexed": true,
-        "internalType": "contract IERC20",
-        "name": "token",
+        "internalType": "address",
+        "name": "maker",
         "type": "address"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "feeTo",
+        "name": "taker",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "coinTypeToMaker",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "coinAmountToMaker",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "coinTypeToTaker",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "coinAmountToTaker",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "dueTime80",
         "type": "uint256"
       }
     ],
-    "name": "LogFeesCollected",
+    "name": "Exchange",
     "type": "event"
   },
   {
@@ -50,76 +58,19 @@
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "digest",
-        "type": "bytes32"
-      },
-      {
         "indexed": false,
-        "internalType": "contract ILimitOrderReceiver",
-        "name": "receiver",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "newDueTime",
+        "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "fillAmount",
+        "name": "currTime",
         "type": "uint256"
       }
     ],
-    "name": "LogFillOrder",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "digest",
-        "type": "bytes32"
-      }
-    ],
-    "name": "LogOrderCancelled",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "feeTo",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "externalOrderFee",
-        "type": "uint256"
-      }
-    ],
-    "name": "LogSetFees",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "contract ILimitOrderReceiver",
-        "name": "receiver",
-        "type": "address"
-      }
-    ],
-    "name": "LogWhiteListReceiver",
+    "name": "NewDueTime",
     "type": "event"
   },
   {
@@ -142,274 +93,175 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "FEE_DIVISOR",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "newDueTime",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "addNewDueTime",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "bytes[]",
-        "name": "calls",
-        "type": "bytes[]"
+        "internalType": "uint256",
+        "name": "maxCount",
+        "type": "uint256"
       },
       {
-        "internalType": "bool",
-        "name": "revertOnFail",
-        "type": "bool"
+        "internalType": "address",
+        "name": "makerAddr",
+        "type": "address"
       }
     ],
-    "name": "batch",
-    "outputs": [
+    "name": "clearOldDueTimes",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
-        "internalType": "bool[]",
-        "name": "successes",
-        "type": "bool[]"
+        "internalType": "uint256",
+        "name": "coinsToMaker",
+        "type": "uint256"
       },
       {
-        "internalType": "bytes[]",
-        "name": "results",
-        "type": "bytes[]"
+        "internalType": "uint256",
+        "name": "coinsToTaker",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "dueTime80_v8_version8",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "r",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
       }
     ],
+    "name": "directExchange",
+    "outputs": [],
     "stateMutability": "payable",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "maker",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountIn",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountOut",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "recipient",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "startTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "endTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "stopPrice",
-            "type": "uint256"
-          },
-          {
-            "internalType": "contract IOracle",
-            "name": "oracleAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes",
-            "name": "oracleData",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountToFill",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint8",
-            "name": "v",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct StopLimitOrder.OrderArgs[]",
-        "name": "order",
-        "type": "tuple[]"
+        "internalType": "uint256",
+        "name": "coinsToMaker",
+        "type": "uint256"
       },
       {
-        "internalType": "contract IERC20",
-        "name": "tokenIn",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "coinsToTaker",
+        "type": "uint256"
       },
       {
-        "internalType": "contract IERC20",
-        "name": "tokenOut",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILimitOrderReceiver",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
+        "internalType": "uint256",
+        "name": "dueTime80",
+        "type": "uint256"
       }
     ],
-    "name": "batchFillOrder",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "maker",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountIn",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountOut",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "recipient",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "startTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "endTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "stopPrice",
-            "type": "uint256"
-          },
-          {
-            "internalType": "contract IOracle",
-            "name": "oracleAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes",
-            "name": "oracleData",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountToFill",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint8",
-            "name": "v",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct StopLimitOrder.OrderArgs[]",
-        "name": "order",
-        "type": "tuple[]"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "tokenIn",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "tokenOut",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILimitOrderReceiver",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "batchFillOrderOpen",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "getEIP712Hash",
+    "outputs": [
       {
         "internalType": "bytes32",
-        "name": "hash",
+        "name": "",
         "type": "bytes32"
       }
     ],
-    "name": "cancelOrder",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "makerAddr",
         "type": "address"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "uint256",
+        "name": "maxCount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRecentDueTimes",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
         "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "coinsToMaker",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "coinsToTaker",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "dueTime80_v8_version8",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "r",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
         "type": "bytes32"
       }
     ],
-    "name": "cancelledOrder",
+    "name": "getSigner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "makerAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "dueTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "isReplay",
     "outputs": [
       {
         "internalType": "bool",
@@ -421,15 +273,19 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "claimOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "deploymentChainId",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "makerNextRecentDueTime",
     "outputs": [
       {
         "internalType": "uint256",
@@ -441,259 +297,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "externalOrderFee",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "feeTo",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "address",
         "name": "",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "feesCollected",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "maker",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountIn",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountOut",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "recipient",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "startTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "endTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "stopPrice",
-            "type": "uint256"
-          },
-          {
-            "internalType": "contract IOracle",
-            "name": "oracleAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes",
-            "name": "oracleData",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountToFill",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint8",
-            "name": "v",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct StopLimitOrder.OrderArgs",
-        "name": "order",
-        "type": "tuple"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "tokenIn",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "tokenOut",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILimitOrderReceiver",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "fillOrder",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "maker",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountIn",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountOut",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "recipient",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "startTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "endTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "stopPrice",
-            "type": "uint256"
-          },
-          {
-            "internalType": "contract IOracle",
-            "name": "oracleAddress",
-            "type": "address"
-          },
-          {
-            "internalType": "bytes",
-            "name": "oracleData",
-            "type": "bytes"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amountToFill",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint8",
-            "name": "v",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "r",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes32",
-            "name": "s",
-            "type": "bytes32"
-          }
-        ],
-        "internalType": "struct StopLimitOrder.OrderArgs",
-        "name": "order",
-        "type": "tuple"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "tokenIn",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "tokenOut",
-        "type": "address"
-      },
-      {
-        "internalType": "contract ILimitOrderReceiver",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "fillOrderOpen",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "name": "orderStatus",
+    "name": "makerRDTHeadTail",
     "outputs": [
       {
         "internalType": "uint256",
@@ -719,105 +330,7 @@
   },
   {
     "inputs": [],
-    "name": "pendingOwner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "deadline",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint8",
-        "name": "v",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "r",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "s",
-        "type": "bytes32"
-      }
-    ],
-    "name": "permitToken",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_feeTo",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_externalOrderFee",
-        "type": "uint256"
-      }
-    ],
-    "name": "setFees",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "swipe",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "swipeFees",
+    "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -828,32 +341,9 @@
         "internalType": "address",
         "name": "newOwner",
         "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "direct",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "renounce",
-        "type": "bool"
       }
     ],
     "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract ILimitOrderReceiver",
-        "name": "receiver",
-        "type": "address"
-      }
-    ],
-    "name": "whiteListReceiver",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
