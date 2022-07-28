@@ -14,10 +14,10 @@ const MyOrders: FC = () => {
   return (
     <NavLink href="/open-order">
       <a className="text-secondary hover:text-high-emphesis">
-        <div className="md:flex hidden gap-3 items-center">
+        {/* <div className="md:flex hidden gap-3 items-center">
           <div>{i18n._(t`My Orders`)}</div>
           <Badge color="blue">{pending.totalOrders}</Badge>
-        </div>
+        </div> */}
         <div className="flex md:hidden text-primary">
           <ClipboardListIcon className="w-[26px] h-[26px]" />
         </div>
