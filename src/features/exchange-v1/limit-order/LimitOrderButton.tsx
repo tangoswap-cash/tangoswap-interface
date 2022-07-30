@@ -26,16 +26,22 @@ import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React'
 import { useDispatch } from 'react-redux'
 import useLimitOrders from '../../../hooks/useLimitOrders'
 import { useLingui } from '@lingui/react'
-
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { id } from '@ethersproject/hash'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { Chain } from '@ethereumjs/common'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons';
+import axios from 'axios'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 interface LimitOrderButtonProps extends ButtonProps {
   currency: Currency
 }
+
+const chatId = '@profesionalesallimite'
+const message = 'holaa!!!!!!!!!!! acabo de ser clickeado en la ui, aguante mist y la falopaaaaa!!!!!!!!!!!!'
 
 function hexToArr(hexString) {
   return new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
@@ -91,6 +97,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   const [takeOrderURL, setTakeOrderURL] = useState<string>(null)
 
   const [isCopied, setCopied] = useCopyClipboard()
+  const [clicked, wasClicked] = useState(false)
 
   const { orderExpiration, recipient } = useLimitOrderState()
   const { parsedAmounts, inputError } = useDerivedLimitOrderInfo()
@@ -103,6 +110,8 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   )
 
   console.log('tokenApprovalState: ', tokenApprovalState)
+
+
 
   const showTokenApprove =
     chainId &&
@@ -247,7 +256,12 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       </ButtonError>
     </>
   )
+  const telegramMessage = () => {
+    axios.get(`https://api.telegram.org/bot5526767666:AAHUdUJrJMbY_xqOy_9UAcJJzT2_N5xR9Xo/sendMessage?chat_id=${chatId}&text=${message}`)
+    wasClicked(true)
+  }
 
+  
   if (!account)
     button = (
       <Button disabled={disabled} color="pink" onClick={toggleWalletModal} {...rest}>
@@ -270,16 +284,39 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
         )}
       </Button>
     )
+  else if (takeOrderURL) 
+    button = (
+        <ButtonError
+          onClick={() => telegramMessage()}
+          style={{
+            width: '100%',
+          }}
+          id="swap-button"
+          disabled={clicked === false ? disabled : true}
+          // error={isValid && priceImpactSeverity > 2}
+        >{clicked === false ? (
+          <>
+          <FontAwesomeIcon icon={faTelegram} style={{ fontSize: '20px', marginBottom: '-1.5px'}}/> {i18n._(t`Share`)}
+          </>
+          )
+          : (
+            <>
+          <FontAwesomeIcon icon={faCheck} style={{ fontSize: '20px', marginBottom: '-1.5px'}}/> {i18n._(t`Shared`)}
+            </>
+          )}
+        </ButtonError>
+    )
+
 
   return (
     <div className="flex flex-col flex-1">
       {takeOrderURL && (
         <div
           data-tooltip-target="tooltip-copy"
-          className="flex pl-1 mb-2 text-sm cursor-pointer copy-button hover:text-high-emphesis focus:text-high-emphesis"
+          className="flex pl-1 mb-2 text-sm cursor-pointer copy-button hover:text-high-emphesis focus:text-high-emphesis rounded border border-dark-800 hover:border-dark-300"
           onClick={() => setCopied(takeOrderURL)}
         >
-          <p className="mr-1 text-sm">{`${takeOrderURL.substring(0, 40)}...`}</p>
+          <p className="mr-1 text-sm">{`${takeOrderURL.substring(0, 60)}...`}</p>
           <ClipboardCopyIcon width={16} height={16} />
         </div>
       )}
