@@ -32,7 +32,7 @@ import { id } from '@ethersproject/hash'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { Chain } from '@ethereumjs/common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTelegram } from '@fortawesome/free-brands-svg-icons';
+import { faTelegram } from '@fortawesome/free-brands-svg-icons'
 import axios from 'axios'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
@@ -257,7 +257,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     </>
   )
   const telegramMessage = () => {
-    axios.get(`https://api.telegram.org/bot5526767666:AAHUdUJrJMbY_xqOy_9UAcJJzT2_N5xR9Xo/sendMessage?chat_id=${chatId}&text=${message}`)
+    axios.get(`https://api.telegram.org/botasdasd/sendMessage?chat_id=${chatId}&text=${message}`)
     wasClicked(true)
   }
 
