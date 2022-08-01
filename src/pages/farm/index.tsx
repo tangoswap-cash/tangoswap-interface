@@ -109,7 +109,7 @@ export default function Farm(): JSX.Element {
       },
       "0x4b773a2ea30C6A77564E4FaE60204e7Bc0a81A90": {
         farmId: 2,
-        allocPoint: 906450507,
+        allocPoint: 729926673,
         token0: TANGO[ChainId.SMARTBCH],
         token1: WBCH[ChainId.SMARTBCH],
       },
@@ -293,12 +293,35 @@ export default function Farm(): JSX.Element {
         token0: new Token(ChainId.SMARTBCH, '0xe1e655be6f50344e6dd708c27bd8d66492d6ecaf', 18, 'LAWUSD', 'lawUSD'),
         token1: TANGO[ChainId.SMARTBCH],
       },
+
+      // ---------------------------------------------------------------------------
       // "0x1c906EB496841B1e305Fd3ea36f670B39F3faE86": {
       //   farmId: 34,
       //   allocPoint: 10100504,
       //   token0: new Token(ChainId.SMARTBCH, '0xaaC82e8931400fb955Bce783A8fD5bcFF99b4317', 18, 'TR1', 'Tango Reduction 1'),
       //   token1: new Token(ChainId.SMARTBCH, '0x1D35f2Ea7DE9c3996616BAb03FEe7152FdcaACba', 18, 'TR1', 'Tango Reduction 2'),
       // },
+      // ---------------------------------------------------------------------------
+
+      "0xC01FC198B8c69857D112b6dD2BD3f3fb27e01418": {
+        farmId: 35,
+        allocPoint: 58841278,
+        token0: new Token(ChainId.SMARTBCH, '0xBc2F884680c95A02cea099dA2F524b366d9028Ba', 18, 'BCUSDT', 'BlockNG USDT'),
+        token1: TANGO[ChainId.SMARTBCH],
+      },
+      "0xf85ABe8c865d2F6478D33C16e53aF8D1f7714dab": {
+        farmId: 36,
+        allocPoint: 58841278,
+        token0: new Token(ChainId.SMARTBCH, '0xBc7b858B5694D485AD17c89675649cE44De21BEa', 18, 'BCBNB', 'BlockNG BNB'),
+        token1: TANGO[ChainId.SMARTBCH],
+      },
+      "0xC849ccDA62Af9f638B849f6116e3B0c9A17a637c": {
+        farmId: 37,
+        allocPoint: 58841278,
+        token0: new Token(ChainId.SMARTBCH, '0xbC7160974318820be438e54439b309921e96B62C', 18, 'BCETH', 'BlockNG ETH'),
+        token1: TANGO[ChainId.SMARTBCH],
+      },
+
     },
     [ChainId.SMARTBCH_AMBER]: {
       "0x07DE6fc05597E0E4c92C83637A8a0CA411f3a769": {
@@ -467,15 +490,15 @@ export default function Farm(): JSX.Element {
     farms.push(f);
   }
 
-  
+
   // console.log(farms);
   const flexUSDTangoPool = farms[1].pool;
   const bchFlexUSDPool = farms[3].pool;
   const bchTangoPool = farms[2].pool;
-  let bchPriceUSD = 0;  
+  let bchPriceUSD = 0;
   let tangoPriceBCH = 0;
-  
-  // tangoPriceUSD 
+
+  // tangoPriceUSD
   axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tangoswap&vs_currencies=usd')
   .then(response => {
     return setTangoPriceUSD(response.data.tangoswap.usd)
