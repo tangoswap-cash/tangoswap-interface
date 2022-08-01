@@ -118,7 +118,9 @@ const ExchangeHeader: FC<ExchangeHeaderProps> = ({ input, output, allowedSlippag
             </div>
           }
           <div className="relative flex items-center w-full h-full rounded hover:bg-dark-800">
+          {!isLimitOrder && (
             <Settings placeholderSlippage={allowedSlippage} />
+          )}
           </div>
         </div>
       </div>
