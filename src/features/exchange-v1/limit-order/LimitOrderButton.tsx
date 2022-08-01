@@ -257,7 +257,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     </>
   )
   const telegramMessage = () => {
-    axios.get(`https://api.telegram.org/bot5526767666:AAHUdUJrJMbY_xqOy_9UAcJJzT2_N5xR9Xo/sendMessage?chat_id=${chatId}&text=${message}`)
+    axios.get(`https://api.telegram.org/bot/sendMessage?chat_id=${chatId}&text=${message}`)
     wasClicked(true)
   }
 
