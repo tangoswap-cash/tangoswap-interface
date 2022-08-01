@@ -91,11 +91,11 @@ const ExchangeHeader: FC<ExchangeHeaderProps> = ({ input, output, allowedSlippag
       </div>
       <div className="flex items-center">
         <div className="grid grid-flow-col gap-1">
-          {isLimitOrder && (
+          {/* {isLimitOrder && (
             <div className="items-center h-full w-full cursor-pointer hover:bg-dark-800 rounded px-3 py-1.5">
-              {/* <MyOrders /> */}
+              /<MyOrders /> 
             </div>
-          )}
+          )} */}
           {/*chainId === ChainId.MAINNET && (
             <div className="items-center hidden w-full h-full px-3 space-x-3 rounded cursor-pointer text-green text-opacity-80 hover:text-opacity-100 md:flex hover:bg-dark-800">
               <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">

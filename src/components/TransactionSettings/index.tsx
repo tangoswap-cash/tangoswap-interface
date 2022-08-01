@@ -136,6 +136,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
                   setSlippageError(false)
                 }}
                 color={slippageError ? 'red' : ''}
+                style={{ width: '100%' }}
               />
               %
             </div>
@@ -147,6 +148,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             onClick={() => {
               parseSlippageInput('')
             }}
+            style={{ width: '25%' }}
           >
             {i18n._(t`Auto`)}
           </Button>

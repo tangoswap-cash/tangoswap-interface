@@ -262,6 +262,7 @@ export default function TransactionSettingsSmart(
             </div>
           </div>
           <Button
+            style={{ width: '25%' }}
             size="sm"
             color={userFeePercent === 'auto' ? 'blue' : 'gray'}
             variant={userFeePercent === 'auto' ? 'filled' : 'outlined'}
