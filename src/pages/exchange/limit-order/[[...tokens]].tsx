@@ -238,7 +238,7 @@ function LimitOrder() {
       >
         <DoubleGlowShadow>
           <div id="limit-order-page" className="flex flex-col gap-4 p-4 rounded bg-dark-900">
-            <ExchangeHeader input={currencies[Field.INPUT]} output={currencies[Field.OUTPUT]} />
+            {/* <ExchangeHeader input={currencies[Field.INPUT]} output={currencies[Field.OUTPUT]} /> */}
             <div className="flex flex-col gap-4">
               <CurrencyInputPanel
                 // priceImpact={priceImpact}
