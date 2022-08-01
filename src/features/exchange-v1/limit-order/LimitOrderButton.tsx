@@ -250,7 +250,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
   if (!account)
     button = (
-      <Button disabled={disabled} color="pink" onClick={toggleWalletModal} {...rest}>
+      <Button color="pink" onClick={toggleWalletModal} {...rest}>
         {i18n._(t`Connect Wallet`)}
       </Button>
     )
