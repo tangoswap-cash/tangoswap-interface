@@ -30,9 +30,6 @@ export function useApproveSep206Callback(
   const { account, chainId } = useActiveWeb3React()
 
   const token = amountToApprove?.currency?.isToken ? amountToApprove.currency : SEP206[chainId]
-
-  console.log('token:  ', token)
-
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
   const pendingApproval = useHasPendingApproval(token?.address, spender)
 

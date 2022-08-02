@@ -4,6 +4,7 @@ import {
   computeConstantProductPoolAddress,
   Currency,
   ORDERS_CASH_V1_ADDRESS,
+  Price,
   SEP206_ADDRESS,
 } from '@tangoswapcash/sdk'
 import Button, { ButtonProps } from '../../../components/Button'
@@ -39,9 +40,6 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons'
 interface LimitOrderButtonProps extends ButtonProps {
   currency: Currency
 }
-
-const chatId = '@profesionalesallimite'
-const message = 'holaa!!!!!!!!!!! acabo de ser clickeado en la ui, aguante mist y la falopaaaaa!!!!!!!!!!!!'
 
 function hexToArr(hexString) {
   return new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
@@ -98,6 +96,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
   const [isCopied, setCopied] = useCopyClipboard()
   const [clicked, wasClicked] = useState(false)
+  const [endTimeState, setEndTimeState] = useState<string>(null)
 
   const { orderExpiration, recipient } = useLimitOrderState()
   const { parsedAmounts, inputError } = useDerivedLimitOrderInfo()
@@ -109,14 +108,9 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     chainId && ORDERS_CASH_V1_ADDRESS[chainId]
   )
 
-  console.log('tokenApprovalState: ', tokenApprovalState)
-
-
-
   const showTokenApprove =
     chainId &&
     currency &&
-    // !currency.isNative &&
     parsedAmounts[Field.INPUT] &&
     (tokenApprovalState === ApprovalState.NOT_APPROVED || tokenApprovalState === ApprovalState.PENDING)
 
@@ -141,6 +135,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       // case OrderExpiration.never:
       //   endTime = Number.MAX_SAFE_INTEGER
     }
+    setEndTimeState(new Date(endTime * 1000).toUTCString())
 
     let coinsToTakerAddr
     if (parsedAmounts[Field.INPUT].currency.isNative) {
@@ -194,29 +189,19 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
     try {
       const sig = await signer._signTypedData(Domain, Types, msg)
-      // console.log(`sig:         ${sig}`)
-
       // o=ver8,coinsToMaker256,coinsToTaker256,dueTime80,r256,s256,v8
-      let order = '01'
-      order += hexStr32(coinsToMakerBN).substr(2)
-      order += hexStr32(coinsToTakerBN).substr(2)
-      order += hexStr32(expirePicosecondsBN).substr(64 + 2 - 20)
-      order += sig.substr(2)
-
-      // console.log(`order:         ${order}`)
-      // console.log(`order:         ${hexToArr(order)}`)
-      // console.log(`order:         ${base64EncArr(hexToArr(order))}`)
+      const order = '01'
+        + hexStr32(coinsToMakerBN).substr(2)
+        + hexStr32(coinsToTakerBN).substr(2)
+        + hexStr32(expirePicosecondsBN).substr(64 + 2 - 20)
+        + sig.substr(2)
 
       const url = 'https://orders.cash/take?o=' + base64EncArr(hexToArr(order))
-      // const url = 'http://localhost:3000/exchange/take-order?o=' + base64EncArr(hexToArr(order))
       console.log('url: ', url)
       setTakeOrderURL(url)
 
-      // await order.signOrderWithProvider(chainId, library)
       setOpenConfirmationModal(false)
 
-      // const resp = await order.send()
-      // if (resp.success) {
       if (true) {
         addPopup({
           txn: { hash: null, summary: 'Limit order created', success: true },
@@ -256,12 +241,22 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       </ButtonError>
     </>
   )
-  const telegramMessage = () => {
-    axios.get(`https://api.telegram.org/bot/sendMessage?chat_id=${chatId}&text=${message}`)
+
+  const telegramMessage = async () => {
+
+    const limitPrice = new Price(
+      parsedAmounts[Field.INPUT].currency,
+      parsedAmounts[Field.OUTPUT].currency,
+      parsedAmounts[Field.INPUT].quotient,
+      parsedAmounts[Field.OUTPUT].quotient
+    )
+
+    const ret = await axios.post(`https://orders.cash/api/telegram?url=${takeOrderURL}&endTime=${endTimeState}&fromToken=${parsedAmounts[Field.INPUT].currency.symbol}&fromAmount=${parsedAmounts[Field.INPUT].toSignificant(6)}&toToken=${parsedAmounts[Field.OUTPUT].currency.symbol}&toAmount=${parsedAmounts[Field.OUTPUT].toSignificant(6)}&price=${limitPrice.toSignificant(6)}&priceInvert=${limitPrice.invert().toSignificant(6)}`)
+    console.log("telegram post result: ", ret);
     wasClicked(true)
   }
 
-  
+
   if (!account)
     button = (
       <Button disabled={disabled} color="pink" onClick={toggleWalletModal} {...rest}>
@@ -284,7 +279,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
         )}
       </Button>
     )
-  else if (takeOrderURL) 
+  else if (takeOrderURL)
     button = (
         <ButtonError
           onClick={() => telegramMessage()}
