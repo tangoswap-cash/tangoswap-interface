@@ -4,6 +4,7 @@ import {
   computeConstantProductPoolAddress,
   Currency,
   ORDERS_CASH_V1_ADDRESS,
+  Price,
   SEP206_ADDRESS,
 } from '@tangoswapcash/sdk'
 import Button, { ButtonProps } from '../../../components/Button'
@@ -26,12 +27,15 @@ import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React'
 import { useDispatch } from 'react-redux'
 import useLimitOrders from '../../../hooks/useLimitOrders'
 import { useLingui } from '@lingui/react'
-
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { id } from '@ethersproject/hash'
 import { hexZeroPad } from '@ethersproject/bytes'
 import { Chain } from '@ethereumjs/common'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTelegram } from '@fortawesome/free-brands-svg-icons';
+import axios from 'axios'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 interface LimitOrderButtonProps extends ButtonProps {
   currency: Currency
@@ -91,6 +95,8 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   const [takeOrderURL, setTakeOrderURL] = useState<string>(null)
 
   const [isCopied, setCopied] = useCopyClipboard()
+  const [clicked, wasClicked] = useState(false)
+  const [endTimeState, setEndTimeState] = useState<string>(null)
 
   const { orderExpiration, recipient } = useLimitOrderState()
   const { parsedAmounts, inputError } = useDerivedLimitOrderInfo()
@@ -102,12 +108,9 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     chainId && ORDERS_CASH_V1_ADDRESS[chainId]
   )
 
-  console.log('tokenApprovalState: ', tokenApprovalState)
-
   const showTokenApprove =
     chainId &&
     currency &&
-    // !currency.isNative &&
     parsedAmounts[Field.INPUT] &&
     (tokenApprovalState === ApprovalState.NOT_APPROVED || tokenApprovalState === ApprovalState.PENDING)
 
@@ -132,6 +135,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
       // case OrderExpiration.never:
       //   endTime = Number.MAX_SAFE_INTEGER
     }
+    setEndTimeState(new Date(endTime * 1000).toUTCString())
 
     let coinsToTakerAddr
     if (parsedAmounts[Field.INPUT].currency.isNative) {
@@ -185,29 +189,19 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
 
     try {
       const sig = await signer._signTypedData(Domain, Types, msg)
-      // console.log(`sig:         ${sig}`)
-
       // o=ver8,coinsToMaker256,coinsToTaker256,dueTime80,r256,s256,v8
-      let order = '01'
-      order += hexStr32(coinsToMakerBN).substr(2)
-      order += hexStr32(coinsToTakerBN).substr(2)
-      order += hexStr32(expirePicosecondsBN).substr(64 + 2 - 20)
-      order += sig.substr(2)
-
-      // console.log(`order:         ${order}`)
-      // console.log(`order:         ${hexToArr(order)}`)
-      // console.log(`order:         ${base64EncArr(hexToArr(order))}`)
+      const order = '01'
+        + hexStr32(coinsToMakerBN).substr(2)
+        + hexStr32(coinsToTakerBN).substr(2)
+        + hexStr32(expirePicosecondsBN).substr(64 + 2 - 20)
+        + sig.substr(2)
 
       const url = 'https://orders.cash/take?o=' + base64EncArr(hexToArr(order))
-      // const url = 'http://localhost:3000/exchange/take-order?o=' + base64EncArr(hexToArr(order))
       console.log('url: ', url)
       setTakeOrderURL(url)
 
-      // await order.signOrderWithProvider(chainId, library)
       setOpenConfirmationModal(false)
 
-      // const resp = await order.send()
-      // if (resp.success) {
       if (true) {
         addPopup({
           txn: { hash: null, summary: 'Limit order created', success: true },
@@ -248,6 +242,21 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
     </>
   )
 
+  const telegramMessage = async () => {
+
+    const limitPrice = new Price(
+      parsedAmounts[Field.INPUT].currency,
+      parsedAmounts[Field.OUTPUT].currency,
+      parsedAmounts[Field.INPUT].quotient,
+      parsedAmounts[Field.OUTPUT].quotient
+    )
+
+    const ret = await axios.post(`https://orders.cash/api/telegram?url=${takeOrderURL}&endTime=${endTimeState}&fromToken=${parsedAmounts[Field.INPUT].currency.symbol}&fromAmount=${parsedAmounts[Field.INPUT].toSignificant(6)}&toToken=${parsedAmounts[Field.OUTPUT].currency.symbol}&toAmount=${parsedAmounts[Field.OUTPUT].toSignificant(6)}&price=${limitPrice.toSignificant(6)}&priceInvert=${limitPrice.invert().toSignificant(6)}`)
+    console.log("telegram post result: ", ret);
+    wasClicked(true)
+  }
+
+
   if (!account)
     button = (
       <Button color="pink" onClick={toggleWalletModal} {...rest}>
@@ -270,16 +279,39 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
         )}
       </Button>
     )
+  else if (takeOrderURL)
+    button = (
+        <ButtonError
+          onClick={() => telegramMessage()}
+          style={{
+            width: '100%',
+          }}
+          id="swap-button"
+          disabled={clicked === false ? disabled : true}
+          // error={isValid && priceImpactSeverity > 2}
+        >{clicked === false ? (
+          <>
+          <FontAwesomeIcon icon={faTelegram} style={{ fontSize: '20px', marginBottom: '-1.5px'}}/> {i18n._(t`Share`)}
+          </>
+          )
+          : (
+            <>
+          <FontAwesomeIcon icon={faCheck} style={{ fontSize: '20px', marginBottom: '-1.5px'}}/> {i18n._(t`Shared`)}
+            </>
+          )}
+        </ButtonError>
+    )
+
 
   return (
     <div className="flex flex-col flex-1">
       {takeOrderURL && (
         <div
           data-tooltip-target="tooltip-copy"
-          className="flex pl-1 mb-2 text-sm cursor-pointer copy-button hover:text-high-emphesis focus:text-high-emphesis"
+          className="flex pl-1 mb-2 text-sm cursor-pointer copy-button hover:text-high-emphesis focus:text-high-emphesis rounded border border-dark-800 hover:border-dark-300"
           onClick={() => setCopied(takeOrderURL)}
         >
-          <p className="mr-1 text-sm">{`${takeOrderURL.substring(0, 40)}...`}</p>
+          <p className="mr-1 text-sm">{`${takeOrderURL.substring(0, 60)}...`}</p>
           <ClipboardCopyIcon width={16} height={16} />
         </div>
       )}
