@@ -13,7 +13,7 @@ import { Field } from '../../../state/limit-order/actions'
 import React, { FC, useCallback, useState } from 'react'
 import { useAddPopup, useWalletModalToggle } from '../../../state/application/hooks'
 import { useDerivedLimitOrderInfo, useLimitOrderState } from '../../../state/limit-order/hooks'
-import { ClipboardCopyIcon } from '@heroicons/react/solid'
+import { ClipboardCopyIcon, ClipboardCheckIcon, LinkIcon } from '@heroicons/react/solid'
 import useCopyClipboard from '../../../hooks/useCopyClipboard'
 import { useLimitOrderApproveCallback } from '../../../hooks/useLimitOrderApproveCallback'
 import Alert from '../../../components/Alert'
@@ -31,11 +31,11 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { id } from '@ethersproject/hash'
 import { hexZeroPad } from '@ethersproject/bytes'
-import { Chain } from '@ethereumjs/common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTelegram } from '@fortawesome/free-brands-svg-icons';
 import axios from 'axios'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import CashAddressInput from '../../../components/Input/Cashaddress'
 
 interface LimitOrderButtonProps extends ButtonProps {
   currency: Currency
@@ -94,7 +94,7 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false)
   const [takeOrderURL, setTakeOrderURL] = useState<string>(null)
 
-  const [isCopied, setCopied] = useCopyClipboard()
+  const [isCopied, setCopied] = useCopyClipboard(10000)
   const [clicked, wasClicked] = useState(false)
   const [endTimeState, setEndTimeState] = useState<string>(null)
 
@@ -302,19 +302,41 @@ const LimitOrderButton: FC<LimitOrderButtonProps> = ({ currency, color, ...rest 
         </ButtonError>
     )
 
-
   return (
     <div className="flex flex-col flex-1">
-      {takeOrderURL && (
-        <div
-          data-tooltip-target="tooltip-copy"
-          className="flex pl-1 mb-2 text-sm cursor-pointer copy-button hover:text-high-emphesis focus:text-high-emphesis rounded border border-dark-800 hover:border-dark-300"
-          onClick={() => setCopied(takeOrderURL)}
-        >
-          <p className="mr-1 text-sm">{`${takeOrderURL.substring(0, 60)}...`}</p>
-          <ClipboardCopyIcon width={16} height={16} />
+      {takeOrderURL && 
+        <div className="flex flex-1 mb-3 pl-2 items-center rounded border border-dark-800">
+          <LinkIcon width={16} height={16}/>
+          <CashAddressInput 
+            onUserInput={null} 
+            value={takeOrderURL} 
+            fontSize='15px' 
+            className='disabled py-0 px-3 mb-0 '
+            onClick={() => setCopied(takeOrderURL)}
+          /> 
+          <Button
+            data-tooltip-target="tooltip-copy"
+            className="flex justify-center items-center px-2"
+            onClick={() => setCopied(takeOrderURL)}
+            color='pink'
+            variant='outlined'
+          >
+            {
+              isCopied ? (
+                <>
+                  <p className="mr-1 text-sm">Copied</p>
+                  <ClipboardCheckIcon width={16} height={16} />
+                </>
+              ) : (
+                <>
+                  <p className="mr-1 text-sm">Copy</p>
+                  <ClipboardCopyIcon width={16} height={16} />
+                </>
+              )
+            }
+          </Button>
         </div>
-      )}
+      }
 
       {button}
 
