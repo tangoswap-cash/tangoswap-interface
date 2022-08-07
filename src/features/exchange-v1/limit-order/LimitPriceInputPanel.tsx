@@ -1,13 +1,11 @@
 import { Field, setLimitPrice } from '../../../state/limit-order/actions'
 import React, { FC, useCallback } from 'react'
 import { useDerivedLimitOrderInfo, useLimitOrderState, useLimitOrderInfoSmartSwap } from '../../../state/limit-order/hooks'
-import { TANGO } from '../../../config/tokens'
 import { AppDispatch } from '../../../state'
 import Input from '../../../components/Input'
 import { t } from '@lingui/macro'
 import { useDispatch } from 'react-redux'
 import { useLingui } from '@lingui/react'
-import { Price, Currency, CurrencyAmount } from '@tangoswapcash/sdk'
 
 interface LimitPriceInputPanelProps {
   onBlur: (value: string) => void
