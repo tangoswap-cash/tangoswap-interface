@@ -16,6 +16,7 @@ import useENS from '../../hooks/useENS'
 import { t } from '@lingui/macro'
 import { i18n } from '@lingui/core'
 import { useExpertModeManager, useUserSingleHopOnly } from '../user/hooks'
+import { useSmartTrade } from '../../hooks/useSmartTrades'
 
 export function useLimitOrderActionHandlers(): {
   onCurrencySelection: (field: Field, currency: Currency) => void
@@ -113,7 +114,7 @@ export function useDerivedLimitOrderInfo(): {
             ).quotient
           )
       : undefined
-
+  
   const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedInputAmount : undefined, outputCurrency ?? undefined, {
     maxHops: singleHopOnly ? 1 : undefined,
   })
@@ -124,6 +125,165 @@ export function useDerivedLimitOrderInfo(): {
 
   const trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
   const rate = trade?.executionPrice
+
+  const bentoBoxBalances = useBentoBalances()
+  const balance = useMemo(
+    () => bentoBoxBalances?.find((el) => el.address === inputCurrency?.wrapped.address),
+    [bentoBoxBalances, inputCurrency?.wrapped.address]
+  )
+
+  const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
+    inputCurrency ?? undefined,
+    outputCurrency ?? undefined,
+  ])
+
+  const walletBalances = {
+    [Field.INPUT]: relevantTokenBalances[0],
+    [Field.OUTPUT]: relevantTokenBalances[1],
+  }
+
+  const bentoboxBalances = {
+    [Field.INPUT]: inputCurrency
+      ? CurrencyAmount.fromRawAmount(inputCurrency, balance?.bentoBalance ? balance.bentoBalance : 0)
+      : undefined,
+    [Field.OUTPUT]: outputCurrency
+      ? CurrencyAmount.fromRawAmount(outputCurrency, balance?.bentoBalance ? balance.bentoBalance : 0)
+      : undefined,
+  }
+
+  const parsedAmounts = {
+    [Field.INPUT]: independentField === Field.INPUT ? parsedInputAmount : parsedOutputAmount,
+    [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedInputAmount : parsedOutputAmount,
+  }
+
+  const currencies: { [field in Field]?: Currency } = {
+    [Field.INPUT]: inputCurrency ?? undefined,
+    [Field.OUTPUT]: outputCurrency ?? undefined,
+  }
+
+  let inputError: string | undefined
+  if (!account) {
+    inputError = 'Connect Wallet'
+  }
+
+  if (!parsedInputAmount || !parsedOutputAmount) {
+    inputError = inputError ?? i18n._(t`Enter an amount`)
+  }
+
+  if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
+    inputError = inputError ?? i18n._(t`Select a token`)
+  }
+
+  const formattedTo = isAddress(to)
+  if (!to || !formattedTo) {
+    inputError = inputError ?? i18n._(t`Enter a recipient`)
+  }
+
+  if (!limitPrice) {
+    inputError = inputError ?? i18n._(t`Select a rate`)
+  }
+
+  if (!orderExpiration) {
+    inputError = inputError ?? i18n._(t`Select an order expiration`)
+  }
+
+  // compare input balance to max input based on version
+  const [balanceIn, amountIn] = [
+    fromBentoBalance ? bentoboxBalances[Field.INPUT] : walletBalances[Field.INPUT],
+    parsedAmounts[Field.INPUT],
+  ]
+
+  if (!balanceIn) {
+    inputError = i18n._(t`Loading balance`)
+  }
+
+  if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
+    inputError = i18n._(t`Insufficient ${currencies[Field.INPUT]?.symbol} balance`)
+  }
+
+  // console.log("parsedAmounts:           ", parsedAmounts)
+
+  return {
+    currencies,
+    parsedAmounts,
+    walletBalances,
+    bentoboxBalances,
+    inputError,
+    currentPrice: rate,
+  }
+}
+
+export function useLimitOrderInfoSmartSwap(): {
+  currencies: { [field in Field]?: Currency }
+  parsedAmounts: { [field in Field]?: CurrencyAmount<Currency> }
+  walletBalances: { [field in Field]?: CurrencyAmount<Currency> }
+  bentoboxBalances: { [field in Field]?: CurrencyAmount<Currency> }
+  inputError?: string
+  currentPrice: Price<Currency, Currency>
+} {
+  const { account, chainId } = useActiveWeb3React()
+  const [singleHopOnly] = useUserSingleHopOnly()
+  const {
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+    typedValue,
+    independentField,
+    limitPrice,
+    fromBentoBalance,
+    recipient,
+    orderExpiration,
+  } = useLimitOrderState()
+
+  // console.log(inputCurrencyId)
+  const inputCurrency = useCurrency(inputCurrencyId)
+  const outputCurrency = useCurrency(outputCurrencyId)
+  const recipientLookup = useENS(recipient ?? undefined)
+  const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
+
+  const isExactIn: boolean = independentField === Field.INPUT
+  const parsedInputAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
+  let parsedRate = limitPrice ? tryParseAmount(limitPrice, WNATIVE[chainId]) : undefined
+
+  const parsedOutputAmount =
+    outputCurrency && parsedRate && parsedInputAmount
+      ? isExactIn
+        ? CurrencyAmount.fromRawAmount(
+            outputCurrency,
+            new Percent(parsedRate.numerator, denominator(WNATIVE[chainId].decimals))
+              .multiply(new Percent(parsedInputAmount.quotient, denominator(inputCurrency.decimals)))
+              .multiply(denominator(outputCurrency.decimals)).quotient
+          )
+        : CurrencyAmount.fromRawAmount(
+            inputCurrency,
+            new Percent(
+              parsedInputAmount
+                .multiply(denominator(inputCurrency.decimals))
+                .multiply(denominator(WNATIVE[chainId].decimals - outputCurrency.decimals)).quotient,
+              parsedRate.quotient
+            ).quotient
+          )
+      : undefined
+  
+  const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedInputAmount : undefined, outputCurrency ?? undefined, {
+    maxHops: singleHopOnly ? 1 : undefined,
+  })
+
+  const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedInputAmount : undefined, {
+    maxHops: singleHopOnly ? 1 : undefined,
+  })
+
+  let decimals = inputCurrency?.decimals
+  if (decimals > 6) {
+    decimals -= 6
+  }
+  const minimumAmount = '0.' + '1'.padStart(decimals, '0')
+  const parsedAmount = tryParseAmount(minimumAmount, inputCurrency ?? undefined)
+  // const trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
+  const trade = useSmartTrade(parsedAmount, outputCurrency ?? undefined, { parts: undefined }, { flags: undefined })
+  const rate = trade?.executionPrice
+  console.log(rate?.toSignificant(6));
+
+  console.log(trade?.outputAmount?.toSignificant(6))
 
   const bentoBoxBalances = useBentoBalances()
   const balance = useMemo(

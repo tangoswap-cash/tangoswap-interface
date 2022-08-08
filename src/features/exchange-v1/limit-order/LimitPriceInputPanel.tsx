@@ -1,7 +1,6 @@
 import { Field, setLimitPrice } from '../../../state/limit-order/actions'
 import React, { FC, useCallback } from 'react'
-import { useDerivedLimitOrderInfo, useLimitOrderState } from '../../../state/limit-order/hooks'
-
+import { useDerivedLimitOrderInfo, useLimitOrderState, useLimitOrderInfoSmartSwap } from '../../../state/limit-order/hooks'
 import { AppDispatch } from '../../../state'
 import Input from '../../../components/Input'
 import { t } from '@lingui/macro'
@@ -15,8 +14,10 @@ interface LimitPriceInputPanelProps {
 const LimitPriceInputPanel: FC<LimitPriceInputPanelProps> = ({ onBlur }) => {
   const dispatch = useDispatch<AppDispatch>()
   const { limitPrice } = useLimitOrderState()
-  const { currencies, currentPrice } = useDerivedLimitOrderInfo()
+  // const { currencies, currentPrice, parsedAmounts } = useDerivedLimitOrderInfo()
+  const { currencies, currentPrice } = useLimitOrderInfoSmartSwap()
   const { i18n } = useLingui()
+
   const handleInput = useCallback(
     (value) => {
       dispatch(setLimitPrice(value))
