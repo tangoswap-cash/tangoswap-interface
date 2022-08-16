@@ -2709,13 +2709,14 @@
   dependencies:
     eip-712 "^0.4.3"
 
-"@tangoswapcash/default-token-list@0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@tangoswapcash/default-token-list/-/default-token-list-0.0.20.tgz#b878ab4794e99b084a805126c17a5513b5c157d6"
-  integrity sha512-Mn/cbJ0hAIl5060Cdj2b7/a53Ydx/euEVm/Q8PjYTl3JY9d9sXcLVluAsBuHNxoT54Uo3Rru2yOKNBn3R3LZvg==
+"@tangoswapcash/default-token-list@0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@tangoswapcash/default-token-list/-/default-token-list-0.0.21.tgz#1afb12ac05e935bbd7a011423046d670569a476a"
+  integrity sha512-soPFg/NvKhu/ra/emt/KWAUnOG42hRPAus8uWrZdJHzpDZlvaNr824eOr0cut9gTp/pYscjk9L4kCsWnimrBQQ==
   dependencies:
     commitlint "^13.1.0"
     lint-staged "^11.1.2"
+    yarn "^1.22.19"
 
 "@tangoswapcash/sdk@^0.0.28":
   version "0.0.28"
@@ -18663,6 +18664,11 @@ yargs@^17.0.0, yargs@^17.0.1:
     string-width "^4.2.0"
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
+
+yarn@^1.22.19:
+  version "1.22.19"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.19.tgz#4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  integrity sha512-/0V5q0WbslqnwP91tirOvldvYISzaqhClxzyUKXYxs07yUILIs5jx/k6CFe8bvKSkds5w+eiOqta39Wk3WxdcQ==
 
 yauzl@^2.10.0:
   version "2.10.0"
