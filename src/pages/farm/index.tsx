@@ -360,7 +360,7 @@ export default function Farm(): JSX.Element {
         token1: WBCH[ChainId.SMARTBCH],
         rewarderId: "0xefEf4dC16316Ae8c7AF00489b0e5FA52be68D1B6",
         rewardToken: new Token(ChainId.SMARTBCH, '0x49F9ECF126B6dDF51C731614755508A4674bA7eD', 18, 'RMZ', 'Xolos'),
-        rewardPerSecond: "58330000000000"
+        rewardPerSecond: "335648148100000"
       },
       "0xD513165b3bbC1Ca812Db7CBB60340DDf74903A1c": {
         farmId: 3,
@@ -423,7 +423,7 @@ export default function Farm(): JSX.Element {
         token1: WBCH[ChainId.SMARTBCH],
         rewarderId: "0xA76F4318eDe44a205EAcFB5eF6EaF28b0A83AAb8",
         rewardToken: new Token(ChainId.SMARTBCH, '0x387122d80A642581E5AD620696a37b98BB9272e7', 18, 'JOOST', 'Joost.energy'),
-        rewardPerSecond: "800000000000000000"
+        rewardPerSecond: "640000000000000000"
       },
     },
     [ChainId.SMARTBCH_AMBER]: {
