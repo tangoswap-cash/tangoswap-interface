@@ -297,7 +297,7 @@ export default function Farm(): JSX.Element {
       // // ---------------------------------------------------------------------------
       // "0x1c906EB496841B1e305Fd3ea36f670B39F3faE86": {
       //   farmId: 34,
-      //   allocPoint: 55005088857,
+      //   allocPoint: 428549993,
       //   token0: new Token(ChainId.SMARTBCH, '0xaaC82e8931400fb955Bce783A8fD5bcFF99b4317', 18, 'TR1', 'Tango Reduction 1'),
       //   token1: new Token(ChainId.SMARTBCH, '0x1D35f2Ea7DE9c3996616BAb03FEe7152FdcaACba', 18, 'TR1', 'Tango Reduction 2'),
       // },
@@ -478,7 +478,7 @@ export default function Farm(): JSX.Element {
       owner: {
         id: MASTERCHEF_ADDRESS[chainId],
         sushiPerBlock: "10000000000000000000",
-        totalAllocPoint: "56005038841"
+        totalAllocPoint: "1428499977"
 
       },
       userCount: 1,
@@ -550,7 +550,7 @@ export default function Farm(): JSX.Element {
       owner: {
         id: MASTERCHEF_V2_ADDRESS[chainId],
         sushiPerBlock: "10000000000000000000",
-        totalAllocPoint: "56005038841",
+        totalAllocPoint: "1428499977",
       },
 
       rewarder: {
