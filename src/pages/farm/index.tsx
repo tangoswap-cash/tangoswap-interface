@@ -305,7 +305,7 @@ export default function Farm(): JSX.Element {
 
       "0xC01FC198B8c69857D112b6dD2BD3f3fb27e01418": {
         farmId: 35,
-        allocPoint: 58841278,
+        allocPoint: 29420639,
         token0: new Token(ChainId.SMARTBCH, '0xBc2F884680c95A02cea099dA2F524b366d9028Ba', 18, 'BCUSDT', 'BlockNG USDT'),
         token1: TANGO[ChainId.SMARTBCH],
       },
@@ -321,7 +321,12 @@ export default function Farm(): JSX.Element {
         token0: new Token(ChainId.SMARTBCH, '0xbC7160974318820be438e54439b309921e96B62C', 18, 'BCETH', 'BlockNG ETH'),
         token1: TANGO[ChainId.SMARTBCH],
       },
-
+      "0x9b10d51f6E4D213a535CA3C87484bcA26A5E8FE7": {
+        farmId: 38,
+        allocPoint: 29420639,
+        token0: new Token(ChainId.SMARTBCH, '0xBc9bD8DDe6C5a8e1CBE293356E02f5984693b195', 18, 'BCBCH', 'BlockNG BCH'),
+        token1: WBCH[ChainId.SMARTBCH],
+      },
     },
     [ChainId.SMARTBCH_AMBER]: {
       "0x07DE6fc05597E0E4c92C83637A8a0CA411f3a769": {
