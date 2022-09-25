@@ -764,6 +764,7 @@ export default function Robot(): JSX.Element {
     all: (farm) => farm.allocPoint !== 0,
     portfolio: (farm) => farm.pending !== 0,
     past: (farm) => farm.allocPoint === 0,
+   
     // sushi: (farm) => farm.pair.type === PairType.SWAP && farm.allocPoint !== '0',
     // kashi: (farm) => farm.pair.type === PairType.KASHI && farm.allocPoint !== '0',
     // '2x': (farm) => (farm.chef === Chef.MASTERCHEF_V2) && farm.allocPoint !== '0',
@@ -798,7 +799,7 @@ export default function Robot(): JSX.Element {
   const optionsMenu = [
     {
       href: `/${basePath}?filter=portfolio`,
-      label: 'Your Robots',
+      label: 'Your Gridex',
       exact: true
     },
     {
@@ -806,8 +807,15 @@ export default function Robot(): JSX.Element {
     },
     {
       href: `/${basePath}?filter=all`,
-      label: 'All Robots'
+      label: 'Gridex on Sale'
+    },{
+      divider: true
     },
+    {
+      href: `/robots/buy-robot`,
+      label: 'Buy Gridex',
+      exact: true
+    }
   ]
 
   return (
@@ -817,7 +825,7 @@ export default function Robot(): JSX.Element {
       maxWidth="7xl"
     >
       <Head>
-        <title>Robots | Orders.Cash</title>
+        <title>Gridex | Orders.Cash</title>
         <meta key="description" name="description" content="Farm TANGO" />
       </Head>
       <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>
@@ -842,13 +850,13 @@ export default function Robot(): JSX.Element {
               className='w-[190px] text-[#E3E3E3] flex items-center gap-2'
             >
               <PlusIcon width={16} height={16}/>
-              {i18n._(t`Create Robot`)}
+              {i18n._(t`Create Gridex`)}
           </Button>
           </NavLink>
         </div>
 
         <div className="hidden md:block flex items-center text-lg font-bold text-high-emphesis whitespace-nowrap">
-          Robots{' '}
+          Gridex{' '}
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
 

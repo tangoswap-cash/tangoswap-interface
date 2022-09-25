@@ -10,6 +10,7 @@ export enum Feature {
   ANALYTICS = 'Analytics',
   MIGRATE = 'Migrate',
   STAKING = 'Staking',
+  GRIDEX = 'Gridex',
 }
 
 const features = {
@@ -19,6 +20,7 @@ const features = {
     // Feature.MIGRATE,
     Feature.ANALYTICS,
     Feature.STAKING,
+    Feature.GRIDEX
   ],
   [ChainId.SMARTBCH_AMBER]: [
     Feature.AMM,

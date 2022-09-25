@@ -236,7 +236,7 @@ export default function CreateRobotPage() {
   return (
     <>
       <Head>
-        <title>Create Robots | Orders.Cash</title>
+        <title>Create Gridex | Orders.Cash</title>
         <meta
           key="description"
           name="description"
@@ -248,7 +248,7 @@ export default function CreateRobotPage() {
         <div className="flex items-center justify-between mb-5">
           <NavLink href="/robots/robots-list?filter=portfolio">
             <a className="flex items-center space-x-2 text-base font-medium text-center cursor-pointer text-secondary hover:text-high-emphesis">
-              <span>{i18n._(t`View Orders Robots`)}</span>
+              <span>{i18n._(t`View Your Gridex`)}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-4 h-4"
@@ -271,6 +271,7 @@ export default function CreateRobotPage() {
               <div>
                 <CurrencyInputPanel
                   value={formattedAmounts[Field.CURRENCY_A]}
+                  label="Stock"
                   onUserInput={onFieldAInput}
                   onMax={() => {
                     onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
@@ -294,6 +295,7 @@ export default function CreateRobotPage() {
 
                 <CurrencyInputPanel
                   value={formattedAmounts[Field.CURRENCY_B]}
+                  label="Money"
                   onUserInput={onFieldBInput}
                   onCurrencySelect={handleCurrencyBSelect}
                   onMax={() => {
@@ -319,12 +321,11 @@ export default function CreateRobotPage() {
               )}
 
               {
-                currenciesSelected && currenciesSelected?.currencyA && currenciesSelected?.currencyB && (
                   <div className='flex justify-center gap-5'>
                     <PanelLimitPrice label='Max price to Sell' currencyA={'BCH'} currencyB={'TANGO'}/>
                     <PanelLimitPrice label='Min price to Buy' currencyA={'TANGO'} currencyB={'BCH'}/>
                   </div>
-                )
+                
               }
 
               {addIsUnsupported ? (
@@ -335,7 +336,7 @@ export default function CreateRobotPage() {
                 <Web3Connect size="lg" color="blue" className="w-full" />
               ) : (
                 <Button color="blue" size="lg" disabled={!currenciesSelected}>
-                  {i18n._(t`Create Robot`)}
+                  {i18n._(t`Create Gridex`)}
                 </Button>
               )}
             </div>
