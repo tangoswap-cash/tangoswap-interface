@@ -114,7 +114,7 @@ const RobotListItemDetails = ({ robot }) => {
                     color='red'
                     onClick={handleDeleteRobot}
                   >
-                    {i18n._(t`Delete Robot`)}
+                    {i18n._(t`Delete Gridex`)}
                   </Button>
                 </div>
                 <div>
@@ -122,7 +122,7 @@ const RobotListItemDetails = ({ robot }) => {
                     color='default'
                     onClick={handleSellRobot}
                   >
-                    {i18n._(t`Sell Robot`)}
+                    {i18n._(t`Sell Gridex`)}
                   </Button>
                 </div>
               </div>
@@ -132,7 +132,7 @@ const RobotListItemDetails = ({ robot }) => {
                   color="gradient"
                   onClick={handleBuyRobot}
                 >
-                  {i18n._(t`BUY ROBOT`)}
+                  {i18n._(t`Buy Gridex`)}
                 </Button>
               </div>
             )
