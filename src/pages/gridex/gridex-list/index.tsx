@@ -795,11 +795,11 @@ export default function Gridex(): JSX.Element {
     options,
   })
 
-  const basePath = 'robots/robots-list'
+  const basePath = 'gridex/gridex-list'
 
   const optionsMenu = [
     {
-      href: `/${basePath}?filter=portfolio`,
+      href: `/${basePath}`,
       label: 'Your Gridex',
       exact: true
     },
@@ -807,13 +807,13 @@ export default function Gridex(): JSX.Element {
       divider: true
     },
     {
-      href: `/${basePath}?filter=all`,
+      href: `/${basePath}/on-Sale`,
       label: 'Gridex on Sale'
     },{
       divider: true
     },
     {
-      href: `/robots/buy-robot`,
+      href: `/gridex/buy-gridex`,
       label: 'Buy Gridex',
       exact: true
     }
@@ -844,7 +844,7 @@ export default function Gridex(): JSX.Element {
                 'relative w-full bg-transparent border border-transparent focus:border-gradient-r-blue-pink-dark-900 rounded placeholder-secondary focus:placeholder-primary font-bold text-base px-6 py-3.5',
             }}
           />
-          <NavLink href="/robots/create-gridex">
+          <NavLink href="/gridex/create-gridex">
             <Button
               variant='outlined'
               color='border'

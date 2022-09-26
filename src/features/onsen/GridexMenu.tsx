@@ -6,29 +6,28 @@ import { useLingui } from '@lingui/react'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 
+const basePath = 'gridex/gridex-list'
+
 const defaultOptions = [
   {
-    href: `/farm?filter=portfolio`,
-    label: 'Your Farms',
+    href: `/${basePath}`,
+    label: 'Your Gridex',
     exact: true
   },
   {
     divider: true
   },
   {
-    href: "/farm?filter=all",
-    label: 'All Farms'
+    href: `/${basePath}/on-Sale`,
+    label: 'Gridex on Sale'
+  },{
+    divider: true
   },
   {
-    href: `/farm?filter=2x`,
-    label: '2x Reward Farms',
+    href: `/gridex/buy-gridex`,
+    label: 'Buy Gridex',
     exact: true
-  },
-  {
-    href: "/farm?filter=past",
-    label: 'Past Farms'
-  }
-]
+  }]
 
 const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
   const { account, chainId } = useActiveWeb3React()
@@ -40,7 +39,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
       {account ? (
         <NavLink
           exact
-          href={`/farm?filter=portfolio`}
+          href={`/${basePath}`}
           activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
         >
           <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
