@@ -87,10 +87,12 @@ const RobotListItems = ({ robot, ...rest }) => {
               )}
             </div>
           </Disclosure.Button>
-          {/* {open && <RobotListItemDetails robot={robot} />} */}
+          {open && <RobotListItemDetails robot={robot} />}
         </>
       )}
     </Disclosure>
+
+    
   )
 }
 

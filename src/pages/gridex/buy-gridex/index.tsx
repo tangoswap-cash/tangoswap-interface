@@ -10,6 +10,7 @@ import { useCurrency } from '../../../hooks/Tokens'
 import { useRouter } from 'next/router'
 import { Field } from '../../../state/mint/actions'
 import { currencyId, maxAmountSpend } from '../../../functions/currency'
+import BuyRobotsPanel from "../../../components/BuyRobotsPanel"
 
 export default function BuyGridex() {
   const [currenciesSelected, setCurrenciesSelected] = useState(null);
@@ -84,7 +85,7 @@ export default function BuyGridex() {
       <DoubleGlowShadow>
         
         
-        <CurrencyInputPanel
+        <BuyRobotsPanel
         label="Stock"
         id="stock-robot-search"
         showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
