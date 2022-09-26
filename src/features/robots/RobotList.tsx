@@ -20,7 +20,7 @@ const RobotList = ({ robots, term }) => {
           className="flex items-center col-span-2 px-4 cursor-pointer md:col-span-1"
           onClick={() => requestSort('symbol')}
         >
-          <div className="hover:text-high-emphesis">{i18n._(t`Pair`)}</div>
+          <div className="hover:text-high-emphesis">{i18n._(t`Stock/Money`)}</div>
           {sortConfig &&
             sortConfig.key === 'symbol' &&
             ((sortConfig.direction === 'ascending' && <ChevronUpIcon width={12} height={12} />) ||

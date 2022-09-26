@@ -45,6 +45,7 @@ import { useLingui } from '@lingui/react'
 import RobotList from '../../../features/robots/RobotList'
 import Button from '../../../components/Button'
 import NavLink from '../../../components/NavLink'
+import GridexMenu from '../../../features/onsen/GridexMenu'
 
 function getTokensSorted(pool, pair) {
   if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
@@ -87,7 +88,7 @@ function getTokenPriceInBch(pool, pair, chainId, tangoPriceBCH, bchPriceUSD) {
   return derivedETH
 }
 
-export default function Robot(): JSX.Element {
+export default function Gridex(): JSX.Element {
   const { i18n } = useLingui()
   const { chainId } = useActiveWeb3React()
   const router = useRouter()
@@ -829,7 +830,7 @@ export default function Robot(): JSX.Element {
         <meta key="description" name="description" content="Farm TANGO" />
       </Head>
       <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>
-        <Menu positionsLength={positions.length} options={optionsMenu}/>
+        <GridexMenu positionsLength={positions.length} options={optionsMenu}/>
       </div>
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
         <div className='flex gap-2'>
@@ -843,7 +844,7 @@ export default function Robot(): JSX.Element {
                 'relative w-full bg-transparent border border-transparent focus:border-gradient-r-blue-pink-dark-900 rounded placeholder-secondary focus:placeholder-primary font-bold text-base px-6 py-3.5',
             }}
           />
-          <NavLink href="/robots/create-robot">
+          <NavLink href="/robots/create-gridex">
             <Button
               variant='outlined'
               color='border'

@@ -129,7 +129,7 @@ const nextConfig = {
       },
       {
         source: '/gridex',
-        destination: '/robots/robots-list'
+        destination: '/gridex/gridex-list'
       }
     ]
   },

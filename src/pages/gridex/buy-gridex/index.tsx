@@ -11,11 +11,7 @@ import { useRouter } from 'next/router'
 import { Field } from '../../../state/mint/actions'
 import { currencyId, maxAmountSpend } from '../../../functions/currency'
 
-
-
-
-
-export default function Modal() {
+export default function BuyGridex() {
   const [currenciesSelected, setCurrenciesSelected] = useState(null);
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})

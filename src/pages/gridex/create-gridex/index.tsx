@@ -47,7 +47,7 @@ import PanelLimitPrice from '../../../components/PanelLimitPrice'
 
 const DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
-export default function CreateRobotPage() {
+export default function CreateGridexPage() {
   const { i18n } = useLingui()
   const { account, chainId, library } = useActiveWeb3React()
   const router = useRouter()
