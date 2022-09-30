@@ -81,8 +81,8 @@ export default function BuyGridex() {
       />
     </Head>
 
-    <Container id="buy-robot-page" className="py-4 space-y-6 md:py-8 lg:py-12" maxWidth="2xl">
-      <DoubleGlowShadow>
+    <Container id="buy-robot-page" className="py-4 space-y-6 w-4/4 md:py-8 lg:py-12" maxWidth="2xl">
+      <DoubleGlowShadow className="w-full">
         
         
         <BuyRobotsPanel
@@ -95,9 +95,12 @@ export default function BuyGridex() {
         }}
         onCurrencySelect={handleCurrencyASelect}
         currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
+        // onOtherCurrencySelect={handleCurrencyBSelect}
+        otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
         showCommonBases
         
         />
+        
 
 
        
