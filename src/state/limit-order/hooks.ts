@@ -281,7 +281,6 @@ export function useLimitOrderInfoSmartSwap(): {
   // const trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
   const trade = useSmartTrade(parsedAmount, outputCurrency ?? undefined, { parts: undefined }, { flags: undefined })
   const rate = trade?.executionPrice
-  console.log(rate?.toSignificant(6));
 
   console.log(trade?.outputAmount?.toSignificant(6))
 
