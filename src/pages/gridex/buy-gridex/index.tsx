@@ -14,14 +14,14 @@ import BuyRobotsPanel from "../../../components/BuyRobotsPanel"
 
 export default function BuyGridex() {
   const [currenciesSelected, setCurrenciesSelected] = useState(null);
+
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
   }
-  const handleCurrencyBSelect = (currencyB: Currency) => {
-    console.log(currenciesSelected)
+  const handleCurrencyBSelect = (currencyB: Currency) => {    
     setCurrenciesSelected({...currenciesSelected, currencyB: currencyB})      
   }
-
+  
   const router = useRouter()
   const tokens = router.query.tokens
   const [currencyIdA, currencyIdB] = (tokens as string[]) || [undefined, undefined]
@@ -47,8 +47,6 @@ export default function BuyGridex() {
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
 
-
-
   // get the max amounts user can add
   const maxAmounts: { [field in Field]?: CurrencyAmount<Currency> } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
     (accumulator, field) => {
@@ -69,7 +67,8 @@ export default function BuyGridex() {
     {}
   )
 
-
+  // console.log(maxAmounts);
+    
 
   return (<>
     <Head>
@@ -84,26 +83,22 @@ export default function BuyGridex() {
     <Container id="buy-robot-page" className="py-4 space-y-6 w-4/4 md:py-8 lg:py-12" maxWidth="2xl">
       <DoubleGlowShadow className="w-full">
         
-        
         <BuyRobotsPanel
         label="Stock"
         id="stock-robot-search"
-        showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
-        onUserInput={onFieldAInput}
+        showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+        onUserInput={onFieldBInput}
         onMax={() => {
-          onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
+          onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
         }}
         onCurrencySelect={handleCurrencyASelect}
+        onCurrencyBSelect={handleCurrencyBSelect}
         currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
+        currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
         // onOtherCurrencySelect={handleCurrencyBSelect}
-        otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+        // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
         showCommonBases
-        
         />
-        
-
-
-       
         
       </DoubleGlowShadow>
     </Container>
