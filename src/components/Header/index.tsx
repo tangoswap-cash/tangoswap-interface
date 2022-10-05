@@ -133,7 +133,7 @@ function AppBar(): JSX.Element {
                             id={`gridex-nav-link`}
                             className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                           >
-                            {i18n._(t`Gridex`)} <sup>NEW</sup>
+                            {i18n._(t`Tango CMM`)} <sup>NEW</sup>
                           </a>
                         </NavLink>
                       )}

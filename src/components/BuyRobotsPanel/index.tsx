@@ -15,6 +15,7 @@ import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../hooks/useActiveWeb3React'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useLingui } from '@lingui/react'
+import { Search as SearchIcon } from 'react-feather'
 
 interface CurrencyInputPanelProps {
   value?: string
@@ -68,7 +69,7 @@ export default function BuyRobotsPanel({
   const [currencySelector, setCurrencySelector] = useState('')
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-  const selectedOtherCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currencyB ?? undefined)
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -225,15 +226,16 @@ export default function BuyRobotsPanel({
                   onUserInput(val)
                 }}
                 readOnly={readOnly}
+                className={`w-1/5 bg-transparent mr-6`}
               />
-              {!hideBalance && currency && selectedOtherCurrencyBalance ? (
+              {!hideBalance && currency && selectedCurrencyBBalance ? (
                 <div className="flex flex-col">
-                  <div onClick={onMax} className="text-xs font-medium text-right cursor-pointer text-low-emphesis">
+                  <div onClick={onMax} className="text-xs p-0 font-medium inline text-right cursor-pointer text-low-emphesis">
                     {renderBalance ? (
-                      renderBalance(selectedOtherCurrencyBalance)
+                      renderBalance(selectedCurrencyBBalance)
                     ) : (
                       <>
-                        {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedOtherCurrencyBalance, 4)} {currency.symbol}
+                        {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
                       </>
                     )}
                   </div>
@@ -246,31 +248,35 @@ export default function BuyRobotsPanel({
           <Button
            color={'gradient'} 
            size="sm"
-          className='h-12 w-20 ml-4  text-center '
+          className='h-12 w-1/12 ml-4 pr-16  text-sm text-center '
        
-          >
-          {i18n._(t`Search`)}
+          >{i18n._(t`Search`)}
+          {/*{<SearchIcon size={24} />}*/}
           </Button>
       </div>
-      { currencySelector == 'A' ? (
-           <CurrencySearchModal
-           isOpen={modalOpen}
-           onDismiss={handleDismissSearch}
-           onCurrencySelect={onCurrencySelect}
-           selectedCurrency={currency}
-           otherSelectedCurrency={currency}
-           showCommonBases={showCommonBases}
-         />
-        ) : (
+       {
+        currencySelector == 'A' ? (
         <CurrencySearchModal
-            isOpen={modalOpen}
-            onDismiss={handleDismissSearch}
-            onCurrencySelect={onCurrencyBSelect}
-            selectedCurrency={currencyB}
-            otherSelectedCurrency={currencyB}
-            showCommonBases={showCommonBases}
-          />
-      ) 
+          isOpen={modalOpen}
+          onDismiss={handleDismissSearch}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={currency}
+          otherSelectedCurrency={currency}
+          showCommonBases={showCommonBases}
+        />
+         
+        )
+        : 
+        (
+          <CurrencySearchModal
+          isOpen={modalOpen}
+          onDismiss={handleDismissSearch}
+          onCurrencySelect={onCurrencyBSelect}
+          selectedCurrency={currencyB}
+          otherSelectedCurrency={currencyB}
+          showCommonBases={showCommonBases}
+        /> 
+        ) 
     }
     </div>
   )

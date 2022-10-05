@@ -20,7 +20,6 @@ export default function BuyGridex() {
     setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
   }
   const handleCurrencyBSelect = (currencyB: Currency) => {    
-    console.log('currencyB:', currencyB)
     setCurrenciesSelected({...currenciesSelected, currencyB: currencyB})      
   }
   
@@ -44,8 +43,7 @@ export default function BuyGridex() {
     liquidityMinted,
     poolTokenPercentage,
     error,
-  } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
-
+  } = useDerivedMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
 
@@ -69,7 +67,7 @@ export default function BuyGridex() {
     {}
   )
 
-
+  // console.log(currenciesSelected.currencyB);
 
   return (<>
     <Head>
@@ -87,8 +85,8 @@ export default function BuyGridex() {
         <BuyRobotsPanel
         label="Stock"
         id="stock-robot-search"
-        showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
-        onUserInput={onFieldAInput}
+        showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+        onUserInput={onFieldBInput}
         onMax={() => {
           onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
         }}
