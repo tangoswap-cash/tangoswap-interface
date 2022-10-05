@@ -74,6 +74,9 @@ export default function BuyRobotsPanel({
     setModalOpen(false)
   }, [setModalOpen])
 
+  console.log("currencyA", currency);
+  console.log("currencyB", currencyB);
+
   return (
     <div id={id} className={classNames(hideInput ? 'p-4' : 'p-5', 'rounded  bg-dark-800')}>
       <div className="flex flex-col justify-center items-center space-y-3 sm:space-y-0 sm:flex-row">
