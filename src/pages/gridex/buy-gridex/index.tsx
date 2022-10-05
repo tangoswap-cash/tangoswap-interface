@@ -42,8 +42,7 @@ export default function BuyGridex() {
     liquidityMinted,
     poolTokenPercentage,
     error,
-  } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
-
+  } = useDerivedMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
 
@@ -67,8 +66,7 @@ export default function BuyGridex() {
     {}
   )
 
-  // console.log(maxAmounts);
-    
+  // console.log(currenciesSelected.currencyB);
 
   return (<>
     <Head>

@@ -68,14 +68,11 @@ export default function BuyRobotsPanel({
   const { account } = useActiveWeb3React()
   const [currencySelector, setCurrencySelector] = useState('')
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-  const selectedOtherCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currencyB ?? undefined)
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
   }, [setModalOpen])
-
-  console.log("currencyA", currency);
-  console.log("currencyB", currencyB);
 
   return (
     <div id={id} className={classNames(hideInput ? 'p-4' : 'p-5', 'rounded  bg-dark-800')}>
@@ -226,17 +223,17 @@ export default function BuyRobotsPanel({
                 }}
                 readOnly={readOnly}
               />
-              {!hideBalance && currency && selectedOtherCurrencyBalance ? (
+              {!hideBalance && currency && selectedCurrencyBBalance ? (
                 <div className="flex flex-col">
-                  {/* <div onClick={onMax} className="text-xs font-medium text-right cursor-pointer text-low-emphesis">
+                  <div onClick={onMax} className="text-xs font-medium text-right cursor-pointer text-low-emphesis">
                     {renderBalance ? (
-                      renderBalance(selectedOtherCurrencyBalance)
+                      renderBalance(selectedCurrencyBBalance)
                     ) : (
                       <>
-                        {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedOtherCurrencyBalance, 4)} {currency.symbol}
+                        {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
                       </>
                     )}
-                  </div> */}
+                  </div>
                   <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
                 </div>
               ) : null}
