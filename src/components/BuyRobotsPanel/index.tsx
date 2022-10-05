@@ -114,7 +114,7 @@ export default function BuyRobotsPanel({
                 </span>
               ) : (
                 <div className="flex flex-1 flex-col items-start justify-center mx-3.5">
-                  {label && <div className="text-xs font-medium text-secondary whitespace-nowrap">{label}</div>}
+                  {"Stock" && <div className="text-xs font-medium text-secondary whitespace-nowrap">Stock</div>}
                   <div className="flex items-center">
                     <div className="text-lg font-bold token-symbol-container md:text-2xl">
                       {(currency && currency.symbol && currency.symbol.length > 20
@@ -206,7 +206,7 @@ export default function BuyRobotsPanel({
             )}
           >
             <>
-              { (
+              { showMaxButton && (
                 <Button
                   onClick={onMax}
                   size="xs"
@@ -219,11 +219,12 @@ export default function BuyRobotsPanel({
                 id="token-amount-input"
                 value={value}
                 onUserInput={(val) => {
+                  // console.log('val:', val);
                   onUserInput(val)
                 }}
                 readOnly={readOnly}
               />
-              {!hideBalance && currency && selectedCurrencyBBalance ? (
+              {/* {!hideBalance && currency && selectedCurrencyBBalance ? (
                 <div className="flex flex-col">
                   <div onClick={onMax} className="text-xs font-medium text-right cursor-pointer text-low-emphesis">
                     {renderBalance ? (
@@ -236,7 +237,7 @@ export default function BuyRobotsPanel({
                   </div>
                   <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
                 </div>
-              ) : null}
+              ) : null} */}
             </>
           </div>
 
