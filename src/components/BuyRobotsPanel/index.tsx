@@ -79,7 +79,7 @@ export default function BuyRobotsPanel({
   console.log("currencyB", currencyB);
 
   return (
-    <div id={id} className={classNames(hideInput ? 'p-4' : 'p-5', 'rounded  bg-dark-800')}>
+    <div id={id} className={classNames(hideInput ? 'p-3' : 'p-4', 'px-2 rounded  bg-dark-800')}>
       <div className="flex flex-col justify-center items-center space-y-3 sm:space-y-0 sm:flex-row">
         <div className={classNames('w-full sm:w-2/5')}>
           <button
@@ -205,7 +205,7 @@ export default function BuyRobotsPanel({
         
           <div
             className={classNames(
-              'flex items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 p-3 sm:w-3/5'
+              'flex items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-3/5'
               // showMaxButton && selectedCurrencyBalance && 'px-3'
             )}
           >
@@ -214,7 +214,7 @@ export default function BuyRobotsPanel({
                 <Button
                   onClick={onMax}
                   size="xs"
-                  className="text-xs font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap"
+                  className="text-base font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap"
                 >
                   {i18n._(t`Max`)}
                 </Button>
@@ -227,11 +227,11 @@ export default function BuyRobotsPanel({
                   onUserInput(val)
                 }}
                 readOnly={readOnly}
-                className={`w-1/5 bg-transparent mr-6`}
+                className={`w-2/3 h-16 text-base  bg-transparent `}
               />
-              {/* {!hideBalance && currency && selectedCurrencyBBalance ? (
+               {!hideBalance && currency && selectedCurrencyBBalance ? (
                 <div className="flex flex-col">
-                  <div onClick={onMax} className="text-xs p-0 font-medium inline text-right cursor-pointer text-low-emphesis">
+                  <div onClick={onMax} className="text-xs  text-right  cursor-pointer text-low-emphesis">
                     {renderBalance ? (
                       renderBalance(selectedCurrencyBBalance)
                     ) : (
@@ -242,7 +242,7 @@ export default function BuyRobotsPanel({
                   </div>
                   <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
                 </div>
-              ) : null} */}
+              ) : null} 
             </>
           </div>
 
