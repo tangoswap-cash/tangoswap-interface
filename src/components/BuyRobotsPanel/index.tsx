@@ -16,6 +16,7 @@ import { useActiveWeb3React } from '../../hooks/useActiveWeb3React'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useLingui } from '@lingui/react'
 import { Search as SearchIcon } from 'react-feather'
+import GridexInfo from '../../modals/GridexModal'
 
 interface CurrencyInputPanelProps {
   value?: string
@@ -65,8 +66,13 @@ export default function BuyRobotsPanel({
   readOnly = false,
 }: CurrencyInputPanelProps) {
   const { i18n } = useLingui()
+
   const [modalOpen, setModalOpen] = useState(false)
+
+  const [gridexInfoOpen, setGridexInfoOpen] = useState(false)
+
   const [currencySelector, setCurrencySelector] = useState('')
+
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currencyB ?? undefined)
@@ -255,6 +261,10 @@ export default function BuyRobotsPanel({
           {/*{<SearchIcon size={24} />}*/}
           </Button>
       </div>
+      <div className='ml-1 mt-1'>
+              <button className='text-sm hover:text-high-emphesis' onClick={() => setGridexInfoOpen(true)}>What is Tango CMM?</button>
+              <GridexInfo isOpen={gridexInfoOpen} setIsOpen={setGridexInfoOpen} />
+            </div>
        {
         currencySelector == 'A' ? (
         <CurrencySearchModal
