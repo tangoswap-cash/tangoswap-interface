@@ -84,7 +84,7 @@ export default function BuyGridex() {
       />
     </Head>
 
-    <Container id="buy-robot-page" className="py-4 space-y-6 w-4/4 md:py-8 lg:py-12" maxWidth="2xl">
+    <Container id="buy-robot-page" className=" py-4 space-y-6 w-4/4 md:py-8 lg:py-12" maxWidth="2xl">
       <DoubleGlowShadow className="w-full">
         
         <BuyRobotsPanel
