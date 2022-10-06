@@ -47,6 +47,11 @@ export default function BuyGridex() {
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
 
+  const formattedAmounts = {
+    [independentField]: typedValue,
+    [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+  }
+
   // get the max amounts user can add
   const maxAmounts: { [field in Field]?: CurrencyAmount<Currency> } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
     (accumulator, field) => {
@@ -67,7 +72,7 @@ export default function BuyGridex() {
     {}
   )
 
-  // console.log(currenciesSelected.currencyB);
+  console.log(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '');
 
   return (<>
     <Head>
@@ -83,13 +88,13 @@ export default function BuyGridex() {
       <DoubleGlowShadow className="w-full">
         
         <BuyRobotsPanel
-        label="Stock"
         id="stock-robot-search"
         showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
         onUserInput={onFieldBInput}
         onMax={() => {
           onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
         }}
+        value={formattedAmounts[Field.CURRENCY_B]}
         onCurrencySelect={handleCurrencyASelect}
         onCurrencyBSelect={handleCurrencyBSelect}
         currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
