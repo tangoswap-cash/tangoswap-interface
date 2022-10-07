@@ -39,7 +39,7 @@ import { useCurrency } from '../../../hooks/Tokens'
 import { useIsSwapUnsupported } from '../../../hooks/useIsSwapUnsupported'
 import { useLingui } from '@lingui/react'
 import { useRouter } from 'next/router'
-import { useRouterContract } from '../../../hooks'
+import { useContract, useRouterContract } from '../../../hooks'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
 import { useWalletModalToggle } from '../../../state/application/hooks'
@@ -101,6 +101,30 @@ export default function CreateGridexPage() {
   const allowedSlippage = useUserSlippageToleranceWithDefault(DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE) // custom from users
 
   const [txHash, setTxHash] = useState<string>('')
+
+  const SEP20ABI = [
+    "function symbol() view returns (string)",
+    "function decimals() view returns (uint8)",
+    "function balanceOf(address account) external view returns (uint256)",
+    "function allowance(address owner, address spender) external view returns (uint256)",
+    "function approve(address spender, uint256 amount) external returns (bool)",
+  ]
+
+  const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe"
+  const FactoryAddr = "0xc6ec5d65cA33E7E3ac58A263177c9eEF8042fE17"
+
+  const CCABI = [
+    "function getAllRobots() view public returns (uint[] memory robotsIdAndInfo)",
+    "function createRobot(uint robotInfo) external payable",
+    "function deleteRobot(uint index, uint robotId) external",
+    "function sellToRobot(uint robotId, uint stockDelta) external payable",
+    "function buyFromRobot(uint robotId, uint moneyDelta) external payable",
+  ]
+
+  const FactoryABI = [
+    "function create(address stock, address money, address impl) external",
+    "function getAddress(address stock, address money, address impl) public view returns (address)",
+  ]
 
   // get formatted amounts
   const formattedAmounts = {
