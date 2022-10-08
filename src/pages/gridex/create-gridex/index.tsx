@@ -125,15 +125,15 @@ export default function CreateGridexPage() {
     "function getAddress(address stock, address money, address impl) public view returns (address)",
   ]
 
-  const stockAddr = currenciesSelected?.currencyA?.address
-  const moneyAddr = currenciesSelected?.currencyB?.address
+  const stock = currenciesSelected?.currencyA
+  const money = currenciesSelected?.currencyB
 
-  const stockContract = useContract(stockAddr, SEP20ABI, false) 
-  const moneyContract = useContract(moneyAddr, SEP20ABI, false) 
+  const stockContract = useContract(stock?.address, SEP20ABI, false) 
+  const moneyContract = useContract(money?.address, SEP20ABI, false) 
   const factoryContract = useContract(FactoryAddr, FactoryABI, false)
 
   const [marketAddress, setMarketAddress] = useState()
-  factoryContract.getAddress(stockAddr, moneyAddr, ImplAddr).then(a => setMarketAddress(a))
+  factoryContract.getAddress(stock?.address, money?.address, ImplAddr).then(a => setMarketAddress(a))
   
   let moneySymbol = moneyContract?.symbol()
   let moneyDecimals = moneyContract?.decimals()
@@ -152,7 +152,21 @@ export default function CreateGridexPage() {
     parsedAmounts[Field.CURRENCY_B],
     marketAddress
   )
+
+  const showStockApprove =
+  chainId &&
+  currenciesSelected?.currencyA &&
+  parsedAmounts[Field.CURRENCY_A] &&
+  (stockApprovalState === ApprovalState.NOT_APPROVED || stockApprovalState === ApprovalState.PENDING)
+
+  const showMoneyApprove =
+  chainId &&
+  currenciesSelected?.currencyB &&
+  parsedAmounts[Field.CURRENCY_B] &&
+  (moneyApprovalState === ApprovalState.NOT_APPROVED || moneyApprovalState === ApprovalState.PENDING)
   
+  const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
+
   console.log('parsedAmounts A', parsedAmounts[Field.CURRENCY_A]);
   console.log('stockApprovalState:', stockApprovalState);
   
@@ -208,8 +222,7 @@ export default function CreateGridexPage() {
   //   await marketContract.createRobot(robotInfo, val)
   //   }
   const formattedAmounts = {
-    [independentField]: typedValue,
-    [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+    [independentField]: typedValue
   }
 
   // get the max amounts user can add
@@ -362,9 +375,6 @@ export default function CreateGridexPage() {
         <DoubleGlowShadow>
           <div className="p-4 space-y-4 rounded bg-dark-900" style={{ zIndex: 1 }}>
             <div className="flex flex-col space-y-4">
-              {pair && pairState !== PairState.INVALID && (
-                <LiquidityHeader input={currencies[Field.CURRENCY_A]} output={currencies[Field.CURRENCY_B]} />
-              )}
               <div>
                 <CurrencyInputPanel
                   label="Stock"
@@ -405,19 +415,6 @@ export default function CreateGridexPage() {
                   showCommonBases
                 />
               </div>
-
-              {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (
-                <div className="p-1 rounded bg-dark-800">
-                  <LiquidityPrice
-                    currencies={currencies}
-                    price={price}
-                    noLiquidity={noLiquidity}
-                    poolTokenPercentage={poolTokenPercentage}
-                    className="bg-dark-900"
-                  />
-                </div>
-              )}
-
               {
                   <div className='flex justify-center gap-5'>
                     <PanelLimitPrice label='Max price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol}/>
@@ -426,20 +423,46 @@ export default function CreateGridexPage() {
                 
               }
 
-              {addIsUnsupported ? (
-                <Button color="gradient" size="lg" disabled>
-                  {i18n._(t`Unsupported Asset`)}
+              {!stock && !money ? (
+                <Button color="blue" size="lg" disabled>
+                  {i18n._(t`Select your Tokens`)}
                 </Button>
-              ) : !account ? (
+              ) 
+              : !stock ? (
+                <Button color="blue" size="lg" disabled>
+                  {i18n._(t`Select your Stock`)}
+                </Button>
+              ) 
+              : !money ? (
+                <Button color="blue" size="lg" disabled>
+                {i18n._(t`Select your Money`)}
+                 </Button>
+              ) 
+              : !parsedAmounts[Field.CURRENCY_A] && !parsedAmounts[Field.CURRENCY_B] ? (
+                <Button color="blue" size="lg" disabled>
+                  {i18n._(t`Enter an Amount`)}
+                 </Button>
+              )
+              : !account ? (
                 <Web3Connect size="lg" color="blue" className="w-full" />
-              ) : (
-                <Button color="blue" size="lg" disabled={!currenciesSelected}>
+              ) : showStockApprove ? (
+                <Button onClick={stockApprove} color={disabled ? 'gray' : 'gradient'} className="mb-4">
+                  {stockApprovalState === ApprovalState.PENDING ? (
+                    <Dots>{i18n._(t`Approving ${stock.symbol}`)}</Dots>
+                  ) : (
+                    i18n._(t`Approve ${stock.symbol}`) // ver como se usa useApproveSep206Callback
+                  )}
+                </Button>
+              ) :
+              (
+                <Button color="gradient" size="lg" disabled={!currenciesSelected}>
                   {i18n._(t`Create Gridex`)}
                 </Button>
-              )}
+              )
+              }
             </div>
 
-            {!addIsUnsupported ? (
+            {/* {!addIsUnsupported ? (
               pair && !noLiquidity && pairState !== PairState.INVALID ? (
                 <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
               ) : null
@@ -448,7 +471,7 @@ export default function CreateGridexPage() {
                 show={addIsUnsupported}
                 currencies={[currencies.CURRENCY_A, currencies.CURRENCY_B]}
               />
-            )}
+            )} */}
           </div>
         </DoubleGlowShadow>
       </Container>
