@@ -82,7 +82,7 @@ export default function BuyRobotsPanel({
   }, [setModalOpen])
 
   return (
-    <div id={id} className={classNames(hideInput ? 'p-3' : 'p-4', 'px-2 rounded  bg-dark-800')}>
+    <div id={id} className={classNames(hideInput ? 'p-3' : 'p-4', 'px-2 rounded m-4  bg-dark-800')}>
       <div className="flex flex-col justify-center items-center space-y-3 sm:space-y-0 sm:flex-row">
         <div className={classNames('w-full sm:w-2/5')}>
           <button

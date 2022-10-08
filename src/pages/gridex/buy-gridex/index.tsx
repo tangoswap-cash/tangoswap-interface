@@ -16,7 +16,7 @@ export default function BuyGridex() {
   const [currenciesSelected, setCurrenciesSelected] = useState(null);
 
   const handleCurrencyASelect = (currencyA: Currency) => {
-    console.log('currencyA:', currencyA)
+    // console.log('currencyA:', currencyA)
     setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
   }
   const handleCurrencyBSelect = (currencyB: Currency) => {    
@@ -72,7 +72,7 @@ export default function BuyGridex() {
     {}
   )
 
-  console.log(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '');
+  // console.log(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '');
 
   return (<>
     <Head>
