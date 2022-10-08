@@ -107,7 +107,8 @@ const RobotListItemDetails = ({ robot }) => {
             </div>
           </div>
         </div>
-          { robot.pending !== 0 ? (
+        {/* robot.pending !== 0 ?  */}
+          {(
               <div className="flex pb-4 gap-4 px-4">
                 <div>
                   <Button
@@ -126,7 +127,8 @@ const RobotListItemDetails = ({ robot }) => {
                   </Button>
                 </div>
               </div>
-            ) : (    
+            ) }
+             {/*: (    
               <div className="px-4 pb-4">
                 <Button
                   color="gradient"
@@ -135,8 +137,8 @@ const RobotListItemDetails = ({ robot }) => {
                   {i18n._(t`Buy Gridex`)}
                 </Button>
               </div>
-            )
-          }
+            )*/}
+          
       </Disclosure.Panel>
     </Transition>
   )

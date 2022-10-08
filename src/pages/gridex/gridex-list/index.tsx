@@ -861,7 +861,7 @@ export default function Gridex(): JSX.Element {
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
 
-        <RobotList robots={result} term={term}/>
+        {/* <RobotList robots={result} term={term}/> */}
       </div>
     </Container>
   )

@@ -367,12 +367,12 @@ export default function CreateGridexPage() {
               )}
               <div>
                 <CurrencyInputPanel
-                  value={formattedAmounts[Field.CURRENCY_A]}
                   label="Stock"
                   onUserInput={onFieldAInput}
                   onMax={() => {
                     onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')
                   }}
+                  value={formattedAmounts[Field.CURRENCY_A]}
                   onCurrencySelect={handleCurrencyASelect}
                   showMaxButton={!atMaxAmounts[Field.CURRENCY_A]}
                   currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
@@ -391,13 +391,14 @@ export default function CreateGridexPage() {
                 </AutoColumn>
 
                 <CurrencyInputPanel
-                  value={formattedAmounts[Field.CURRENCY_B]}
+                
                   label="Money"
                   onUserInput={onFieldBInput}
                   onCurrencySelect={handleCurrencyBSelect}
                   onMax={() => {
                     onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
                   }}
+                  value={formattedAmounts[Field.CURRENCY_B]}
                   showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
                   currency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
                   id="add-liquidity-input-tokenb"
@@ -419,8 +420,8 @@ export default function CreateGridexPage() {
 
               {
                   <div className='flex justify-center gap-5'>
-                    <PanelLimitPrice label='Max price to Sell' currencyA={'BCH'} currencyB={'TANGO'}/>
-                    <PanelLimitPrice label='Min price to Buy' currencyA={'TANGO'} currencyB={'BCH'}/>
+                    <PanelLimitPrice label='Max price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol}/>
+                    <PanelLimitPrice label='Min price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol}/>
                   </div>
                 
               }
