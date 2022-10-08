@@ -3,7 +3,7 @@ import { AutoRow, RowBetween } from '../../../components/Row'
 import Button, { ButtonError } from '../../../components/Button'
 import { Currency, CurrencyAmount, Percent, WNATIVE, currencyEquals } from '@tangoswapcash/sdk'
 import { ONE_BIPS, ZERO_PERCENT } from '../../../constants'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
 import { calculateGasMargin, calculateSlippageAmount, getGasPrice } from '../../../functions/trade'
 import { currencyId, maxAmountSpend } from '../../../functions/currency'
@@ -39,7 +39,7 @@ import { useCurrency } from '../../../hooks/Tokens'
 import { useIsSwapUnsupported } from '../../../hooks/useIsSwapUnsupported'
 import { useLingui } from '@lingui/react'
 import { useRouter } from 'next/router'
-import { useContract, useRouterContract } from '../../../hooks'
+import { useApproveSep206Callback, useContract, useRouterContract } from '../../../hooks'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
 import { useWalletModalToggle } from '../../../state/application/hooks'
@@ -68,7 +68,6 @@ export default function CreateGridexPage() {
   const toggleWalletModal = useWalletModalToggle() // toggle wallet when disconnected
 
   const [isExpertMode] = useExpertModeManager()
-
   // mint state
   const { independentField, typedValue, otherTypedValue } = useMintState()
   const {
@@ -83,7 +82,7 @@ export default function CreateGridexPage() {
     liquidityMinted,
     poolTokenPercentage,
     error,
-  } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
+  } = useDerivedMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
 
@@ -126,7 +125,88 @@ export default function CreateGridexPage() {
     "function getAddress(address stock, address money, address impl) public view returns (address)",
   ]
 
-  // get formatted amounts
+  const stockAddr = currenciesSelected?.currencyA?.address
+  const moneyAddr = currenciesSelected?.currencyB?.address
+
+  const stockContract = useContract(stockAddr, SEP20ABI, false) 
+  const moneyContract = useContract(moneyAddr, SEP20ABI, false) 
+  const factoryContract = useContract(FactoryAddr, FactoryABI, false)
+
+  const [marketAddress, setMarketAddress] = useState()
+  factoryContract.getAddress(stockAddr, moneyAddr, ImplAddr).then(a => setMarketAddress(a))
+  
+  let moneySymbol = moneyContract?.symbol()
+  let moneyDecimals = moneyContract?.decimals()
+  let moneyAmount = moneyContract?.balanceOf(account)
+
+  let stockSymbol = stockContract?.symbol()
+  let stockDecimals = stockContract?.decimals()
+  let stockAmount = stockContract?.balanceOf(account)
+  
+  const [stockApprovalState, stockApprove] = useApproveSep206Callback(
+    parsedAmounts[Field.CURRENCY_A],
+    marketAddress
+  )
+
+  const [moneyApprovalState, moneyApprove] = useApproveSep206Callback(
+    parsedAmounts[Field.CURRENCY_B],
+    marketAddress
+  )
+  
+  console.log('parsedAmounts A', parsedAmounts[Field.CURRENCY_A]);
+  console.log('stockApprovalState:', stockApprovalState);
+  
+  // to create the robot factoryContract.create(stockAddr, moneyAddr, ImplAddr)
+
+  // async function checkAllowanceAndBalance(contract, symbol, myAddr, amount, decimals) {
+  //   const allowanceBN = await contract.allowance(myAddr, await MarketAddress)
+  //   const allowance = ethers.utils.formatUnits(allowanceBN, decimals)*1.0
+  //   // console.log(symbol, ', allowance:', allowance); 
+
+  //     if(allowance < amount) {
+  //       new Attention.Confirm({title: `Approve ${symbol}`,
+  //         content: `You did not approve enough ${symbol} to continue.cash, do you want to approve now? After sending the approving transaction, you can retry.`,
+  //         onConfirm(component) {
+  //           const MaxAmount = ethers.utils.parseUnits('999999999')
+  //           contract.approve(MarketAddress, MaxAmount)
+  //         },
+  //         onCancel(component) {}});
+  //       return
+  //     }
+  //     const balanceBN = await contract.balanceOf(myAddr)
+  //     const balance = ethers.utils.formatUnits(balanceBN, decimals)*1.0
+  //     if(balance < amount) {
+  //       window.AlertDlg = new Attention.Alert({title: "Not Enough ${symbol}",
+  //         content: `${amount} ${symbol} is needed, but you only have ${balance}`});
+  //     }
+  // }
+  
+  // async function CreateRobot() {
+
+  //   checkAllowanceAndBalance(stockContract, await stockSymbol, account, await stockAmount, await stockDecimals)
+  //   checkAllowanceAndBalance(moneyContract, await moneySymbol, account, await moneyAmount, await moneyDecimals)
+
+  //   var stockAmountBN = ethers.utils.parseUnits(stockAmount, await stockDecimals)
+  //   var moneyAmountBN = ethers.utils.parseUnits(moneyAmount, await moneyDecimals)
+  //   var highPrice = packPrice(ethers.utils.parseUnits(document.getElementById("highPrice").value))
+  //   var lowPrice = packPrice(ethers.utils.parseUnits(document.getElementById("lowPrice").value))
+  //   var robotInfo = stockAmountBN.mul(ethers.BigNumber.from(2).pow(96)).add(moneyAmountBN)
+  //   robotInfo = robotInfo.mul(ethers.BigNumber.from(2).pow(32)).add(highPrice)
+  //   robotInfo = robotInfo.mul(ethers.BigNumber.from(2).pow(32)).add(lowPrice)
+  //   // const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //   // const signer = provider.getSigner();
+  //   const marketContract = new ethers.Contract(MarketAddress, CCABI, provider).connect(signer);
+
+  //   let val = null;
+  //   if (window.stockAddr == '0x0000000000000000000000000000000000002711') {
+  //     val = {value: stockAmountBN};
+  //   } else if (window.moneyAddr == '0x0000000000000000000000000000000000002711') {
+  //     val = {value: moneyAmountBN};
+  //   }
+  //   console.log('val:', val);
+
+  //   await marketContract.createRobot(robotInfo, val)
+  //   }
   const formattedAmounts = {
     [independentField]: typedValue,
     [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
@@ -165,8 +245,6 @@ export default function CreateGridexPage() {
     if (!chainId || !library || !account || !routerContract) return
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
-
-   
 
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
       return
@@ -247,17 +325,10 @@ export default function CreateGridexPage() {
     setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
   }
   const handleCurrencyBSelect = (currencyB: Currency) => {
-    console.log(currenciesSelected)
     setCurrenciesSelected({...currenciesSelected, currencyB: currencyB})      
   }
 
   const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
-
-  // console.log(
-  //   { addIsUnsupported, isValid, approvaonFieldBInputlA, approvalB },
-  //   approvalA === ApprovalState.APPROVED && approvalB === ApprovalState.APPROVED
-  // )
- 
   
   return (
     <>

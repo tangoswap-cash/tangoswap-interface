@@ -24,6 +24,7 @@ const Logo: FC<LogoProps> = ({ srcs, width, height, style, alt = '', className, 
       <Image
         src={src || 'https://raw.githubusercontent.com/tangoswap-cash/icons/master/token/unknown.png'}
         loader={() => src}
+        unoptimized={true}
         onError={() => {
           if (src) BAD_SRCS[src] = true
           refresh((i) => i + 1)
