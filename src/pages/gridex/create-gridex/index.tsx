@@ -44,6 +44,7 @@ import { useTransactionAdder } from '../../../state/transactions/hooks'
 import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
 import { useWalletModalToggle } from '../../../state/application/hooks'
 import PanelLimitPrice from '../../../components/PanelLimitPrice'
+import { useCurrencyBalances } from '../../../state/wallet/hooks'
 
 const DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
@@ -224,6 +225,26 @@ export default function CreateGridexPage() {
   const formattedAmounts = {
     [independentField]: typedValue
   }
+
+  const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
+    stock ?? undefined,
+    money ?? undefined,
+  ])
+
+  const walletBalances = {
+    [Field.CURRENCY_A]: relevantTokenBalances[0],
+    [Field.CURRENCY_B]: relevantTokenBalances[1],
+  }
+
+  const [balanceInStock, amountInStock] = [
+    walletBalances[Field.CURRENCY_A],
+    parsedAmounts[Field.CURRENCY_A],
+  ]
+
+  const [balanceInMoney, amountInMoney] = [
+    walletBalances[Field.CURRENCY_B],
+    parsedAmounts[Field.CURRENCY_B],
+  ]
 
   // get the max amounts user can add
   const maxAmounts: { [field in Field]?: CurrencyAmount<Currency> } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
@@ -423,7 +444,11 @@ export default function CreateGridexPage() {
                 
               }
 
-              {!stock && !money ? (
+              {
+              !account ? (
+                <Web3Connect size="lg" color="blue" className="w-full" />
+              )
+              : !stock && !money ? (
                 <Button color="blue" size="lg" disabled>
                   {i18n._(t`Select your Tokens`)}
                 </Button>
@@ -443,9 +468,17 @@ export default function CreateGridexPage() {
                   {i18n._(t`Enter an Amount`)}
                  </Button>
               )
-              : !account ? (
-                <Web3Connect size="lg" color="blue" className="w-full" />
-              ) : showStockApprove ? (
+              : balanceInStock && amountInStock && balanceInStock.lessThan(amountInStock) ? (
+                <Button color="blue" size="lg" disabled>
+                  {i18n._(t`Insufficient ${currencies[Field.CURRENCY_A]?.symbol} balance`)}
+                 </Button>
+              )
+              : balanceInMoney && amountInMoney && balanceInMoney.lessThan(amountInMoney) ? (
+                <Button color="blue" size="lg" disabled>
+                  {i18n._(t`Insufficient ${currencies[Field.CURRENCY_B]?.symbol} balance`)}
+                 </Button>
+              )
+              : showStockApprove ? (
                 <Button onClick={stockApprove} color={disabled ? 'gray' : 'gradient'} className="mb-4">
                   {stockApprovalState === ApprovalState.PENDING ? (
                     <Dots>{i18n._(t`Approving ${stock.symbol}`)}</Dots>
