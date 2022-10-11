@@ -45,6 +45,7 @@ import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
 import { useWalletModalToggle } from '../../../state/application/hooks'
 import PanelLimitPrice from '../../../components/PanelLimitPrice'
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
+import { formatCurrencyAmount } from '../../../functions'
 
 const DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
@@ -168,8 +169,8 @@ export default function CreateGridexPage() {
   
   const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
 
-  console.log('parsedAmounts A', parsedAmounts[Field.CURRENCY_A]);
-  console.log('stockApprovalState:', stockApprovalState);
+  // console.log('parsedAmounts A', parsedAmounts[Field.CURRENCY_A]);
+  // console.log('stockApprovalState:', stockApprovalState);
   
   // to create the robot factoryContract.create(stockAddr, moneyAddr, ImplAddr)
 
@@ -222,8 +223,11 @@ export default function CreateGridexPage() {
 
   //   await marketContract.createRobot(robotInfo, val)
   //   }
+
+
   const formattedAmounts = {
-    [independentField]: typedValue
+    [independentField]: typedValue,
+    [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
@@ -364,6 +368,10 @@ export default function CreateGridexPage() {
 
   const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
   
+
+  console.log('parsedAmounts A', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4))
+  console.log('parsedAmounts B', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_B], 4))
+  console.log(formattedAmounts)
   return (
     <>
       <Head>
