@@ -11,8 +11,12 @@ import { useRouter } from 'next/router'
 import { Field } from '../../../state/mint/actions'
 import { currencyId, maxAmountSpend } from '../../../functions/currency'
 import BuyRobotsPanel from "../../../components/BuyRobotsPanel"
+import { i18n } from "@lingui/core"
+import { t } from '@lingui/macro'
+import { useLingui } from '@lingui/react'
 
 export default function BuyGridex() {
+  const { i18n } = useLingui()
   const [currenciesSelected, setCurrenciesSelected] = useState(null);
 
   const handleCurrencyASelect = (currencyA: Currency) => {
@@ -76,17 +80,19 @@ export default function BuyGridex() {
 
   return (<>
     <Head>
-      <title>Buy Gridex | Orders.Cash</title>
+      <title>Buy  | Tango CMM</title>
       <meta
         key="description"
         name="description"
-        content="Add liquidity to the TANGOswap AMM to enable gas optimised and low slippage trades across countless networks"
+        content="Add liquidity to the TANGOswap CMM to enable gas optimized and low slippage trades across countless networks"
       />
     </Head>
 
     <Container id="buy-robot-page" className=" py-4 space-y-6 w-4/4 md:py-8 lg:py-12" maxWidth="2xl">
-      <DoubleGlowShadow className="w-full">
-        
+    
+   
+      <DoubleGlowShadow className="w-full h-96">
+      <h1 className="text-4xl pb-2 font-bold text-center border-b-2 border-gray-400 border-separate m-3 mb-9 ">{i18n._(t`Search Your Tango CMM`)}</h1>
         <BuyRobotsPanel
         id="stock-robot-search"
         showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}

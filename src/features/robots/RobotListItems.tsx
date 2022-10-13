@@ -24,7 +24,9 @@ const RobotListItems = ({ robot, ...rest }) => {
   const { i18n } = useLingui()
 
   return (
-    <Disclosure {...rest}>
+    <Disclosure {...rest}
+    
+    >
       {({ open }) => (
         <>
           <Disclosure.Button
@@ -33,8 +35,8 @@ const RobotListItems = ({ robot, ...rest }) => {
               'w-full px-4 py-6 text-left rounded cursor-pointer select-none bg-dark-900 text-primary text-sm md:text-lg'
             )}
           >
-            <div className="grid grid-cols-4">
-              <div className="flex col-span-2 space-x-4 md:col-span-1">
+            <div className={isMobile ? "grid grid-cols-5":"grid grid-cols-4" }>
+              <div className="flex col-span-2 space-x-5 md:col-span-1">
                 <DoubleLogo currency0={token0} currency1={token1} size={isMobile ? 30 : 40} />
                 <div className="flex flex-col justify-center">
                   <div>
@@ -81,7 +83,7 @@ const RobotListItems = ({ robot, ...rest }) => {
                 </div>
               ) : (
                 <div className="flex-row items-center justify-center flex pl-3 font-bold text-sm">
-                  {i18n._(t`Stake LP to robot`)}
+                  {i18n._(t`Balance`)}
                   {/* <DotsHorizontalIcon width={22} height={22}/> */}
                 </div>
               )}

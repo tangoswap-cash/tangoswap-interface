@@ -89,7 +89,7 @@ const RobotListItemDetails = ({ robot }) => {
                 className="w-full p-3 pr-20 rounded bg-dark-700 focus:ring focus:ring-blue"
                 value={minValue}
                 onUserInput={setMinValue}
-                disabled
+                
               />
             </div>
           </div>
@@ -102,7 +102,7 @@ const RobotListItemDetails = ({ robot }) => {
                 onUserInput={(value) => {
                   setMaxValue(value)
                 }}
-                disabled
+                
               />
             </div>
           </div>
@@ -115,15 +115,15 @@ const RobotListItemDetails = ({ robot }) => {
                     color='red'
                     onClick={handleDeleteRobot}
                   >
-                    {i18n._(t`Delete Gridex`)}
+                    {i18n._(t`Delete Tango CMM`)}
                   </Button>
                 </div>
                 <div>
                   <Button
-                    color='default'
+                    className='bg-green text-black'
                     onClick={handleSellRobot}
                   >
-                    {i18n._(t`Sell Gridex`)}
+                    {i18n._(t`Sell Tango CMM`)}
                   </Button>
                 </div>
               </div>

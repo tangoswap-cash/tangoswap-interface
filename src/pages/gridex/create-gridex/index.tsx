@@ -169,8 +169,8 @@ export default function CreateGridexPage() {
   
   const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
 
-  // console.log('parsedAmounts A', parsedAmounts[Field.CURRENCY_A]);
-  // console.log('stockApprovalState:', stockApprovalState);
+   console.log('parsedAmounts A', parsedAmounts[Field.CURRENCY_A]);
+   console.log('stockApprovalState:', stockApprovalState);
   
   // to create the robot factoryContract.create(stockAddr, moneyAddr, ImplAddr)
 
@@ -371,15 +371,17 @@ export default function CreateGridexPage() {
 
   console.log('parsedAmounts A', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4))
   console.log('parsedAmounts B', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_B], 4))
+
+  
   console.log(formattedAmounts)
   return (
     <>
       <Head>
-        <title>Create Gridex | Orders.Cash</title>
+        <title>Create | Tango CMM</title>
         <meta
           key="description"
           name="description"
-          content="Add liquidity to the TANGOswap AMM to enable gas optimised and low slippage trades across countless networks"
+          content="Add liquidity to the TANGOswap CMM to enable gas optimized and low slippage trades across countless networks"
         />
       </Head>
 
@@ -387,7 +389,7 @@ export default function CreateGridexPage() {
         <div className="flex items-center justify-between mb-5">
           <NavLink href="/robots/robots-list?filter=portfolio">
             <a className="flex items-center space-x-2 text-base font-medium text-center cursor-pointer text-secondary hover:text-high-emphesis">
-              <span>{i18n._(t`View Your Gridex`)}</span>
+              <span>{i18n._(t`View Your Tango CMMs`)}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-4 h-4"
@@ -497,7 +499,7 @@ export default function CreateGridexPage() {
               ) :
               (
                 <Button color="gradient" size="lg" disabled={!currenciesSelected}>
-                  {i18n._(t`Create Gridex`)}
+                  {i18n._(t`Create Tango CMM`)}
                 </Button>
               )
               }
