@@ -11,7 +11,7 @@ const basePath = 'gridex/gridex-list'
 const defaultOptions = [
   {
     href: `/${basePath}`,
-    label: 'Your Tango CMMs',
+    label: 'Your Tango CMM',
     exact: true
   },
   {
@@ -43,7 +43,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
           activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
         >
           <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
-            Your Tango CMMs
+            Your Tango CMM
           </a>
         </NavLink>
       ) : (
@@ -51,7 +51,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
           className="striped-background text-secondary flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800"
           onClick={toggleWalletModal}
         >
-          Your Tango CMMs
+          Your Tango CMM
         </a>
       )}
       <NavLink
@@ -60,7 +60,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
           activeClassName="bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
         >
           <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
-            Tango CMMs on Sale
+            Tango CMM on Sale
           </a>
       </NavLink>
 
@@ -71,7 +71,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
         activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
       >
         <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
-          {i18n._(t`Buy Tango CMMs`)}
+          {i18n._(t`Buy Tango CMM`)}
         </a>
       </NavLink>
       {/* <NavLink

@@ -794,7 +794,7 @@ export default function Gridex(): JSX.Element {
   const optionsMenu = [
     {
       href: `/${basePath}`,
-      label: 'Your Tango CMMs',
+      label: 'Your Tango CMM',
       exact: true
     },
     {
@@ -802,13 +802,13 @@ export default function Gridex(): JSX.Element {
     },
     {
       href: `/${basePath}/on-Sale`,
-      label: 'Tango CMMs on Sale'
+      label: 'Tango CMM on Sale'
     },{
       divider: true
     },
     {
       href: `/gridex/buy-gridex`,
-      label: 'Buy Tango CMMs',
+      label: 'Buy Tango CMM',
       exact: true
     }
   ]
