@@ -66,6 +66,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#4196FC',
     mobile: true,
   },
+  NABOX: {
+    connector: injected,
+    name: 'Nabox',
+    iconName: 'nabox.png',
+    description: 'One-click cross-chain for easy swaps across different chains.',
+    href: null,
+    color: '#2CC88A'
+  }
   /*
   KEYSTONE: {
     connector: async () => {
