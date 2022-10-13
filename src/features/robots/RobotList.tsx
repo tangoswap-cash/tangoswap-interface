@@ -7,6 +7,7 @@ import { useLingui } from '@lingui/react'
 import useSortableData from '../../hooks/useSortableData'
 import { useInfiniteScroll } from '../onsen/hooks'
 import RobotListItems from './RobotListItems'
+import { isMobile } from 'react-device-detect'
 
 const RobotList = ({ robots, term }) => {
   const { items, requestSort, sortConfig } = useSortableData(robots)
@@ -15,7 +16,7 @@ const RobotList = ({ robots, term }) => {
 
   return items ? (
     <>
-      <div className="grid grid-cols-4 text-base font-bold text-primary">
+      <div className={isMobile ? "grid grid-cols-5 text-base font-bold text-primary" :"grid grid-cols-4 text-base font-bold text-primary"}>
         <div
           className="flex items-center col-span-2 px-4 cursor-pointer md:col-span-1"
           onClick={() => requestSort('symbol')}
@@ -59,7 +60,7 @@ const RobotList = ({ robots, term }) => {
         hasMore={true}
         loader={null}
       >
-        <div className="space-y-4">
+        <div className="space-y-5">
           {items.slice(0, numDisplayed).map((robot, index) => (
             <RobotListItems key={index} robot={robot} />
           ))}

@@ -46,6 +46,7 @@ import RobotList from '../../../features/robots/RobotList'
 import Button from '../../../components/Button'
 import NavLink from '../../../components/NavLink'
 import GridexMenu from '../../../features/onsen/GridexMenu'
+import { isMobile } from 'react-device-detect'
 
 function getTokensSorted(pool, pair) {
   if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
@@ -800,7 +801,7 @@ export default function Gridex(): JSX.Element {
   const optionsMenu = [
     {
       href: `/${basePath}`,
-      label: 'Your Gridex',
+      label: 'Your Tango CMMs',
       exact: true
     },
     {
@@ -808,13 +809,13 @@ export default function Gridex(): JSX.Element {
     },
     {
       href: `/${basePath}/on-Sale`,
-      label: 'Gridex on Sale'
+      label: 'Tango CMMs on Sale'
     },{
       divider: true
     },
     {
       href: `/gridex/buy-gridex`,
-      label: 'Buy Gridex',
+      label: 'Buy Tango CMMs',
       exact: true
     }
   ]
@@ -826,19 +827,20 @@ export default function Gridex(): JSX.Element {
       maxWidth="7xl"
     >
       <Head>
-        <title>Gridex | Orders.Cash</title>
+        <title>Tango CMM | Tango</title>
         <meta key="description" name="description" content="Farm TANGO" />
       </Head>
       <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>
         <GridexMenu positionsLength={positions.length} options={optionsMenu}/>
       </div>
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
+        {!isMobile ? 
         <div className='flex gap-2'>
           <Search
             search={search}
             placeholder={i18n._(t`Search by name, symbol, address`)}
             term={term}
-            className={classNames('px-3 md:px-0 ')}
+            className={classNames('mr-4 px-3 self-center sm:px-0 w-9/12')}
             inputProps={{
               className:
                 'relative w-full bg-transparent border border-transparent focus:border-gradient-r-blue-pink-dark-900 rounded placeholder-secondary focus:placeholder-primary font-bold text-base px-6 py-3.5',
@@ -846,22 +848,46 @@ export default function Gridex(): JSX.Element {
           />
           <NavLink href="/gridex/create-gridex">
             <Button
-              variant='outlined'
               color='border'
-              className='w-[190px] text-[#E3E3E3] flex items-center gap-2'
+              className='w-[190px] mx-2 text-[#e3e3e3c6] border-gradient-r-blue-pink-dark-900 ring-2 ring-gray-600 hover:text-white hover:ring-white flex items-center gap-2'
             >
               <PlusIcon width={16} height={16}/>
-              {i18n._(t`Create Gridex`)}
+              {i18n._(t`Create Tango CMM`)}
           </Button>
           </NavLink>
         </div>
+        :
+        <>
+         <div className='flex gap-2'>
+         <Search
+           search={search}
+           placeholder={i18n._(t`Search by name, symbol, address`)}
+           term={term}
+           className={classNames('mr-4 px-3 self-center sm:px-0 ')}
+           inputProps={{
+             className:
+               'relative w-full bg-transparent border border-transparent focus:border-gradient-r-blue-pink-dark-900 rounded placeholder-secondary focus:placeholder-primary font-bold text-base px-6 py-3.5',
+           }}
+         />
+       </div>
+           <NavLink href="/gridex/create-gridex">
+           <Button
+             color='border'
+             className='w-[190px] mx-2 text-[#E3E3E3] border-gradient-r-blue-pink-dark-900 ring-2 ring-gray-600 hover:ring-white flex items-center gap-2'
+           >
+             <PlusIcon width={16} height={16}/>
+             {i18n._(t`Create Tango CMM`)}
+         </Button>
+         </NavLink>
+         </>
+       }
 
         <div className="hidden md:block flex items-center text-lg font-bold text-high-emphesis whitespace-nowrap">
-          Gridex{' '}
+          Tango CMM list{' '}
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
 
-         {/* <RobotList robots={result} term={term}/>  */}
+         <RobotList robots={result} term={term}/> 
       </div>
     </Container>
   )
