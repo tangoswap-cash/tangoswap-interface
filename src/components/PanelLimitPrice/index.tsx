@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { classNames, escapeRegExp } from '../../functions'
 import Input from '../Input'
 
 
-const PanelLimitPrice = ({label, currencyA, currencyB}) => {
+const PanelLimitPrice = ({label, currencyA, currencyB, caca}) => {
   const [value, setValue] = useState('')
 
+  caca(value)
+  
   const handleValue = (e) => {
     setValue(e.target.value)
   }

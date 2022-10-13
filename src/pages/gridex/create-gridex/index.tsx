@@ -3,7 +3,7 @@ import { AutoRow, RowBetween } from '../../../components/Row'
 import Button, { ButtonError } from '../../../components/Button'
 import { Currency, CurrencyAmount, Percent, WNATIVE, currencyEquals, SmartBCH, Token } from '@tangoswapcash/sdk'
 import { ONE_BIPS, ZERO_PERCENT } from '../../../constants'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
 import { calculateGasMargin, calculateSlippageAmount, getGasPrice } from '../../../functions/trade'
 import { currencyId, maxAmountSpend } from '../../../functions/currency'
@@ -47,6 +47,7 @@ import PanelLimitPrice from '../../../components/PanelLimitPrice'
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
 import { formatCurrencyAmount } from '../../../functions'
 import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
+import { ethers } from 'ethers'
 
 const DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
@@ -61,6 +62,14 @@ export default function CreateGridexPage() {
   const currencyB = useCurrency(currencyIdB)
 
   const [currenciesSelected, setCurrenciesSelected] = useState(null)
+
+  const [minValue, setMinValue] = useState()
+  const teta = (value) => useMemo(() => {
+        setMinValue(value)
+        console.log('value:', value);
+      },
+      [value]
+    )
 
   const oneCurrencyIsWETH = Boolean(
     chainId &&
@@ -370,8 +379,7 @@ export default function CreateGridexPage() {
 
   console.log('parsedAmounts A', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4))
   console.log('parsedAmounts B', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_B], 4))
-
-
+  
   console.log(formattedAmounts)
   return (
     <>
@@ -447,10 +455,9 @@ export default function CreateGridexPage() {
               </div>
               {
                   <div className='flex justify-center gap-5'>
-                    <PanelLimitPrice label='Max price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol}/>
-                    <PanelLimitPrice label='Min price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol}/>
+                    <PanelLimitPrice caca={teta} label='Max price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol}/>
+                    <PanelLimitPrice caca={teta} label='Min price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol}/>
                   </div>
-                
               }
             
               {
@@ -472,11 +479,12 @@ export default function CreateGridexPage() {
                     i18n._(t`Approve ${stock.symbol}`) // ver como se usa useApproveSep206Callback
                   )}
                 </Button>
-              ) :
+              ) 
+              :
               showMoneyApprove ? (
                 <Button onClick={moneyApprove} color={disabled ? 'gray' : 'gradient'} className="mb-4">
                    {moneyApprovalState === ApprovalState.PENDING ? (
-                    <Dots>{i18n._(t`Approving ${stock.symbol}`)}</Dots>
+                    <Dots>{i18n._(t`Approving ${money.symbol}`)}</Dots>
                   ) : (
                     i18n._(t`Approve ${money.symbol}`) // ver como se usa useApproveSep206Callback
                   )}
