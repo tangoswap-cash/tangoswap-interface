@@ -1,13 +1,13 @@
 import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
 import { AutoRow, RowBetween } from '../../../components/Row'
 import Button, { ButtonError } from '../../../components/Button'
-import { Currency, CurrencyAmount, Percent, WNATIVE, currencyEquals } from '@tangoswapcash/sdk'
+import { Currency, CurrencyAmount, Percent, WNATIVE, currencyEquals, SmartBCH, Token } from '@tangoswapcash/sdk'
 import { ONE_BIPS, ZERO_PERCENT } from '../../../constants'
 import React, { useCallback, useEffect, useState } from 'react'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
 import { calculateGasMargin, calculateSlippageAmount, getGasPrice } from '../../../functions/trade'
 import { currencyId, maxAmountSpend } from '../../../functions/currency'
-import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
+import { useDerivedMintInfo, useGridexMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from '../../../state/user/hooks'
 
 import Alert from '../../../components/Alert'
@@ -46,6 +46,7 @@ import { useWalletModalToggle } from '../../../state/application/hooks'
 import PanelLimitPrice from '../../../components/PanelLimitPrice'
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
 import { formatCurrencyAmount } from '../../../functions'
+import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
 
 const DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
@@ -84,7 +85,7 @@ export default function CreateGridexPage() {
     liquidityMinted,
     poolTokenPercentage,
     error,
-  } = useDerivedMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
+  } = useGridexMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
 
@@ -169,9 +170,6 @@ export default function CreateGridexPage() {
   
   const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
 
-   console.log('parsedAmounts A', parsedAmounts[Field.CURRENCY_A]);
-   console.log('stockApprovalState:', stockApprovalState);
-  
   // to create the robot factoryContract.create(stockAddr, moneyAddr, ImplAddr)
 
   // async function checkAllowanceAndBalance(contract, symbol, myAddr, amount, decimals) {
@@ -358,13 +356,14 @@ export default function CreateGridexPage() {
       }
     }
   }
-
+  
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
   }
   const handleCurrencyBSelect = (currencyB: Currency) => {
     setCurrenciesSelected({...currenciesSelected, currencyB: currencyB})      
   }
+ 
 
   const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
   
@@ -372,7 +371,7 @@ export default function CreateGridexPage() {
   console.log('parsedAmounts A', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4))
   console.log('parsedAmounts B', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_B], 4))
 
-  
+
   console.log(formattedAmounts)
   return (
     <>
@@ -453,42 +452,19 @@ export default function CreateGridexPage() {
                   </div>
                 
               }
-
+            
               {
               !account ? (
                 <Web3Connect size="lg" color="blue" className="w-full" />
               )
-              : !stock && !money ? (
+              : 
+              error ? (
                 <Button color="blue" size="lg" disabled>
-                  {i18n._(t`Select your Tokens`)}
+                  {i18n._(t`${error}`)}
                 </Button>
-              ) 
-              : !stock ? (
-                <Button color="blue" size="lg" disabled>
-                  {i18n._(t`Select your Stock`)}
-                </Button>
-              ) 
-              : !money ? (
-                <Button color="blue" size="lg" disabled>
-                {i18n._(t`Select your Money`)}
-                 </Button>
-              ) 
-              : !parsedAmounts[Field.CURRENCY_A] && !parsedAmounts[Field.CURRENCY_B] ? (
-                <Button color="blue" size="lg" disabled>
-                  {i18n._(t`Enter an Amount`)}
-                 </Button>
               )
-              : balanceInStock && amountInStock && balanceInStock.lessThan(amountInStock) ? (
-                <Button color="blue" size="lg" disabled>
-                  {i18n._(t`Insufficient ${currencies[Field.CURRENCY_A]?.symbol} balance`)}
-                 </Button>
-              )
-              : balanceInMoney && amountInMoney && balanceInMoney.lessThan(amountInMoney) ? (
-                <Button color="blue" size="lg" disabled>
-                  {i18n._(t`Insufficient ${currencies[Field.CURRENCY_B]?.symbol} balance`)}
-                 </Button>
-              )
-              : showStockApprove ? (
+              :
+              showStockApprove ? (
                 <Button onClick={stockApprove} color={disabled ? 'gray' : 'gradient'} className="mb-4">
                   {stockApprovalState === ApprovalState.PENDING ? (
                     <Dots>{i18n._(t`Approving ${stock.symbol}`)}</Dots>
@@ -497,6 +473,16 @@ export default function CreateGridexPage() {
                   )}
                 </Button>
               ) :
+              showMoneyApprove ? (
+                <Button onClick={moneyApprove} color={disabled ? 'gray' : 'gradient'} className="mb-4">
+                   {moneyApprovalState === ApprovalState.PENDING ? (
+                    <Dots>{i18n._(t`Approving ${stock.symbol}`)}</Dots>
+                  ) : (
+                    i18n._(t`Approve ${money.symbol}`) // ver como se usa useApproveSep206Callback
+                  )}
+                </Button>
+              )
+              :
               (
                 <Button color="gradient" size="lg" disabled={!currenciesSelected}>
                   {i18n._(t`Create Tango CMM`)}
@@ -504,17 +490,6 @@ export default function CreateGridexPage() {
               )
               }
             </div>
-
-            {/* {!addIsUnsupported ? (
-              pair && !noLiquidity && pairState !== PairState.INVALID ? (
-                <MinimalPositionCard showUnwrapped={oneCurrencyIsWETH} pair={pair} />
-              ) : null
-            ) : (
-              <UnsupportedCurrencyFooter
-                show={addIsUnsupported}
-                currencies={[currencies.CURRENCY_A, currencies.CURRENCY_B]}
-              />
-            )} */}
           </div>
         </DoubleGlowShadow>
       </Container>
