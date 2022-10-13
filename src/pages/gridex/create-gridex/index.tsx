@@ -389,7 +389,7 @@ export default function CreateGridexPage() {
         <div className="flex items-center justify-between mb-5">
           <NavLink href="/robots/robots-list?filter=portfolio">
             <a className="flex items-center space-x-2 text-base font-medium text-center cursor-pointer text-secondary hover:text-high-emphesis">
-              <span>{i18n._(t`View Your Tango CMMs`)}</span>
+              <span>{i18n._(t`View Your Tango CMM`)}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-4 h-4"
