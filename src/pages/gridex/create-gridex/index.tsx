@@ -41,6 +41,7 @@ import { useCurrencyBalances } from '../../../state/wallet/hooks'
 import { ethers } from 'ethers'
 import { parseUnits } from '@ethersproject/units'
 import { formatUnits } from '@ethersproject/units'
+import { formatCurrencyAmount } from '../../../functions'
 
 const DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
@@ -179,6 +180,8 @@ export default function CreateGridexPage() {
   const marketContract = useContract(marketAddress, CCABI)
   
   async function CreateRobot() {
+    const stockAmount = formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4)
+    const moneyAmount = formatCurrencyAmount(parsedAmounts[Field.CURRENCY_B], 4)
     var stockAmountBN = parseUnits(stockAmount, await stockDecimals)
     var moneyAmountBN = parseUnits(moneyAmount, await moneyDecimals)
     var highPrice = packPrice(parseUnits(maxValue))
@@ -187,15 +190,14 @@ export default function CreateGridexPage() {
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(highPrice)
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(lowPrice)
 
-    let val = null;
-    if (stock?.address == '0x0000000000000000000000000000000000002711') {
-      val = {value: stockAmountBN};
-    } else if (money?.address == '0x0000000000000000000000000000000000002711') {
-      val = {value: moneyAmountBN};
-    }
-    console.log('val:', val);
+    // let val = null;
+    // if (stock?.address == '0x0000000000000000000000000000000000002711') {
+    //   val = {value: stockAmountBN};
+    // } else if (money?.address == '0x0000000000000000000000000000000000002711') {
+    //   val = {value: moneyAmountBN};
+    
 
-    await marketContract.createRobot(robotInfo, val)
+    await marketContract.createRobot(robotInfo)
   }
 
   async function createMarket() {
@@ -366,7 +368,8 @@ export default function CreateGridexPage() {
   (moneyApprovalState === ApprovalState.NOT_APPROVED || moneyApprovalState === ApprovalState.PENDING)
   
   const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
-  // const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
+  const haveMarketAddress = !marketAddress && currenciesSelected
+  console.log(haveMarketAddress);
   
   return (
     <>
@@ -458,6 +461,12 @@ export default function CreateGridexPage() {
                 </Button>
               )
               :
+              haveMarketAddress ? (
+                <Button color="gradient" size="lg" disabled={!currenciesSelected} onClick={createMarket}>
+                 {i18n._(t`Create Market`)}
+                </Button>
+              )
+              :
               showStockApprove ? (
                 <Button onClick={stockApprove} color={disabled ? 'gray' : 'gradient'} className="mb-4">
                   {stockApprovalState === ApprovalState.PENDING ? (
@@ -479,7 +488,7 @@ export default function CreateGridexPage() {
               )
               :
               (
-                <Button color="gradient" size="lg" disabled={!currenciesSelected}>
+                <Button color="gradient" size="lg" disabled={!currenciesSelected} onClick={CreateRobot}>
                   {i18n._(t`Create Tango CMM`)}
                 </Button>
               )
