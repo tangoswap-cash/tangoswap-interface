@@ -9,7 +9,6 @@ import { calculateGasMargin, calculateSlippageAmount, getGasPrice } from '../../
 import { currencyId, maxAmountSpend } from '../../../functions/currency'
 import { useDerivedMintInfo, useGridexMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from '../../../state/user/hooks'
-
 import Alert from '../../../components/Alert'
 import { AutoColumn } from '../../../components/Column'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -23,15 +22,9 @@ import DoubleGlowShadow from '../../../components/DoubleGlowShadow'
 import ExchangeHeader from '../../../features/trade/Header'
 import { Field } from '../../../state/mint/actions'
 import Head from 'next/head'
-import LiquidityHeader from '../../../features/exchange-v1/liquidity/LiquidityHeader'
-import LiquidityPrice from '../../../features/exchange-v1/liquidity/LiquidityPrice'
-import { MinimalPositionCard } from '../../../components/PositionCard'
 import NavLink from '../../../components/NavLink'
-import { PairState } from '../../../hooks/useV2Pairs'
 import { Plus } from 'react-feather'
 import { TransactionResponse } from '@ethersproject/providers'
-import Typography from '../../../components/Typography'
-import UnsupportedCurrencyFooter from '../../../features/exchange-v1/swap/UnsupportedCurrencyFooter'
 import Web3Connect from '../../../components/Web3Connect'
 import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React'
@@ -45,9 +38,9 @@ import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
 import { useWalletModalToggle } from '../../../state/application/hooks'
 import PanelLimitPrice from '../../../components/PanelLimitPrice'
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
-import { formatCurrencyAmount } from '../../../functions'
-import { WrappedTokenInfo } from '../../../state/lists/wrappedTokenInfo'
 import { ethers } from 'ethers'
+import { parseUnits } from '@ethersproject/units'
+import { formatUnits } from '@ethersproject/units'
 
 const DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 
@@ -64,12 +57,21 @@ export default function CreateGridexPage() {
   const [currenciesSelected, setCurrenciesSelected] = useState(null)
 
   const [minValue, setMinValue] = useState()
-  const teta = (value) => useMemo(() => {
+  const [maxValue, setMaxValue] = useState()
+
+  const minPriceValue = (value) => useMemo(() => {
         setMinValue(value)
-        console.log('value:', value);
+        console.log('minValue:', value);
       },
       [value]
     )
+
+  const maxPriceValue = (value) => useMemo(() => {
+      setMaxValue(value)
+      console.log('maxValue:', value);
+    },
+    [value]
+  )
 
   const oneCurrencyIsWETH = Boolean(
     chainId &&
@@ -113,6 +115,23 @@ export default function CreateGridexPage() {
 
   const [txHash, setTxHash] = useState<string>('')
 
+  function packPrice(price) {
+    var effBits = 1
+    while(!price.mask(effBits).eq(price)) {
+      effBits += 1
+    }
+    var twoPow24 = BigNumber.from(2).pow(24)
+    if(effBits <= 25) {
+      return price
+    }
+    var shift = effBits-25
+    var shiftBN = BigNumber.from(2).pow(shift)
+    var low24 = price.div(shiftBN).sub(twoPow24)
+    var high8 = BigNumber.from(shift).add(1).mul(twoPow24)
+    return high8.add(low24)
+  }
+  
+
   const SEP20ABI = [
     "function symbol() view returns (string)",
     "function decimals() view returns (uint8)",
@@ -140,9 +159,9 @@ export default function CreateGridexPage() {
   const stock = currenciesSelected?.currencyA
   const money = currenciesSelected?.currencyB
 
-  const stockContract = useContract(stock?.address, SEP20ABI, false) 
-  const moneyContract = useContract(money?.address, SEP20ABI, false) 
-  const factoryContract = useContract(FactoryAddr, FactoryABI, false)
+  const stockContract = useContract(stock?.address, SEP20ABI) 
+  const moneyContract = useContract(money?.address, SEP20ABI) 
+  const factoryContract = useContract(FactoryAddr, FactoryABI)
 
   const [marketAddress, setMarketAddress] = useState()
   factoryContract.getAddress(stock?.address, money?.address, ImplAddr).then(a => setMarketAddress(a))
@@ -154,83 +173,34 @@ export default function CreateGridexPage() {
   let stockSymbol = stockContract?.symbol()
   let stockDecimals = stockContract?.decimals()
   let stockAmount = stockContract?.balanceOf(account)
+
+  // to create a robot market factoryContract.create(stockAddr, moneyAddr, ImplAddr)
+
+  const marketContract = useContract(marketAddress, CCABI)
   
-  const [stockApprovalState, stockApprove] = useApproveSep206Callback(
-    parsedAmounts[Field.CURRENCY_A],
-    marketAddress
-  )
+  async function CreateRobot() {
+    var stockAmountBN = parseUnits(stockAmount, await stockDecimals)
+    var moneyAmountBN = parseUnits(moneyAmount, await moneyDecimals)
+    var highPrice = packPrice(parseUnits(maxValue))
+    var lowPrice = packPrice(parseUnits(minValue))
+    var robotInfo = stockAmountBN.mul(BigNumber.from(2).pow(96)).add(moneyAmountBN)
+    robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(highPrice)
+    robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(lowPrice)
 
-  const [moneyApprovalState, moneyApprove] = useApproveSep206Callback(
-    parsedAmounts[Field.CURRENCY_B],
-    marketAddress
-  )
+    let val = null;
+    if (stock?.address == '0x0000000000000000000000000000000000002711') {
+      val = {value: stockAmountBN};
+    } else if (money?.address == '0x0000000000000000000000000000000000002711') {
+      val = {value: moneyAmountBN};
+    }
+    console.log('val:', val);
 
-  const showStockApprove =
-  chainId &&
-  currenciesSelected?.currencyA &&
-  parsedAmounts[Field.CURRENCY_A] &&
-  (stockApprovalState === ApprovalState.NOT_APPROVED || stockApprovalState === ApprovalState.PENDING)
+    await marketContract.createRobot(robotInfo, val)
+  }
 
-  const showMoneyApprove =
-  chainId &&
-  currenciesSelected?.currencyB &&
-  parsedAmounts[Field.CURRENCY_B] &&
-  (moneyApprovalState === ApprovalState.NOT_APPROVED || moneyApprovalState === ApprovalState.PENDING)
-  
-  const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
-
-  // to create the robot factoryContract.create(stockAddr, moneyAddr, ImplAddr)
-
-  // async function checkAllowanceAndBalance(contract, symbol, myAddr, amount, decimals) {
-  //   const allowanceBN = await contract.allowance(myAddr, await MarketAddress)
-  //   const allowance = ethers.utils.formatUnits(allowanceBN, decimals)*1.0
-  //   // console.log(symbol, ', allowance:', allowance); 
-
-  //     if(allowance < amount) {
-  //       new Attention.Confirm({title: `Approve ${symbol}`,
-  //         content: `You did not approve enough ${symbol} to continue.cash, do you want to approve now? After sending the approving transaction, you can retry.`,
-  //         onConfirm(component) {
-  //           const MaxAmount = ethers.utils.parseUnits('999999999')
-  //           contract.approve(MarketAddress, MaxAmount)
-  //         },
-  //         onCancel(component) {}});
-  //       return
-  //     }
-  //     const balanceBN = await contract.balanceOf(myAddr)
-  //     const balance = ethers.utils.formatUnits(balanceBN, decimals)*1.0
-  //     if(balance < amount) {
-  //       window.AlertDlg = new Attention.Alert({title: "Not Enough ${symbol}",
-  //         content: `${amount} ${symbol} is needed, but you only have ${balance}`});
-  //     }
-  // }
-  
-  // async function CreateRobot() {
-
-  //   checkAllowanceAndBalance(stockContract, await stockSymbol, account, await stockAmount, await stockDecimals)
-  //   checkAllowanceAndBalance(moneyContract, await moneySymbol, account, await moneyAmount, await moneyDecimals)
-
-  //   var stockAmountBN = ethers.utils.parseUnits(stockAmount, await stockDecimals)
-  //   var moneyAmountBN = ethers.utils.parseUnits(moneyAmount, await moneyDecimals)
-  //   var highPrice = packPrice(ethers.utils.parseUnits(document.getElementById("highPrice").value))
-  //   var lowPrice = packPrice(ethers.utils.parseUnits(document.getElementById("lowPrice").value))
-  //   var robotInfo = stockAmountBN.mul(ethers.BigNumber.from(2).pow(96)).add(moneyAmountBN)
-  //   robotInfo = robotInfo.mul(ethers.BigNumber.from(2).pow(32)).add(highPrice)
-  //   robotInfo = robotInfo.mul(ethers.BigNumber.from(2).pow(32)).add(lowPrice)
-  //   // const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //   // const signer = provider.getSigner();
-  //   const marketContract = new ethers.Contract(MarketAddress, CCABI, provider).connect(signer);
-
-  //   let val = null;
-  //   if (window.stockAddr == '0x0000000000000000000000000000000000002711') {
-  //     val = {value: stockAmountBN};
-  //   } else if (window.moneyAddr == '0x0000000000000000000000000000000000002711') {
-  //     val = {value: moneyAmountBN};
-  //   }
-  //   console.log('val:', val);
-
-  //   await marketContract.createRobot(robotInfo, val)
-  //   }
-
+  async function createMarket() {
+    factoryContract.create(stock?.address, money?.address, ImplAddr)
+  }
 
   const formattedAmounts = {
     [independentField]: typedValue,
@@ -278,93 +248,93 @@ export default function CreateGridexPage() {
     {}
   )
 
-  const routerContract = useRouterContract()
+  // const routerContract = useRouterContract()
 
   // check whether the user has approved the router on the tokens
-  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], routerContract?.address)
-  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], routerContract?.address)
+  // const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], routerContract?.address)
+  // const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], routerContract?.address)
 
-  const addTransaction = useTransactionAdder()
+  // const addTransaction = useTransactionAdder()
 
-  async function onAdd() {
-    if (!chainId || !library || !account || !routerContract) return
+  // async function onAdd() {
+  //   if (!chainId || !library || !account || !routerContract) return
 
-    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
+  //   const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
 
-    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
-      return
-    }
+  //   if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
+  //     return
+  //   }
 
-    const amountsMin = {
-      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? ZERO_PERCENT : allowedSlippage)[0],
-      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? ZERO_PERCENT : allowedSlippage)[0],
-    }
+  //   const amountsMin = {
+  //     [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? ZERO_PERCENT : allowedSlippage)[0],
+  //     [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? ZERO_PERCENT : allowedSlippage)[0],
+  //   }
 
-    let estimate,
-      method: (...args: any) => Promise<TransactionResponse>,
-      args: Array<string | string[] | number>,
-      value: BigNumber | null
-    if (currencyA.isNative || currencyB.isNative) {
-      const tokenBIsETH = currencyB.isNative
-      estimate = routerContract.estimateGas.addLiquidityETH
-      method = routerContract.addLiquidityETH
-      args = [
-        (tokenBIsETH ? currencyA : currencyB)?.wrapped?.address ?? '', // token
-        (tokenBIsETH ? parsedAmountA : parsedAmountB).quotient.toString(), // token desired
-        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
-        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
-        account,
-        deadline.toHexString(),
-      ]
-      value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).quotient.toString())
-    } else {
-      estimate = routerContract.estimateGas.addLiquidity
-      method = routerContract.addLiquidity
-      args = [
-        currencyA?.wrapped?.address ?? '',
-        currencyB?.wrapped?.address ?? '',
-        parsedAmountA.quotient.toString(),
-        parsedAmountB.quotient.toString(),
-        amountsMin[Field.CURRENCY_A].toString(),
-        amountsMin[Field.CURRENCY_B].toString(),
-        account,
-        deadline.toHexString(),
-      ]
-      value = null
-    }
+  //   let estimate,
+  //     method: (...args: any) => Promise<TransactionResponse>,
+  //     args: Array<string | string[] | number>,
+  //     value: BigNumber | null
+  //   if (currencyA.isNative || currencyB.isNative) {
+  //     const tokenBIsETH = currencyB.isNative
+  //     estimate = routerContract.estimateGas.addLiquidityETH
+  //     method = routerContract.addLiquidityETH
+  //     args = [
+  //       (tokenBIsETH ? currencyA : currencyB)?.wrapped?.address ?? '', // token
+  //       (tokenBIsETH ? parsedAmountA : parsedAmountB).quotient.toString(), // token desired
+  //       amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
+  //       amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
+  //       account,
+  //       deadline.toHexString(),
+  //     ]
+  //     value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).quotient.toString())
+  //   } else {
+  //     estimate = routerContract.estimateGas.addLiquidity
+  //     method = routerContract.addLiquidity
+  //     args = [
+  //       currencyA?.wrapped?.address ?? '',
+  //       currencyB?.wrapped?.address ?? '',
+  //       parsedAmountA.quotient.toString(),
+  //       parsedAmountB.quotient.toString(),
+  //       amountsMin[Field.CURRENCY_A].toString(),
+  //       amountsMin[Field.CURRENCY_B].toString(),
+  //       account,
+  //       deadline.toHexString(),
+  //     ]
+  //     value = null
+  //   }
 
-    setAttemptingTxn(true)
-    try {
-      const estimatedGasLimit = await estimate(...args, {
-        ...(value ? { value } : {}),
-        gasPrice: getGasPrice(),
-      })
+  //   setAttemptingTxn(true)
+  //   try {
+  //     const estimatedGasLimit = await estimate(...args, {
+  //       ...(value ? { value } : {}),
+  //       gasPrice: getGasPrice(),
+  //     })
 
-      const response = await method(...args, {
-        ...(value ? { value } : {}),
-        gasLimit: calculateGasMargin(estimatedGasLimit),
-        gasPrice: getGasPrice(),
-      })
+  //     const response = await method(...args, {
+  //       ...(value ? { value } : {}),
+  //       gasLimit: calculateGasMargin(estimatedGasLimit),
+  //       gasPrice: getGasPrice(),
+  //     })
 
-      setAttemptingTxn(false)
+  //     setAttemptingTxn(false)
 
-      addTransaction(response, {
-        summary: i18n._(
-          t`Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-            currencies[Field.CURRENCY_A]?.symbol
-          } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
-        ),
-      })
+  //     addTransaction(response, {
+  //       summary: i18n._(
+  //         t`Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
+  //           currencies[Field.CURRENCY_A]?.symbol
+  //         } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+  //       ),
+  //     })
 
-      setTxHash(response.hash)
-    } catch (error) {
-      setAttemptingTxn(false)
-      // we only care if the error is something _other_ than the user rejected the tx
-      if (error?.code !== 4001) {
-        console.error(error)
-      }
-    }
-  }
+  //     setTxHash(response.hash)
+  //   } catch (error) {
+  //     setAttemptingTxn(false)
+  //     // we only care if the error is something _other_ than the user rejected the tx
+  //     if (error?.code !== 4001) {
+  //       console.error(error)
+  //     }
+  //   }
+  // }
   
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
@@ -373,14 +343,31 @@ export default function CreateGridexPage() {
     setCurrenciesSelected({...currenciesSelected, currencyB: currencyB})      
   }
  
+  const [stockApprovalState, stockApprove] = useApproveSep206Callback(
+    parsedAmounts[Field.CURRENCY_A],
+    marketAddress
+  )
 
-  const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
-  
+  const [moneyApprovalState, moneyApprove] = useApproveSep206Callback(
+    parsedAmounts[Field.CURRENCY_B],
+    marketAddress
+  )
 
-  console.log('parsedAmounts A', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4))
-  console.log('parsedAmounts B', formatCurrencyAmount(parsedAmounts[Field.CURRENCY_B], 4))
+  const showStockApprove =
+  chainId &&
+  currenciesSelected?.currencyA &&
+  parsedAmounts[Field.CURRENCY_A] &&
+  (stockApprovalState === ApprovalState.NOT_APPROVED || stockApprovalState === ApprovalState.PENDING)
+
+  const showMoneyApprove =
+  chainId &&
+  currenciesSelected?.currencyB &&
+  parsedAmounts[Field.CURRENCY_B] &&
+  (moneyApprovalState === ApprovalState.NOT_APPROVED || moneyApprovalState === ApprovalState.PENDING)
   
-  console.log(formattedAmounts)
+  const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
+  // const addIsUnsupported = useIsSwapUnsupported(currencies?.CURRENCY_A, currencies?.CURRENCY_B)
+  
   return (
     <>
       <Head>
@@ -455,8 +442,8 @@ export default function CreateGridexPage() {
               </div>
               {
                   <div className='flex justify-center gap-5'>
-                    <PanelLimitPrice caca={teta} label='Max price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol}/>
-                    <PanelLimitPrice caca={teta} label='Min price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol}/>
+                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Max price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol}/>
+                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Min price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol}/>
                   </div>
               }
             
@@ -476,7 +463,7 @@ export default function CreateGridexPage() {
                   {stockApprovalState === ApprovalState.PENDING ? (
                     <Dots>{i18n._(t`Approving ${stock.symbol}`)}</Dots>
                   ) : (
-                    i18n._(t`Approve ${stock.symbol}`) // ver como se usa useApproveSep206Callback
+                    i18n._(t`Approve ${stock.symbol}`)
                   )}
                 </Button>
               ) 
@@ -486,7 +473,7 @@ export default function CreateGridexPage() {
                    {moneyApprovalState === ApprovalState.PENDING ? (
                     <Dots>{i18n._(t`Approving ${money.symbol}`)}</Dots>
                   ) : (
-                    i18n._(t`Approve ${money.symbol}`) // ver como se usa useApproveSep206Callback
+                    i18n._(t`Approve ${money.symbol}`)
                   )}
                 </Button>
               )

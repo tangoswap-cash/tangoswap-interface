@@ -1,25 +1,18 @@
-import React, { useState, useRef } from 'react'
-import { classNames, escapeRegExp } from '../../functions'
-import Input from '../Input'
+import React, { useState } from 'react'
 
+const PanelLimitPrice = ({label, currencyA, currencyB, minPrice, maxPrice}) => {
+  const [minPriceValue, setMinPriceValue] = useState('')
+  const [maxPriceValue, setMaxPriceValue] = useState('')
 
-const PanelLimitPrice = ({label, currencyA, currencyB, caca}) => {
-  const [value, setValue] = useState('')
-
-  caca(value)
-  
-  const handleValue = (e) => {
-    setValue(e.target.value)
-  }
+  minPrice(minPriceValue)
+  maxPrice(maxPriceValue)
 
   const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group
 
   const defaultClassName = 'w-0 p-0 text-2xl bg-transparent'
 
   const enforcer = (nextUserInput: string) => {
-    if (nextUserInput === '' || inputRegex.test(escapeRegExp(nextUserInput))) {
-      setValue(nextUserInput)
-    }
+    label == 'Min price to Buy' ? setMinPriceValue(nextUserInput) : setMaxPriceValue(nextUserInput)
   }
 
   return (
@@ -28,7 +21,7 @@ const PanelLimitPrice = ({label, currencyA, currencyB, caca}) => {
         {label}
       </div>
       <input
-        value={value}
+        value={label == 'Min price to Buy' ? minPriceValue : maxPriceValue}
         onChange={(event) => {
           // replace commas with periods, because uniswap exclusively uses period as the decimal separator
           enforcer(event.target.value.replace(/,/g, '.'))
