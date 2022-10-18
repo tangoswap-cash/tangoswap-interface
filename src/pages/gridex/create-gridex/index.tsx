@@ -60,6 +60,8 @@ export default function CreateGridexPage() {
   const [minValue, setMinValue] = useState()
   const [maxValue, setMaxValue] = useState()
 
+  const [haveMarketAddress, setHaveMarketAddress] = useState(false)
+
   const minPriceValue = (value) => useMemo(() => {
         setMinValue(value)
         console.log('minValue:', value);
@@ -190,19 +192,22 @@ export default function CreateGridexPage() {
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(highPrice)
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(lowPrice)
 
-    // let val = null;
-    // if (stock?.address == '0x0000000000000000000000000000000000002711') {
-    //   val = {value: stockAmountBN};
-    // } else if (money?.address == '0x0000000000000000000000000000000000002711') {
-    //   val = {value: moneyAmountBN};
-    
-
     await marketContract.createRobot(robotInfo)
   }
 
   async function createMarket() {
-    factoryContract.create(stock?.address, money?.address, ImplAddr)
+    await factoryContract.create(stock?.address, money?.address, ImplAddr)
   }
+
+  useEffect(() => {
+    const marketAddressCheck = async () => {
+    let provider = new ethers.providers.Web3Provider(window.ethereum)
+    let code = await provider.getCode(marketAddress)
+    code == "0x" ? setHaveMarketAddress(false) : setHaveMarketAddress(true)    
+    }
+    marketAddressCheck()
+  }, [marketAddress])
+
 
   const formattedAmounts = {
     [independentField]: typedValue,
@@ -354,6 +359,7 @@ export default function CreateGridexPage() {
     parsedAmounts[Field.CURRENCY_B],
     marketAddress
   )
+  
 
   const showStockApprove =
   chainId &&
@@ -368,8 +374,9 @@ export default function CreateGridexPage() {
   (moneyApprovalState === ApprovalState.NOT_APPROVED || moneyApprovalState === ApprovalState.PENDING)
   
   const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
-  const haveMarketAddress = !marketAddress && currenciesSelected
-  console.log(haveMarketAddress);
+
+  const minValueFilled = minValue !== ''
+  const maxValueFilled = maxValue !== ''
   
   return (
     <>
@@ -461,7 +468,7 @@ export default function CreateGridexPage() {
                 </Button>
               )
               :
-              haveMarketAddress ? (
+              !haveMarketAddress ? (
                 <Button color="gradient" size="lg" disabled={!currenciesSelected} onClick={createMarket}>
                  {i18n._(t`Create Market`)}
                 </Button>
@@ -484,6 +491,12 @@ export default function CreateGridexPage() {
                   ) : (
                     i18n._(t`Approve ${money.symbol}`)
                   )}
+                </Button>
+              )
+              :
+              !minValueFilled || !maxValueFilled ? (
+                <Button color="blue" size="lg" disabled>
+                  {i18n._(t`Fill the parameters`)}
                 </Button>
               )
               :
