@@ -53,6 +53,8 @@ import ZENKO_ABI from '../constants/abis/zenko.json'
 import { getContract } from '../functions/contract'
 import { useActiveWeb3React } from './useActiveWeb3React'
 import { useMemo } from 'react'
+import GRIDEXFACTORY_ABI from '../constants/abis/gridex-factory.json'
+import GRIDEXMARKET_ABI from '../constants/abis/gridex-market.json'
 
 export function useEIP2612Contract(tokenAddress?: string): Contract | null {
   return useContract(tokenAddress, EIP_2612_ABI, false)
@@ -196,4 +198,15 @@ export function useLimitOrderContract(withSignerIfPossible?: boolean): Contract 
 
 export function useLimitOrderHelperContract(withSignerIfPossible?: boolean): Contract | null {
   throw new Error('useLimitOrderHelperContract disabled')
+}
+
+export function useFactoryGridexContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  // TODO: ADD FACTORY ADDRESS TO SDK
+  return useContract(chainId && '0xc6ec5d65cA33E7E3ac58A263177c9eEF8042fE17', GRIDEXFACTORY_ABI, withSignerIfPossible)
+}
+
+export function useGridexMarketContract(address, withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId && address, GRIDEXMARKET_ABI, withSignerIfPossible)
 }

@@ -47,6 +47,11 @@ import Button from '../../../components/Button'
 import NavLink from '../../../components/NavLink'
 import GridexMenu from '../../../features/onsen/GridexMenu'
 import { isMobile } from 'react-device-detect'
+import { ethers } from 'ethers'
+import { parseUnits } from '@ethersproject/units'
+import { formatUnits } from '@ethersproject/units'
+import { formatCurrencyAmount } from '../../../functions'
+import { CCABI } from '../create-gridex'
 
 function getTokensSorted(pool, pair) {
   if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
@@ -89,6 +94,96 @@ function getTokenPriceInBch(pool, pair, chainId, tangoPriceBCH, bchPriceUSD) {
   return derivedETH
 }
 
+function packPrice(price) {
+	var effBits = 1
+	while(!price.mask(effBits).eq(price)) {
+		effBits += 1
+	}
+	var twoPow24 = BigNumber.from(2).pow(24)
+	if(effBits <= 25) {
+		return price
+	}
+	var shift = effBits-25
+	var shiftBN = BigNumber.from(2).pow(shift)
+	var low24 = price.div(shiftBN).sub(twoPow24)
+	var high8 = BigNumber.from(shift).add(1).mul(twoPow24)
+	return high8.add(low24)
+}
+
+function unpackPrice(packed) {
+	var twoPow24 = BigNumber.from(2).pow(24)
+	var low24 = packed.mod(twoPow24)
+	var shift = packed.div(twoPow24)
+	if(shift.isZero()) {
+		return low24
+	}
+	var shiftBN = BigNumber.from(2).pow(shift.sub(1))
+	return low24.add(twoPow24).mul(shiftBN)
+}
+
+async function getAllRobots(onlyForAddr) {
+	const provider = new ethers.providers.Web3Provider(window.ethereum)
+	const marketContract = new ethers.Contract(window.MarketAddress, CCABI, provider)
+  let allRobotsArr = await marketContract.getAllRobots()
+	// console.log('allRobotsArr:', allRobotsArr);
+  let allRobots = []
+  let twoPow96 = BigNumber.from(2).pow(96)
+  let twoPow32 = BigNumber.from(2).pow(32)
+	const RobotsMap = {}
+	for(var i=0; i<allRobotsArr.length; i+=2) {
+		let fullId = allRobotsArr[i]
+		let robot = {
+    fullId: fullId.toHexString(), 
+    index: i/2,
+    shortId: '', 
+    ownerAddr: '', 
+    lowPrice: null, 
+    highPrice: null, 
+    moneyAmountBN: '', 
+    stockAmountBN: '', 
+    moneyAmount: null, 
+    stockAmount: null
+    }
+		robot.shortId = fullId.mod(twoPow96).toNumber()
+		robot.ownerAddr = ethers.utils.getAddress(fullId.div(twoPow96).toHexString())
+		if(onlyForAddr && onlyForAddr != robot.ownerAddr) {continue}
+		let info = allRobotsArr[i+1]
+		robot.lowPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
+		info = info.div(twoPow32)
+		robot.highPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
+		info = info.div(twoPow32)
+		robot.moneyAmountBN = info.mod(twoPow96)
+		robot.stockAmountBN = info.div(twoPow96)
+		robot.moneyAmount = formatUnits(robot.stockAmountBN, window.stockDecimals)
+		robot.stockAmount = formatUnits(robot.stockAmountBN, window.moneyDecimals)
+		allRobots.push(robot)
+		RobotsMap[robot.fullId] = robot
+	}
+	return allRobots
+}
+
+async function listMyRobots() {
+	const provider = new ethers.providers.Web3Provider(window.ethereum);
+	const signer = provider.getSigner();
+	const myAddr = await signer.getAddress();
+	
+	var robots = await getAllRobots(myAddr);
+	if(robots.length == 0) {
+		document.getElementById("deleteDiv").innerHTML = "<p>You have no robots on duty!</p>"
+		return
+	}
+	var htmlStr = "<p>"
+	for(var i=0; i<robots.length; i++) {
+		htmlStr += `<b>Robot#${robots[i].shortId+1}</b>&nbsp;`
+		htmlStr += `<button onclick="DeleteRobot(${robots[i].index}, '${robots[i].fullId}')">Delete</button>&nbsp;`
+		htmlStr += `Stock: ${robots[i].stockAmount}&nbsp;`
+		htmlStr += `Money: ${robots[i].moneyAmount}&nbsp;`
+		htmlStr += `HighPrice: ${robots[i].highPrice}&nbsp;`
+		htmlStr += `LowPrice: ${robots[i].lowPrice}</p>`
+	}
+	document.getElementById("deleteDiv").innerHTML = htmlStr
+}
+
 export default function Gridex(): JSX.Element {
   const { i18n } = useLingui()
   const { chainId } = useActiveWeb3React()
@@ -126,186 +221,6 @@ export default function Gridex(): JSX.Element {
         allocPoint: 170250512,
         token0: FLEXUSD,
         token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x1A2bdFF5bA942bF20f0db7218cdE28D19aC8dD20': {
-        farmId: 4,
-        allocPoint: 14999999,
-        token0: new Token(ChainId.SMARTBCH, '0x98Dd7eC28FB43b3C4c770AE532417015fa939Dd3', 18, 'FLEX', 'FLEX Coin'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x5b860757a77c62Dca833542e8E4650AEE777a08F': {
-        farmId: 5,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x5fA664f69c2A4A3ec94FaC3cBf7049BD9CA73129', 18, 'MIST', 'MistToken'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xd12C1De8740406438eb84Dde44cd0839F48211aa': {
-        farmId: 6,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x77CB87b57F54667978Eb1B199b28a0db8C8E1c0B', 18, 'EBEN', 'Green Ben'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xa790208A8C49e586a3F2145aD2c9096d6072E1F3': {
-        farmId: 7,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0xc8E09AEdB3c949a875e1FD571dC4b3E48FB221f0', 18, 'MILK', 'Milk'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xF463db65674426A58E9C3fE557FaaE338026ef39': {
-        farmId: 8,
-        allocPoint: 0,
-        token0: new Token(
-          ChainId.SMARTBCH,
-          '0x675E1d6FcE8C7cC091aED06A68D079489450338a',
-          18,
-          'ARG',
-          'Bitcoin Cash Argentina'
-        ),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50': {
-        farmId: 9,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0xc70c7718C7f1CCd906534C2c4a76914173EC2c44', 18, 'KTH', 'Knuth'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xf9185C281fE4C8af452244A65cE7317345352942': {
-        farmId: 10,
-        allocPoint: 1250000,
-        token0: new Token(ChainId.SMARTBCH, '0xe11829a7d5d8806bb36e118461a1012588fafd89', 18, 'SPICE', 'SPICE'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xBe0e246a87a3e9a2D2Db2efD384E0174F13E62b1': {
-        farmId: 11,
-        allocPoint: 4999999,
-        token0: new Token(ChainId.SMARTBCH, '0x0b00366fBF7037E9d75E4A569ab27dAB84759302', 18, 'LAW', 'LAWTOKEN'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x1946978E39E6105fEb2107D9c01197a962746bf5': {
-        farmId: 12,
-        allocPoint: 499999,
-        token0: new Token(ChainId.SMARTBCH, '0xff3ed63bf8bc9303ea0a7e1215ba2f82d569799e', 18, 'ORB', 'ORB'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x23e1E177aE511342fFc27F59da57685b3a0413bc': {
-        farmId: 13,
-        allocPoint: 4999999,
-        token0: new Token(ChainId.SMARTBCH, '0x265bD28d79400D55a1665707Fa14A72978FA6043', 2, 'CATS', 'CashCats'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x5340619781a8963377aFD76A6999edB6437e3B72': {
-        farmId: 14,
-        allocPoint: 2499999,
-        token0: new Token(ChainId.SMARTBCH, '0x6732E55Ac3ECa734F54C26Bd8DF4eED52Fb79a6E', 2, 'JOY', 'Joystick.club'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x91dde68D0C08e8620d77B8e7F1836aD4ec3CB33c': {
-        farmId: 15,
-        allocPoint: 2499999,
-        token0: new Token(ChainId.SMARTBCH, '0x7642Df81b5BEAeEb331cc5A104bd13Ba68c34B91', 2, 'CLY', 'Celery'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xa24e2a9a41020bD1EaD472aF07bCc74cd7fB85A4': {
-        farmId: 16,
-        allocPoint: 499999,
-        token0: new Token(ChainId.SMARTBCH, '0xca0235058985fcc1839e9e37c10900a73c126708', 7, 'DAO', 'DAO'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x0152F077D2808506FbF6B991b48D1e8DDCBF7107': {
-        farmId: 17,
-        allocPoint: 499999,
-        token0: new Token(ChainId.SMARTBCH, '0x3d13DaFcCA3a188DB340c81414239Bc2be312Ec9', 18, 'AXIEBCH', 'AxieBCH'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x9E59AAc21DaB7C89d0BDA99335386868539Af9B8': {
-        farmId: 18,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567', 2, 'CANDYMAN', 'CandyMAN'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xD4625760E0B5D9a0f46cB95dDa9b660fd6Db610A': {
-        farmId: 19,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x225FCa2A940cd5B18DFb168cD9B7f921C63d7B6E', 18, 'FIRE', 'Incinerate'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xC28f5F07B733862f021f2266B99F5214c68E95d0': {
-        farmId: 20,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x7ebeadb95724a006afaf2f1f051b13f4ebebf711', 2, 'KITTEN', 'CashKitten'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x1CC824B67e694fd5e0cC7D55120355B1AE4B9c50': {
-        farmId: 21,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x9192940099fDB2338B928DE2cad9Cd1525fEa881', 18, 'BPAD', 'BCHPad'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xfe323f2898810E6C3c2c5A9E7dF78A116fFAD4fa': {
-        farmId: 22,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0xffa2394b61d3de16538a2bbf3491297cc5a7c79a', 18, 'UATX', 'UatX Token'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x365Ec450d670455b336b833Ca363d21b4de3B9E3': {
-        farmId: 23,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x4F1480ba79F7477230ec3b2eCc868E8221925072', 18, 'KONRA', 'Konra'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x7FbcD4B5b7838F3C22151d492cB7E30B28dED77a': {
-        farmId: 24,
-        allocPoint: 999999,
-        token0: new Token(ChainId.SMARTBCH, '0x98Ff640323C059d8C4CB846976973FEEB0E068aA', 18, 'XTANGO', 'TANGObar'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x0152E5F007D85aae58Eb7191Bd484f12F9c13052': {
-        farmId: 25,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x49F9ECF126B6dDF51C731614755508A4674bA7eD', 18, 'RMZ', 'Xolos'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xC073d247f8FdB539Bc6653b6bfFEF8c61092738F': {
-        farmId: 26,
-        allocPoint: 999999,
-        token0: new Token(ChainId.SMARTBCH, '0x98Dd7eC28FB43b3C4c770AE532417015fa939Dd3', 18, 'FLEX', 'FLEX Coin'),
-        token1: TANGO[ChainId.SMARTBCH],
-      },
-      '0xcdb6081DCb9fd2b3d48927790DF7757E8d137fF4': {
-        farmId: 27,
-        allocPoint: 4499999,
-        token0: new Token(ChainId.SMARTBCH, '0x98Ff640323C059d8C4CB846976973FEEB0E068aA', 18, 'XTANGO', 'TANGObar'),
-        token1: FLEXUSD,
-      },
-      '0xfa2A542B0BF8F5e92Af0D1045ebF0abBB0A6C093': {
-        farmId: 28,
-        allocPoint: 26999999,
-        token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x018005da1a5C886Fb48eB18Eda0849a26B99DA80': {
-        farmId: 29,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x77d4b6e44a53bbda9a1d156b32bb53a2d099e53d', 18, '1BCH', '1BCH'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0x864c0090D955D947D809CF315E17665Bf9e3b6aB': {
-        farmId: 30,
-        allocPoint: 0,
-        token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
-        token1: TANGO[ChainId.SMARTBCH],
-      },
-      '0x4509Ff66a56cB1b80a6184DB268AD9dFBB79DD53': {
-        farmId: 32,
-        allocPoint: 2499999,
-        token0: new Token(ChainId.SMARTBCH, '0xF05bD3d7709980f60CD5206BddFFA8553176dd29', 18, 'SIDX', 'SmartIndex'),
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xE7845D6df693BFD1b0b50AB2d17ac06964559c6b': {
-        farmId: 33,
-        allocPoint: 4999750,
-        token0: new Token(ChainId.SMARTBCH, '0xe1e655be6f50344e6dd708c27bd8d66492d6ecaf', 18, 'LAWUSD', 'lawUSD'),
-        token1: TANGO[ChainId.SMARTBCH],
       },
     },
     [ChainId.SMARTBCH_AMBER]: {
@@ -359,93 +274,6 @@ export default function Gridex(): JSX.Element {
         rewardToken: new Token(ChainId.SMARTBCH, '0x49F9ECF126B6dDF51C731614755508A4674bA7eD', 18, 'RMZ', 'Xolos'),
         rewardPerSecond: '58330000000000',
       },
-      '0xD513165b3bbC1Ca812Db7CBB60340DDf74903A1c': {
-        farmId: 3,
-        allocPoint: 15624,
-        token0: new Token(ChainId.SMARTBCH, '0xF2d4D9c65C2d1080ac9e1895F6a32045741831Cd', 2, 'HONK', 'Honk'),
-        token1: WBCH[ChainId.SMARTBCH],
-        rewarderId: '0x3f43FF8eF6715Eb6E76452a9d719f54eFa5372b1',
-        rewardToken: new Token(ChainId.SMARTBCH, '0xF2d4D9c65C2d1080ac9e1895F6a32045741831Cd', 2, 'HONK', 'Honk'),
-        rewardPerSecond: '2325',
-      },
-      '0x864c0090D955D947D809CF315E17665Bf9e3b6aB': {
-        farmId: 4,
-        allocPoint: 14999748,
-        token0: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
-        token1: TANGO[ChainId.SMARTBCH],
-        rewarderId: '0x3e9AFf4008F3D6E05697025acCb607021e36e1e6',
-        rewardToken: new Token(ChainId.SMARTBCH, '0x4b85a666dec7c959e88b97814e46113601b07e57', 18, 'GOC', 'GoCrypto'),
-        rewardPerSecond: '005787037000000000',
-      },
-      '0x9E59AAc21DaB7C89d0BDA99335386868539Af9B8': {
-        farmId: 5,
-        allocPoint: 1,
-        token0: new Token(ChainId.SMARTBCH, '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567', 2, 'CANDYMAN', 'CandyMAN'),
-        token1: WBCH[ChainId.SMARTBCH],
-        rewarderId: '0xDc7D5F633F5721fa3Ff2B73B9396F0eAcE58ec0F',
-        rewardToken: new Token(
-          ChainId.SMARTBCH,
-          '0x0D8b355f9CEDeB612f2df4B39CdD87059A244567',
-          2,
-          'CANDYMAN',
-          'CandyMAN'
-        ),
-        rewardPerSecond: '01',
-      },
-      '0x365Ec450d670455b336b833Ca363d21b4de3B9E3': {
-        farmId: 6,
-        allocPoint: 62499,
-        token0: new Token(ChainId.SMARTBCH, '0x4F1480ba79F7477230ec3b2eCc868E8221925072', 18, 'KONRA', 'Konra'),
-        token1: WBCH[ChainId.SMARTBCH],
-        rewarderId: '0x2F3056526014992b757a9F81D7B084e60a0Eb187',
-        rewardToken: new Token(ChainId.SMARTBCH, '0x4F1480ba79F7477230ec3b2eCc868E8221925072', 18, 'KONRA', 'Konra'),
-        rewardPerSecond: '000011580000000000',
-      },
-      '0x5109aABC359c5267B6d470f43414319dd8a3C123': {
-        farmId: 7,
-        allocPoint: 15624,
-        token0: new Token(ChainId.SMARTBCH, '0x0cb20466c0dd6454acf50ec26f3042ccc6362fa0', 18, 'NARATH', 'Narath'),
-        token1: WBCH[ChainId.SMARTBCH],
-        rewarderId: '0x1d42B726E32f41102BC265d8a1cD5a1751e8deD9',
-        rewardToken: new Token(ChainId.SMARTBCH, '0x0cb20466c0dd6454acf50ec26f3042ccc6362fa0', 18, 'NARATH', 'Narath'),
-        rewardPerSecond: '925000000000000000000',
-      },
-      '0x7B545548dabA183Fc779e656da09dF6bD2b94F88': {
-        farmId: 8,
-        allocPoint: 499998,
-        token0: new Token(
-          ChainId.SMARTBCH,
-          '0x4EA4A00E15B9E8FeE27eB6156a865525083e9F71',
-          18,
-          'Martin₿',
-          'Africa Unite'
-        ),
-        token1: WBCH[ChainId.SMARTBCH],
-        rewarderId: '0x6C54582E1F7E0602F526267BEB4b073E35eB46a4',
-        rewardToken: new Token(
-          ChainId.SMARTBCH,
-          '0x4EA4A00E15B9E8FeE27eB6156a865525083e9F71',
-          18,
-          'Martin₿',
-          'Africa Unite'
-        ),
-        rewardPerSecond: '66979000000000000000000',
-      },
-      '0x2a7c9D8E0E2286A596192C3C16Cc68979D331F29': {
-        farmId: 9,
-        allocPoint: 62499,
-        token0: new Token(ChainId.SMARTBCH, '0x387122d80A642581E5AD620696a37b98BB9272e7', 18, 'JOOST', 'Joost.energy'),
-        token1: WBCH[ChainId.SMARTBCH],
-        rewarderId: '0xA76F4318eDe44a205EAcFB5eF6EaF28b0A83AAb8',
-        rewardToken: new Token(
-          ChainId.SMARTBCH,
-          '0x387122d80A642581E5AD620696a37b98BB9272e7',
-          18,
-          'JOOST',
-          'Joost.energy'
-        ),
-        rewardPerSecond: '800000000000000000',
-      },
     },
     [ChainId.SMARTBCH_AMBER]: {
       '0xCFa5B1C5FaBF867842Ac3C25E729Fc3671d27c50': {
@@ -459,7 +287,7 @@ export default function Gridex(): JSX.Element {
       },
     },
   }
-
+  
   const kashiPairs = [] // unused
   const swapPairs = []
   const farms2 = useFarms()

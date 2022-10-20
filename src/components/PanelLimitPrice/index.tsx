@@ -1,3 +1,4 @@
+import { escapeRegExp } from 'lodash'
 import React, { useState } from 'react'
 
 const PanelLimitPrice = ({label, currencyA, currencyB, minPrice, maxPrice}) => {
@@ -8,13 +9,12 @@ const PanelLimitPrice = ({label, currencyA, currencyB, minPrice, maxPrice}) => {
   maxPrice(maxPriceValue)
 
   const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group
-
   const defaultClassName = 'w-0 p-0 text-2xl bg-transparent'
 
-  const enforcer = (nextUserInput: string) => {
-    label == 'Min price to Buy' ? setMinPriceValue(nextUserInput) : setMaxPriceValue(nextUserInput)
+  const enforcer = (nextUserInput: string) => { 
+    inputRegex.test(escapeRegExp(nextUserInput)) && (label == 'Min price to Buy' ? setMinPriceValue(nextUserInput) : setMaxPriceValue(nextUserInput))
   }
-
+  
   return (
     <div className='border border-[#424242] p-2 max-w-[190px] rounded flex flex-col items-center gap-1'>
       <div className="text-xs font-medium text-secondary whitespace-nowrap">

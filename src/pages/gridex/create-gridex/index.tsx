@@ -32,7 +32,7 @@ import { useCurrency } from '../../../hooks/Tokens'
 import { useIsSwapUnsupported } from '../../../hooks/useIsSwapUnsupported'
 import { useLingui } from '@lingui/react'
 import { useRouter } from 'next/router'
-import { useApproveSep206Callback, useContract, useRouterContract } from '../../../hooks'
+import { useApproveSep206Callback, useFactoryGridexContract, useGridexMarketContract, useTokenContract } from '../../../hooks'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
 import { useWalletModalToggle } from '../../../state/application/hooks'
@@ -64,25 +64,15 @@ export default function CreateGridexPage() {
 
   const minPriceValue = (value) => useMemo(() => {
         setMinValue(value)
-        console.log('minValue:', value);
       },
       [value]
     )
 
   const maxPriceValue = (value) => useMemo(() => {
       setMaxValue(value)
-      console.log('maxValue:', value);
     },
     [value]
   )
-
-  const oneCurrencyIsWETH = Boolean(
-    chainId &&
-      ((currencyA && currencyEquals(currencyA, WNATIVE[chainId])) ||
-        (currencyB && currencyEquals(currencyB, WNATIVE[chainId])))
-  )
-
-  const toggleWalletModal = useWalletModalToggle() // toggle wallet when disconnected
 
   const [isExpertMode] = useExpertModeManager()
   // mint state
@@ -103,21 +93,6 @@ export default function CreateGridexPage() {
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
 
-  const isValid = !error
-
-  // modal and loading
-  const [showConfirm, setShowConfirm] = useState<boolean>(false)
-  const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false) // clicked confirm
-
-  // txn values
-  const deadline = useTransactionDeadline() // custom from users settings
-
-  // const [allowedSlippage] = useUserSlippageTolerance(); // custom from users
-
-  const allowedSlippage = useUserSlippageToleranceWithDefault(DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE) // custom from users
-
-  const [txHash, setTxHash] = useState<string>('')
-
   function packPrice(price) {
     var effBits = 1
     while(!price.mask(effBits).eq(price)) {
@@ -134,52 +109,23 @@ export default function CreateGridexPage() {
     return high8.add(low24)
   }
   
-
-  const SEP20ABI = [
-    "function symbol() view returns (string)",
-    "function decimals() view returns (uint8)",
-    "function balanceOf(address account) external view returns (uint256)",
-    "function allowance(address owner, address spender) external view returns (uint256)",
-    "function approve(address spender, uint256 amount) external returns (bool)",
-  ]
-
   const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe"
   const FactoryAddr = "0xc6ec5d65cA33E7E3ac58A263177c9eEF8042fE17"
-
-  const CCABI = [
-    "function getAllRobots() view public returns (uint[] memory robotsIdAndInfo)",
-    "function createRobot(uint robotInfo) external payable",
-    "function deleteRobot(uint index, uint robotId) external",
-    "function sellToRobot(uint robotId, uint stockDelta) external payable",
-    "function buyFromRobot(uint robotId, uint moneyDelta) external payable",
-  ]
-
-  const FactoryABI = [
-    "function create(address stock, address money, address impl) external",
-    "function getAddress(address stock, address money, address impl) public view returns (address)",
-  ]
 
   const stock = currenciesSelected?.currencyA
   const money = currenciesSelected?.currencyB
 
-  const stockContract = useContract(stock?.address, SEP20ABI) 
-  const moneyContract = useContract(money?.address, SEP20ABI) 
-  const factoryContract = useContract(FactoryAddr, FactoryABI)
+  const stockContract = useTokenContract(stock?.address) 
+  const moneyContract = useTokenContract(money?.address) 
+  const factoryContract = useFactoryGridexContract()
 
   const [marketAddress, setMarketAddress] = useState()
   factoryContract.getAddress(stock?.address, money?.address, ImplAddr).then(a => setMarketAddress(a))
   
-  let moneySymbol = moneyContract?.symbol()
   let moneyDecimals = moneyContract?.decimals()
-  let moneyAmount = moneyContract?.balanceOf(account)
-
-  let stockSymbol = stockContract?.symbol()
   let stockDecimals = stockContract?.decimals()
-  let stockAmount = stockContract?.balanceOf(account)
 
-  // to create a robot market factoryContract.create(stockAddr, moneyAddr, ImplAddr)
-
-  const marketContract = useContract(marketAddress, CCABI)
+  const marketContract = useGridexMarketContract(marketAddress)
   
   async function CreateRobot() {
     const stockAmount = formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4)
@@ -201,9 +147,9 @@ export default function CreateGridexPage() {
 
   useEffect(() => {
     const marketAddressCheck = async () => {
-    let provider = new ethers.providers.Web3Provider(window.ethereum)
-    let code = await provider.getCode(marketAddress)
-    code == "0x" ? setHaveMarketAddress(false) : setHaveMarketAddress(true)    
+      let provider = new ethers.providers.Web3Provider(window.ethereum)
+      let code = await provider.getCode(marketAddress)
+      code == "0x" ? setHaveMarketAddress(false) : setHaveMarketAddress(true)    
     }
     marketAddressCheck()
   }, [marketAddress])
@@ -213,26 +159,6 @@ export default function CreateGridexPage() {
     [independentField]: typedValue,
     [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
-
-  const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
-    stock ?? undefined,
-    money ?? undefined,
-  ])
-
-  const walletBalances = {
-    [Field.CURRENCY_A]: relevantTokenBalances[0],
-    [Field.CURRENCY_B]: relevantTokenBalances[1],
-  }
-
-  const [balanceInStock, amountInStock] = [
-    walletBalances[Field.CURRENCY_A],
-    parsedAmounts[Field.CURRENCY_A],
-  ]
-
-  const [balanceInMoney, amountInMoney] = [
-    walletBalances[Field.CURRENCY_B],
-    parsedAmounts[Field.CURRENCY_B],
-  ]
 
   // get the max amounts user can add
   const maxAmounts: { [field in Field]?: CurrencyAmount<Currency> } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
@@ -254,94 +180,6 @@ export default function CreateGridexPage() {
     },
     {}
   )
-
-  // const routerContract = useRouterContract()
-
-  // check whether the user has approved the router on the tokens
-  // const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], routerContract?.address)
-  // const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], routerContract?.address)
-
-  // const addTransaction = useTransactionAdder()
-
-  // async function onAdd() {
-  //   if (!chainId || !library || !account || !routerContract) return
-
-  //   const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
-
-  //   if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
-  //     return
-  //   }
-
-  //   const amountsMin = {
-  //     [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? ZERO_PERCENT : allowedSlippage)[0],
-  //     [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? ZERO_PERCENT : allowedSlippage)[0],
-  //   }
-
-  //   let estimate,
-  //     method: (...args: any) => Promise<TransactionResponse>,
-  //     args: Array<string | string[] | number>,
-  //     value: BigNumber | null
-  //   if (currencyA.isNative || currencyB.isNative) {
-  //     const tokenBIsETH = currencyB.isNative
-  //     estimate = routerContract.estimateGas.addLiquidityETH
-  //     method = routerContract.addLiquidityETH
-  //     args = [
-  //       (tokenBIsETH ? currencyA : currencyB)?.wrapped?.address ?? '', // token
-  //       (tokenBIsETH ? parsedAmountA : parsedAmountB).quotient.toString(), // token desired
-  //       amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
-  //       amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
-  //       account,
-  //       deadline.toHexString(),
-  //     ]
-  //     value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).quotient.toString())
-  //   } else {
-  //     estimate = routerContract.estimateGas.addLiquidity
-  //     method = routerContract.addLiquidity
-  //     args = [
-  //       currencyA?.wrapped?.address ?? '',
-  //       currencyB?.wrapped?.address ?? '',
-  //       parsedAmountA.quotient.toString(),
-  //       parsedAmountB.quotient.toString(),
-  //       amountsMin[Field.CURRENCY_A].toString(),
-  //       amountsMin[Field.CURRENCY_B].toString(),
-  //       account,
-  //       deadline.toHexString(),
-  //     ]
-  //     value = null
-  //   }
-
-  //   setAttemptingTxn(true)
-  //   try {
-  //     const estimatedGasLimit = await estimate(...args, {
-  //       ...(value ? { value } : {}),
-  //       gasPrice: getGasPrice(),
-  //     })
-
-  //     const response = await method(...args, {
-  //       ...(value ? { value } : {}),
-  //       gasLimit: calculateGasMargin(estimatedGasLimit),
-  //       gasPrice: getGasPrice(),
-  //     })
-
-  //     setAttemptingTxn(false)
-
-  //     addTransaction(response, {
-  //       summary: i18n._(
-  //         t`Add ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${
-  //           currencies[Field.CURRENCY_A]?.symbol
-  //         } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
-  //       ),
-  //     })
-
-  //     setTxHash(response.hash)
-  //   } catch (error) {
-  //     setAttemptingTxn(false)
-  //     // we only care if the error is something _other_ than the user rejected the tx
-  //     if (error?.code !== 4001) {
-  //       console.error(error)
-  //     }
-  //   }
-  // }
   
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})

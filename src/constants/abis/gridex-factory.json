@@ -1,0 +1,4 @@
+[
+    "function create(address stock, address money, address impl) external",
+    "function getAddress(address stock, address money, address impl) public view returns (address)"
+]
