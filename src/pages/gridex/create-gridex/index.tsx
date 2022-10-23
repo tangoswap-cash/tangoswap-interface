@@ -43,36 +43,51 @@ import { parseUnits } from '@ethersproject/units'
 import { formatUnits } from '@ethersproject/units'
 import { formatCurrencyAmount } from '../../../functions'
 
-const DEFAULT_ADD_V2_SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
-
 export default function CreateGridexPage() {
   const { i18n } = useLingui()
-  const { account, chainId, library } = useActiveWeb3React()
-  const router = useRouter()
-  const tokens = router.query.tokens
-  const [currencyIdA, currencyIdB] = (tokens as string[]) || [undefined, undefined]
-
-  const currencyA = useCurrency(currencyIdA)
-  const currencyB = useCurrency(currencyIdB)
+  const { account, chainId } = useActiveWeb3React()
 
   const [currenciesSelected, setCurrenciesSelected] = useState(null)
 
   const [minValue, setMinValue] = useState()
   const [maxValue, setMaxValue] = useState()
 
-  const [haveMarketAddress, setHaveMarketAddress] = useState(false)
+  const [foundMarketAddress, setFoundMarketAddress] = useState(true)
 
-  const minPriceValue = (value) => useMemo(() => {
+  const addTransaction = useTransactionAdder()
+
+  function minPriceValue(value) {
+    useMemo(() => {
         setMinValue(value)
       },
       [value]
     )
+  }
 
-  const maxPriceValue = (value) => useMemo(() => {
-      setMaxValue(value)
-    },
-    [value]
-  )
+  function maxPriceValue(value) {
+     useMemo(() => {
+        setMaxValue(value)
+      },
+      [value]
+    )
+  }
+
+  
+  function packPrice(price) {
+    var effBits = 1
+    while(!price.mask(effBits).eq(price)) {
+      effBits += 1
+    }
+    var twoPow24 = BigNumber.from(2).pow(24)
+    if(effBits <= 25) {
+      return price
+    }
+    var shift = effBits-25
+    var shiftBN = BigNumber.from(2).pow(shift)
+    var low24 = price.div(shiftBN).sub(twoPow24)
+    var high8 = BigNumber.from(shift).add(1).mul(twoPow24)
+    return high8.add(low24)
+  }
 
   const [isExpertMode] = useExpertModeManager()
   // mint state
@@ -92,67 +107,65 @@ export default function CreateGridexPage() {
   } = useGridexMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
-
-  function packPrice(price) {
-    var effBits = 1
-    while(!price.mask(effBits).eq(price)) {
-      effBits += 1
-    }
-    var twoPow24 = BigNumber.from(2).pow(24)
-    if(effBits <= 25) {
-      return price
-    }
-    var shift = effBits-25
-    var shiftBN = BigNumber.from(2).pow(shift)
-    var low24 = price.div(shiftBN).sub(twoPow24)
-    var high8 = BigNumber.from(shift).add(1).mul(twoPow24)
-    return high8.add(low24)
-  }
   
   const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe"
-  const FactoryAddr = "0xc6ec5d65cA33E7E3ac58A263177c9eEF8042fE17"
 
   const stock = currenciesSelected?.currencyA
   const money = currenciesSelected?.currencyB
+  const stockAddress = stock?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : stock?.address
+  const moneyAddress = money?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : money?.address
 
   const stockContract = useTokenContract(stock?.address) 
   const moneyContract = useTokenContract(money?.address) 
   const factoryContract = useFactoryGridexContract()
 
   const [marketAddress, setMarketAddress] = useState()
-  factoryContract.getAddress(stock?.address, money?.address, ImplAddr).then(a => setMarketAddress(a))
-  
-  let moneyDecimals = moneyContract?.decimals()
-  let stockDecimals = stockContract?.decimals()
+  factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then(a => setMarketAddress(a))
 
   const marketContract = useGridexMarketContract(marketAddress)
   
   async function CreateRobot() {
+    const moneyDecimals = await moneyContract?.decimals()
+    const stockDecimals = await stockContract?.decimals()
     const stockAmount = formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4)
     const moneyAmount = formatCurrencyAmount(parsedAmounts[Field.CURRENCY_B], 4)
-    var stockAmountBN = parseUnits(stockAmount, await stockDecimals)
-    var moneyAmountBN = parseUnits(moneyAmount, await moneyDecimals)
+    var stockAmountBN = parseUnits(stockAmount, stockDecimals)
+    var moneyAmountBN = parseUnits(moneyAmount, moneyDecimals)
     var highPrice = packPrice(parseUnits(maxValue))
     var lowPrice = packPrice(parseUnits(minValue))
     var robotInfo = stockAmountBN.mul(BigNumber.from(2).pow(96)).add(moneyAmountBN)
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(highPrice)
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(lowPrice)
+   
+    console.log(highPrice);
+    console.log(lowPrice);
 
-    await marketContract.createRobot(robotInfo)
+    await marketContract.createRobot(robotInfo).then((response) => {
+      addTransaction(response, {
+        summary: `Create Robot`
+      })
+    })
   }
 
+
   async function createMarket() {
-    await factoryContract.create(stock?.address, money?.address, ImplAddr)
+    factoryContract.create(stockAddress, moneyAddress, ImplAddr)
+    .then((response: TransactionResponse) => {
+      addTransaction(response, {
+        summary: `Create Market for ${stock?.symbol}-${money?.symbol}`
+      })
+    })
+  }
+  
+  async function marketAddressCheck() {
+    let provider = new ethers.providers.Web3Provider(window.ethereum)
+    let code = await provider.getCode(marketAddress)
+    code == "0x" ? setFoundMarketAddress(false) : setFoundMarketAddress(true)   
   }
 
   useEffect(() => {
-    const marketAddressCheck = async () => {
-      let provider = new ethers.providers.Web3Provider(window.ethereum)
-      let code = await provider.getCode(marketAddress)
-      code == "0x" ? setHaveMarketAddress(false) : setHaveMarketAddress(true)    
-    }
     marketAddressCheck()
-  }, [marketAddress])
+  })
 
 
   const formattedAmounts = {
@@ -203,12 +216,14 @@ export default function CreateGridexPage() {
   chainId &&
   currenciesSelected?.currencyA &&
   parsedAmounts[Field.CURRENCY_A] &&
+  stock?.symbol !== 'BCH' &&
   (stockApprovalState === ApprovalState.NOT_APPROVED || stockApprovalState === ApprovalState.PENDING)
 
   const showMoneyApprove =
   chainId &&
   currenciesSelected?.currencyB &&
   parsedAmounts[Field.CURRENCY_B] &&
+  money?.symbol !== 'BCH' &&
   (moneyApprovalState === ApprovalState.NOT_APPROVED || moneyApprovalState === ApprovalState.PENDING)
   
   const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
@@ -290,8 +305,8 @@ export default function CreateGridexPage() {
               </div>
               {
                   <div className='flex justify-center gap-5'>
-                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Max price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol}/>
-                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Min price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol}/>
+                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Max price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyA?.symbol}/>
+                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Min price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyB?.symbol}/>
                   </div>
               }
             
@@ -306,7 +321,7 @@ export default function CreateGridexPage() {
                 </Button>
               )
               :
-              !haveMarketAddress ? (
+              !foundMarketAddress ? (
                 <Button color="gradient" size="lg" disabled={!currenciesSelected} onClick={createMarket}>
                  {i18n._(t`Create Market`)}
                 </Button>
