@@ -94,15 +94,9 @@ export default function CreateGridexPage() {
   const { independentField, typedValue, otherTypedValue } = useMintState()
   const {
     dependentField,
-    currencies,
-    pair,
-    pairState,
     currencyBalances,
     parsedAmounts,
-    price,
     noLiquidity,
-    liquidityMinted,
-    poolTokenPercentage,
     error,
   } = useGridexMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
 

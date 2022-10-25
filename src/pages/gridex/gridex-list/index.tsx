@@ -1,6 +1,6 @@
 import { Chef, PairType } from '../../../features/onsen/enum'
 import { PlusIcon } from '@heroicons/react/outline'
-import { useActiveWeb3React, useFuse } from '../../../hooks'
+import { useActiveWeb3React, useFactoryGridexContract, useFuse, useGridexMarketContract, useTokenContract } from '../../../hooks'
 import {
   useAverageBlockTime,
   useEthPrice,
@@ -22,15 +22,16 @@ import {
   WBCH,
   MASTERCHEF_ADDRESS,
   MASTERCHEF_V2_ADDRESS,
+  Currency,
 } from '@tangoswapcash/sdk'
 import { TANGO, FLEXUSD } from '../../../config/tokens'
 import Container from '../../../components/Container'
 import FarmList from '../../../features/onsen/FarmList'
 import Head from 'next/head'
 import Menu from '../../../features/onsen/FarmMenu'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Search from '../../../components/Search'
-import { classNames } from '../../../functions'
+import { classNames, maxAmountSpend } from '../../../functions'
 import dynamic from 'next/dynamic'
 import { getAddress } from '@ethersproject/address'
 import useFarmRewards from '../../../hooks/useFarmRewards'
@@ -51,7 +52,9 @@ import { ethers } from 'ethers'
 import { parseUnits } from '@ethersproject/units'
 import { formatUnits } from '@ethersproject/units'
 import { formatCurrencyAmount } from '../../../functions'
-import { CCABI } from '../create-gridex'
+import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
+import BuyRobotsPanel from "../../../components/BuyRobotsPanel"
+import { Field } from '../../../state/burn/actions'
 
 function getTokensSorted(pool, pair) {
   if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
@@ -121,73 +124,130 @@ function unpackPrice(packed) {
 	return low24.add(twoPow24).mul(shiftBN)
 }
 
-async function getAllRobots(onlyForAddr) {
-	const provider = new ethers.providers.Web3Provider(window.ethereum)
-	const marketContract = new ethers.Contract(window.MarketAddress, CCABI, provider)
-  let allRobotsArr = await marketContract.getAllRobots()
-	// console.log('allRobotsArr:', allRobotsArr);
-  let allRobots = []
-  let twoPow96 = BigNumber.from(2).pow(96)
-  let twoPow32 = BigNumber.from(2).pow(32)
-	const RobotsMap = {}
-	for(var i=0; i<allRobotsArr.length; i+=2) {
-		let fullId = allRobotsArr[i]
-		let robot = {
-    fullId: fullId.toHexString(), 
-    index: i/2,
-    shortId: '', 
-    ownerAddr: '', 
-    lowPrice: null, 
-    highPrice: null, 
-    moneyAmountBN: '', 
-    stockAmountBN: '', 
-    moneyAmount: null, 
-    stockAmount: null
-    }
-		robot.shortId = fullId.mod(twoPow96).toNumber()
-		robot.ownerAddr = ethers.utils.getAddress(fullId.div(twoPow96).toHexString())
-		if(onlyForAddr && onlyForAddr != robot.ownerAddr) {continue}
-		let info = allRobotsArr[i+1]
-		robot.lowPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
-		info = info.div(twoPow32)
-		robot.highPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
-		info = info.div(twoPow32)
-		robot.moneyAmountBN = info.mod(twoPow96)
-		robot.stockAmountBN = info.div(twoPow96)
-		robot.moneyAmount = formatUnits(robot.stockAmountBN, window.stockDecimals)
-		robot.stockAmount = formatUnits(robot.stockAmountBN, window.moneyDecimals)
-		allRobots.push(robot)
-		RobotsMap[robot.fullId] = robot
-	}
-	return allRobots
-}
-
-async function listMyRobots() {
-	const provider = new ethers.providers.Web3Provider(window.ethereum);
-	const signer = provider.getSigner();
-	const myAddr = await signer.getAddress();
-	
-	var robots = await getAllRobots(myAddr);
-	if(robots.length == 0) {
-		document.getElementById("deleteDiv").innerHTML = "<p>You have no robots on duty!</p>"
-		return
-	}
-	var htmlStr = "<p>"
-	for(var i=0; i<robots.length; i++) {
-		htmlStr += `<b>Robot#${robots[i].shortId+1}</b>&nbsp;`
-		htmlStr += `<button onclick="DeleteRobot(${robots[i].index}, '${robots[i].fullId}')">Delete</button>&nbsp;`
-		htmlStr += `Stock: ${robots[i].stockAmount}&nbsp;`
-		htmlStr += `Money: ${robots[i].moneyAmount}&nbsp;`
-		htmlStr += `HighPrice: ${robots[i].highPrice}&nbsp;`
-		htmlStr += `LowPrice: ${robots[i].lowPrice}</p>`
-	}
-	document.getElementById("deleteDiv").innerHTML = htmlStr
-}
-
 export default function Gridex(): JSX.Element {
   const { i18n } = useLingui()
-  const { chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const router = useRouter()
+
+  const [currenciesSelected, setCurrenciesSelected] = useState(null);
+
+  const handleCurrencyASelect = (currencyA: Currency) => {
+    // console.log('currencyA:', currencyA)
+    setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
+  }
+  const handleCurrencyBSelect = (currencyB: Currency) => {    
+    setCurrenciesSelected({...currenciesSelected, currencyB: currencyB})      
+  }
+
+  const { independentField, typedValue, otherTypedValue } = useMintState()
+  
+  const {
+    dependentField,
+    currencies,
+    currencyBalances,
+    parsedAmounts,
+    noLiquidity
+  } = useDerivedMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
+  
+  
+  const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
+
+  const formattedAmounts = {
+    [independentField]: typedValue,
+    [dependentField]: noLiquidity ? otherTypedValue : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+  }
+
+  const maxAmounts: { [field in Field]?: CurrencyAmount<Currency> } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
+    (accumulator, field) => {
+      return {
+        ...accumulator,
+        [field]: maxAmountSpend(currencyBalances[field]),
+      }
+    },
+    {}
+  )
+  const atMaxAmounts: { [field in Field]?: CurrencyAmount<Currency> } = [Field.CURRENCY_A, Field.CURRENCY_B].reduce(
+    (accumulator, field) => {
+      return {
+        ...accumulator,
+        [field]: maxAmounts[field]?.equalTo(parsedAmounts[field] ?? '0'),
+      }
+    },
+    {}
+  )
+  const stock = currenciesSelected?.currencyA
+  const money = currenciesSelected?.currencyB
+
+  const stockContract = useTokenContract(stock?.address) 
+  const moneyContract = useTokenContract(money?.address) 
+
+  async function getAllRobots(onlyForAddr) {
+    const moneyDecimals = await moneyContract?.decimals()
+    const stockDecimals = await stockContract?.decimals()
+    const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe"
+    const factoryContract = useFactoryGridexContract()
+    const marketAddress = await factoryContract.getAddress()
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const marketContract = useGridexMarketContract(marketAddress)
+    let allRobotsArr = await marketContract.getAllRobots()
+    let allRobots = []
+    let twoPow96 = BigNumber.from(2).pow(96)
+    let twoPow32 = BigNumber.from(2).pow(32)
+    const RobotsMap = {}
+    for(var i=0; i<allRobotsArr.length; i+=2) {
+      let fullId = allRobotsArr[i]
+      let robot = {
+      fullId: fullId.toHexString(), 
+      index: i/2,
+      shortId: '', 
+      ownerAddr: '', 
+      lowPrice: null, 
+      highPrice: null, 
+      moneyAmountBN: '', 
+      stockAmountBN: '', 
+      moneyAmount: null, 
+      stockAmount: null
+      }
+      robot.shortId = fullId.mod(twoPow96).toNumber()
+      robot.ownerAddr = ethers.utils.getAddress(fullId.div(twoPow96).toHexString())
+      if(onlyForAddr && onlyForAddr != robot.ownerAddr) {continue}
+      let info = allRobotsArr[i+1]
+      robot.lowPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
+      info = info.div(twoPow32)
+      robot.highPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
+      info = info.div(twoPow32)
+      robot.moneyAmountBN = info.mod(twoPow96)
+      robot.stockAmountBN = info.div(twoPow96)
+      robot.moneyAmount = formatUnits(robot.stockAmountBN, stockDecimals)
+      robot.stockAmount = formatUnits(robot.stockAmountBN, moneyDecimals)
+      allRobots.push(robot)
+      RobotsMap[robot.fullId] = robot
+    }
+    return allRobots
+  }
+
+  async function listMyRobots() {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const myAddr = await signer.getAddress();
+    
+    var robots = await getAllRobots(myAddr);
+    if(robots.length == 0) {
+      document.getElementById("deleteDiv").innerHTML = "<p>You have no robots on duty!</p>"
+      return
+    }
+    var htmlStr = "<p>"
+    for(var i=0; i<robots.length; i++) {
+      htmlStr += `<b>Robot#${robots[i].shortId+1}</b>&nbsp;`
+      htmlStr += `<button onclick="DeleteRobot(${robots[i].index}, '${robots[i].fullId}')">Delete</button>&nbsp;`
+      htmlStr += `Stock: ${robots[i].stockAmount}&nbsp;`
+      htmlStr += `Money: ${robots[i].moneyAmount}&nbsp;`
+      htmlStr += `HighPrice: ${robots[i].highPrice}&nbsp;`
+      htmlStr += `LowPrice: ${robots[i].lowPrice}</p>`
+    }
+    document.getElementById("deleteDiv").innerHTML = htmlStr
+  }
+  getAllRobots(account).then(result => console.log(result))
 
   const type = router.query.filter as string
 
@@ -654,6 +714,7 @@ export default function Gridex(): JSX.Element {
       <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>
         <GridexMenu positionsLength={positions.length} options={optionsMenu}/>
       </div>
+      
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
         {!isMobile ? 
         <div className='flex gap-2'>
@@ -710,6 +771,23 @@ export default function Gridex(): JSX.Element {
 
          <RobotList robots={result} term={term}/> 
       </div>
+      
+      <BuyRobotsPanel
+        id="stock-robot-search"
+        showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+        onUserInput={onFieldBInput}
+        onMax={() => {
+          onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+        }}
+        value={formattedAmounts[Field.CURRENCY_B]}
+        onCurrencySelect={handleCurrencyASelect}
+        onCurrencyBSelect={handleCurrencyBSelect}
+        currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
+        currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+        // onOtherCurrencySelect={handleCurrencyBSelect}
+        // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+        showCommonBases
+        />
     </Container>
   )
 }
