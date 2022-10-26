@@ -29,21 +29,21 @@ const RobotList = ({ robots, term }) => {
         </div>
         <div
           className="flex items-center justify-center px-4 cursor-pointer hover:text-high-emphesis"
-          onClick={() => requestSort('tvl')}
+          onClick={() => requestSort('lowPrice')}
         >
           {i18n._(t`Min Price to Buy`)}
           {sortConfig &&
-            sortConfig.key === 'tvl' &&
+            sortConfig.key === 'lowPrice' &&
             ((sortConfig.direction === 'ascending' && <ChevronUpIcon width={12} height={12} />) ||
               (sortConfig.direction === 'descending' && <ChevronDownIcon width={12} height={12} />))}
         </div>
         <div
           className="flex items-center justify-center px-4 cursor-pointer hover:text-high-emphesis"
-          onClick={() => requestSort('roiPerYear')}
+          onClick={() => requestSort('highPrice')}
         >
           {i18n._(t`Max Price to Sell`)}
           {sortConfig &&
-            sortConfig.key === 'roiPerYear' &&
+            sortConfig.key === 'highPrice' &&
             ((sortConfig.direction === 'ascending' && <ChevronUpIcon width={12} height={12} />) ||
               (sortConfig.direction === 'descending' && <ChevronDownIcon width={12} height={12} />))}
         </div>
