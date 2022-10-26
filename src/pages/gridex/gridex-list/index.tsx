@@ -98,30 +98,30 @@ function getTokenPriceInBch(pool, pair, chainId, tangoPriceBCH, bchPriceUSD) {
 }
 
 function packPrice(price) {
-	var effBits = 1
-	while(!price.mask(effBits).eq(price)) {
-		effBits += 1
-	}
-	var twoPow24 = BigNumber.from(2).pow(24)
-	if(effBits <= 25) {
-		return price
-	}
-	var shift = effBits-25
-	var shiftBN = BigNumber.from(2).pow(shift)
-	var low24 = price.div(shiftBN).sub(twoPow24)
-	var high8 = BigNumber.from(shift).add(1).mul(twoPow24)
-	return high8.add(low24)
+  var effBits = 1
+  while (!price.mask(effBits).eq(price)) {
+    effBits += 1
+  }
+  var twoPow24 = BigNumber.from(2).pow(24)
+  if (effBits <= 25) {
+    return price
+  }
+  var shift = effBits - 25
+  var shiftBN = BigNumber.from(2).pow(shift)
+  var low24 = price.div(shiftBN).sub(twoPow24)
+  var high8 = BigNumber.from(shift).add(1).mul(twoPow24)
+  return high8.add(low24)
 }
 
 function unpackPrice(packed) {
-	var twoPow24 = BigNumber.from(2).pow(24)
-	var low24 = packed.mod(twoPow24)
-	var shift = packed.div(twoPow24)
-	if(shift.isZero()) {
-		return low24
-	}
-	var shiftBN = BigNumber.from(2).pow(shift.sub(1))
-	return low24.add(twoPow24).mul(shiftBN)
+  var twoPow24 = BigNumber.from(2).pow(24)
+  var low24 = packed.mod(twoPow24)
+  var shift = packed.div(twoPow24)
+  if (shift.isZero()) {
+    return low24
+  }
+  var shiftBN = BigNumber.from(2).pow(shift.sub(1))
+  return low24.add(twoPow24).mul(shiftBN)
 }
 
 export default function Gridex(): JSX.Element {
@@ -133,14 +133,14 @@ export default function Gridex(): JSX.Element {
 
   const handleCurrencyASelect = (currencyA: Currency) => {
     // console.log('currencyA:', currencyA)
-    setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
+    setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
   }
-  const handleCurrencyBSelect = (currencyB: Currency) => {    
-    setCurrenciesSelected({...currenciesSelected, currencyB: currencyB})      
+  const handleCurrencyBSelect = (currencyB: Currency) => {
+    setCurrenciesSelected({ ...currenciesSelected, currencyB: currencyB })
   }
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
-  
+
   const {
     dependentField,
     currencies,
@@ -148,8 +148,8 @@ export default function Gridex(): JSX.Element {
     parsedAmounts,
     noLiquidity
   } = useDerivedMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
-  
-  
+
+
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
 
   const formattedAmounts = {
@@ -178,8 +178,8 @@ export default function Gridex(): JSX.Element {
   const stock = currenciesSelected?.currencyA
   const money = currenciesSelected?.currencyB
 
-  const stockContract = useTokenContract(stock?.address) 
-  const moneyContract = useTokenContract(money?.address) 
+  const stockContract = useTokenContract(stock?.address)
+  const moneyContract = useTokenContract(money?.address)
 
   async function getAllRobots(onlyForAddr) {
     const moneyDecimals = await moneyContract?.decimals()
@@ -194,24 +194,24 @@ export default function Gridex(): JSX.Element {
     let twoPow96 = BigNumber.from(2).pow(96)
     let twoPow32 = BigNumber.from(2).pow(32)
     const RobotsMap = {}
-    for(var i=0; i<allRobotsArr.length; i+=2) {
+    for (var i = 0; i < allRobotsArr.length; i += 2) {
       let fullId = allRobotsArr[i]
       let robot = {
-      fullId: fullId.toHexString(), 
-      index: i/2,
-      shortId: '', 
-      ownerAddr: '', 
-      lowPrice: null, 
-      highPrice: null, 
-      moneyAmountBN: '', 
-      stockAmountBN: '', 
-      moneyAmount: null, 
-      stockAmount: null
+        fullId: fullId.toHexString(),
+        index: i / 2,
+        shortId: '',
+        ownerAddr: '',
+        lowPrice: null,
+        highPrice: null,
+        moneyAmountBN: '',
+        stockAmountBN: '',
+        moneyAmount: null,
+        stockAmount: null
       }
       robot.shortId = fullId.mod(twoPow96).toNumber()
       robot.ownerAddr = ethers.utils.getAddress(fullId.div(twoPow96).toHexString())
-      if(onlyForAddr && onlyForAddr != robot.ownerAddr) {continue}
-      let info = allRobotsArr[i+1]
+      if (onlyForAddr && onlyForAddr != robot.ownerAddr) { continue }
+      let info = allRobotsArr[i + 1]
       robot.lowPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
       info = info.div(twoPow32)
       robot.highPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
@@ -230,15 +230,15 @@ export default function Gridex(): JSX.Element {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const myAddr = await signer.getAddress();
-    
+
     var robots = await getAllRobots(myAddr);
-    if(robots.length == 0) {
+    if (robots.length == 0) {
       document.getElementById("deleteDiv").innerHTML = "<p>You have no robots on duty!</p>"
       return
     }
     var htmlStr = "<p>"
-    for(var i=0; i<robots.length; i++) {
-      htmlStr += `<b>Robot#${robots[i].shortId+1}</b>&nbsp;`
+    for (var i = 0; i < robots.length; i++) {
+      htmlStr += `<b>Robot#${robots[i].shortId + 1}</b>&nbsp;`
       htmlStr += `<button onclick="DeleteRobot(${robots[i].index}, '${robots[i].fullId}')">Delete</button>&nbsp;`
       htmlStr += `Stock: ${robots[i].stockAmount}&nbsp;`
       htmlStr += `Money: ${robots[i].moneyAmount}&nbsp;`
@@ -347,7 +347,7 @@ export default function Gridex(): JSX.Element {
       },
     },
   }
-  
+
   const kashiPairs = [] // unused
   const swapPairs = []
   const farms2 = useFarms()
@@ -691,7 +691,7 @@ export default function Gridex(): JSX.Element {
     {
       href: `/${basePath}/on-Sale`,
       label: 'Tango CMM on Sale'
-    },{
+    }, {
       divider: true
     },
     {
@@ -712,66 +712,87 @@ export default function Gridex(): JSX.Element {
         <meta key="description" name="description" content="Farm TANGO" />
       </Head>
       <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>
-        <GridexMenu positionsLength={positions.length} options={optionsMenu}/>
+        <GridexMenu positionsLength={positions.length} options={optionsMenu} />
       </div>
-      
+
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
-        {!isMobile ? 
-        <div className='flex gap-2'>
-          <Search
-            search={search}
-            placeholder={i18n._(t`Search by name, symbol, address`)}
-            term={term}
-            className={classNames('mr-4 px-3 self-center sm:px-0 w-9/12')}
-            inputProps={{
-              className:
-                'relative w-full bg-transparent border border-transparent focus:border-gradient-r-blue-pink-dark-900 rounded placeholder-secondary focus:placeholder-primary font-bold text-base px-6 py-3.5',
-            }}
-          />
-          <NavLink href="/gridex/create-gridex">
-            <Button
-              color='border'
-              className='w-[190px] mx-2 text-[#e3e3e3c6] border-gradient-r-blue-pink-dark-900 ring-2 ring-gray-600 hover:text-white hover:ring-white flex items-center gap-2'
-            >
-              <PlusIcon width={16} height={16}/>
-              {i18n._(t`Create Tango CMM`)}
-          </Button>
-          </NavLink>
-        </div>
-        :
-        <>
-         <div className='flex gap-2'>
-         <Search
-           search={search}
-           placeholder={i18n._(t`Search by name, symbol, address`)}
-           term={term}
-           className={classNames('mr-4 px-3 self-center sm:px-0 ')}
-           inputProps={{
-             className:
-               'relative w-full bg-transparent border border-transparent focus:border-gradient-r-blue-pink-dark-900 rounded placeholder-secondary focus:placeholder-primary font-bold text-base px-6 py-3.5',
-           }}
-         />
-       </div>
-           <NavLink href="/gridex/create-gridex">
-           <Button
-             color='border'
-             className='w-[190px] mx-2 text-[#E3E3E3] border-gradient-r-blue-pink-dark-900 ring-2 ring-gray-600 hover:ring-white flex items-center gap-2'
-           >
-             <PlusIcon width={16} height={16}/>
-             {i18n._(t`Create Tango CMM`)}
-         </Button>
-         </NavLink>
-         </>
-       }
+        {!isMobile ?
+          <div className='w-full sm:flex sm:gap-2'>
+            <BuyRobotsPanel
+              id="stock-robot-search"
+              showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+              onUserInput={onFieldBInput}
+              onMax={() => {
+                onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+              }}
+              value={formattedAmounts[Field.CURRENCY_B]}
+              onCurrencySelect={handleCurrencyASelect}
+              onCurrencyBSelect={handleCurrencyBSelect}
+              currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
+              currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+              // onOtherCurrencySelect={handleCurrencyBSelect}
+              // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+              showCommonBases
+            />
+
+            <div>
+
+            </div>
+            <div className='flex gap-2 my-6  sm:m-0'>
+
+              <NavLink href="/gridex/create-gridex">
+                <Button
+                  color='border'
+                  className='w-full sm:w-[190px] mx-2 text-[#e3e3e3c6] border-gradient-r-blue-pink-dark-900 ring-2 ring-gray-800 hover:text-gray-200 hover:ring-gray-200 flex items-center gap-2'
+                >
+                  <PlusIcon width={16} height={16} />
+                  {i18n._(t`Create Tango CMM`)}
+                </Button>
+              </NavLink>
+            </div>
+
+          </div>
+          :
+          <>
+            <div className='w-full'>
+              <BuyRobotsPanel
+                id="stock-robot-search"
+                showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+                onUserInput={onFieldBInput}
+                onMax={() => {
+                  onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+                }}
+                value={formattedAmounts[Field.CURRENCY_B]}
+                onCurrencySelect={handleCurrencyASelect}
+                onCurrencyBSelect={handleCurrencyBSelect}
+                currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
+                currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+                // onOtherCurrencySelect={handleCurrencyBSelect}
+                // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+                showCommonBases
+              />
+            </div>
+
+            <NavLink href="/gridex/create-gridex">
+              <Button
+                color='border'
+                className='w-[190px] mx-2 text-[#E3E3E3] border-gradient-r-blue-pink-dark-900 ring-2 ring-gray-600 hover:ring-white flex items-center gap-2'
+              >
+                <PlusIcon width={16} height={16} />
+                {i18n._(t`Create Tango CMM`)}
+              </Button>
+            </NavLink>
+          </>
+        }
 
         <div className="hidden md:block flex items-center text-lg font-bold text-high-emphesis whitespace-nowrap">
           Tango CMM list{' '}
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
 
-         <RobotList robots={result} term={term}/> 
+        <RobotList robots={result} term={term} />
       </div>
-      
+
       <BuyRobotsPanel
         id="stock-robot-search"
         showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
@@ -787,7 +808,7 @@ export default function Gridex(): JSX.Element {
         // onOtherCurrencySelect={handleCurrencyBSelect}
         // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
         showCommonBases
-        />
+      />
     </Container>
   )
 }

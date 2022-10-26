@@ -84,7 +84,7 @@ export default function BuyRobotsPanel({
 
 
   return (
-    <div id={id} className={classNames(hideInput ? 'p-3' : 'p-4', 'px-2 rounded m-6 sm:m-0 ring-blue ring-4 bg-dark-800')}>
+    <div id={id} className={classNames(hideInput ? 'p-3' : 'p-4', 'px-2 rounded m-6 sm:m-0 ring-gray-800 ring-2 bg-dark-800')}>
       <div className="flex flex-col justify-center items-center space-y-3 sm:space-y-0 sm:flex-row">
         <div className={classNames('w-full  p-2 sm:w-2/5')}>
           <button
@@ -254,7 +254,7 @@ export default function BuyRobotsPanel({
           <Button
            color={'gradient'} 
            size="sm"
-          className='h-12 w-1/12 ml-2 pr-16 text-sm  sm:pr-14 sm:text-sm  sm:text-center '
+          className='h-12 w-10/12 ml-2 text-sm  sm:pr-14 sm:text-sm  sm:w-1/12 sm:text-center '
        
           >{i18n._(t`Search`)}
           {/*{<SearchIcon size={24} />}*/}
