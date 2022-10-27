@@ -701,6 +701,38 @@ export default function Gridex(): JSX.Element {
     }
   ]
 
+  const [robot, setRobot] = useState([])
+  function listRobotsForBuying() {
+    console.log("sis");
+
+    useEffect(() => {
+      const robotsCall = async () => {
+        alert("haciedo la call")
+        try{
+        var robots = await getAllRobots("");
+        console.log("Robots:", robots);
+        if (robots.length == 0) {
+
+          return alert("No Robots availables")
+        }
+        robots.sort(function (a, b) {
+          return a.highPrice - b.highPrice;
+        });
+      alert("call hecha");
+      robotsCall();}catch(e){
+        alert("Fallo en la call")
+        alert(e);
+      }}
+      
+    }
+      , []);
+
+    
+    
+  }
+
+
+
   return (
     <Container
       id="robots-page"
@@ -733,6 +765,7 @@ export default function Gridex(): JSX.Element {
               // onOtherCurrencySelect={handleCurrencyBSelect}
               // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
               showCommonBases
+              searchFunction={ listRobotsForBuying }
             />
 
             <div>
@@ -808,6 +841,7 @@ export default function Gridex(): JSX.Element {
         // onOtherCurrencySelect={handleCurrencyBSelect}
         // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
         showCommonBases
+        searchFunction={listRobotsForBuying}
       />
     </Container>
   )
