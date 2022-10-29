@@ -234,29 +234,7 @@ export default function Gridex(): JSX.Element {
     }
     return allRobots
   }
-
-  async function listMyRobots() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const myAddr = await signer.getAddress();
-
-    var robots = await getAllRobots(myAddr);
-    if (robots.length == 0) {
-      document.getElementById("deleteDiv").innerHTML = "<p>You have no robots on duty!</p>"
-      return
-    }
-    var htmlStr = "<p>"
-    for (var i = 0; i < robots.length; i++) {
-      htmlStr += `<b>Robot#${robots[i].shortId + 1}</b>&nbsp;`
-      htmlStr += `<button onclick="DeleteRobot(${robots[i].index}, '${robots[i].fullId}')">Delete</button>&nbsp;`
-      htmlStr += `Stock: ${robots[i].stockAmount}&nbsp;`
-      htmlStr += `Money: ${robots[i].moneyAmount}&nbsp;`
-      htmlStr += `HighPrice: ${robots[i].highPrice}&nbsp;`
-      htmlStr += `LowPrice: ${robots[i].lowPrice}</p>`
-    }
-    document.getElementById("deleteDiv").innerHTML = htmlStr
-  }
-
+  
   useEffect(() => {
     getAllRobots(account).then(result => setGridexList(result))  
   }, [stock || money])
@@ -313,71 +291,71 @@ export default function Gridex(): JSX.Element {
   const farms2 = useFarms()
   let farms = []
 
-  for (const [pairAddress, pair] of Object.entries(hardcodedPairs[chainId])) {
-    swapPairs.push({
-      id: pairAddress,
-      reserveUSD: '100000',
-      totalSupply: '1000',
-      timestamp: '1599830986',
-      token0: {
-        id: pair.token0.address,
-        name: pair.token0.name,
-        symbol: pair.token0.symbol,
-        decimals: pair.token0.decimals,
-      },
-      token1: {
-        id: pair.token1.address,
-        name: pair.token1.name,
-        symbol: pair.token1.symbol,
-        decimals: pair.token1.decimals,
-      },
-    })
+  // for (const [pairAddress, pair] of Object.entries(hardcodedPairs[chainId])) {
+  //   swapPairs.push({
+  //     id: pairAddress,
+  //     reserveUSD: '100000',
+  //     totalSupply: '1000',
+  //     timestamp: '1599830986',
+  //     token0: {
+  //       id: pair.token0.address,
+  //       name: pair.token0.name,
+  //       symbol: pair.token0.symbol,
+  //       decimals: pair.token0.decimals,
+  //     },
+  //     token1: {
+  //       id: pair.token1.address,
+  //       name: pair.token1.name,
+  //       symbol: pair.token1.symbol,
+  //       decimals: pair.token1.decimals,
+  //     },
+  //   })
 
-    const f = {
-      pair: pairAddress,
-      symbol: `${hardcodedPairs[chainId][pairAddress].token0.symbol}-${hardcodedPairs[chainId][pairAddress].token1.symbol}`,
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      pool: usePool(pairAddress),
-      allocPoint: pair.allocPoint,
-      balance: '1000000000000000000',
-      chef: 0,
-      id: pair.farmId,
-      pendingSushi: undefined,
-      pending: 0,
-      owner: {
-        id: MASTERCHEF_ADDRESS[chainId],
-        sushiPerBlock: '10000000000000000000',
-        totalAllocPoint: '999949984',
-      },
-      userCount: 1,
-    }
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    f.pendingSushi = usePendingSushi(f)
-    f.pending = Number.parseFloat(f.pendingSushi?.toFixed())
+  //   const f = {
+  //     pair: pairAddress,
+  //     symbol: `${hardcodedPairs[chainId][pairAddress].token0.symbol}-${hardcodedPairs[chainId][pairAddress].token1.symbol}`,
+  //     // eslint-disable-next-line react-hooks/rules-of-hooks
+  //     pool: usePool(pairAddress),
+  //     allocPoint: pair.allocPoint,
+  //     balance: '1000000000000000000',
+  //     chef: 0,
+  //     id: pair.farmId,
+  //     pendingSushi: undefined,
+  //     pending: 0,
+  //     owner: {
+  //       id: MASTERCHEF_ADDRESS[chainId],
+  //       sushiPerBlock: '10000000000000000000',
+  //       totalAllocPoint: '999949984',
+  //     },
+  //     userCount: 1,
+  //   }
+  //   // eslint-disable-next-line react-hooks/rules-of-hooks
+  //   f.pendingSushi = usePendingSushi(f)
+  //   f.pending = Number.parseFloat(f.pendingSushi?.toFixed())
 
-    farms.push(f)
-  }
-
-  const flexUSDTangoPool = farms[1].pool
-  const bchFlexUSDPool = farms[3].pool
-  const bchTangoPool = farms[2].pool
-  let bchPriceUSD = 0
-  let tangoPriceUSD = 0
-  let tangoPriceBCH = 0
-  if (bchFlexUSDPool.reserves) {
-    bchPriceUSD =
-      Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed())
-  }
-  if (flexUSDTangoPool.reserves) {
-    tangoPriceUSD =
-      1 /
-      (Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) /
-        Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
-  }
-  if (bchTangoPool.reserves) {
-    tangoPriceBCH =
-      Number.parseFloat(bchTangoPool.reserves[0].toFixed()) / Number.parseFloat(bchTangoPool.reserves[1].toFixed())
-  }
+  //   farms.push(f)
+  // }
+  
+  // const flexUSDTangoPool = farms[1].pool
+  // const bchFlexUSDPool = farms[3].pool
+  // const bchTangoPool = farms[2].pool
+  // let bchPriceUSD = 0
+  // let tangoPriceUSD = 0
+  // let tangoPriceBCH = 0
+  // if (bchFlexUSDPool.reserves) {
+  //   bchPriceUSD =
+  //     Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed())
+  // }
+  // if (flexUSDTangoPool.reserves) {
+  //   tangoPriceUSD =
+  //     1 /
+  //     (Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) /
+  //       Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
+  // }
+  // if (bchTangoPool.reserves) {
+  //   tangoPriceBCH =
+  //     Number.parseFloat(bchTangoPool.reserves[0].toFixed()) / Number.parseFloat(bchTangoPool.reserves[1].toFixed())
+  // }
 
   // const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
   //   MASTERCHEF_ADDRESS[chainId],
@@ -421,12 +399,12 @@ export default function Gridex(): JSX.Element {
 
   const positions = usePositions(chainId)
 
-  // const averageBlockTime = useAverageBlockTime()
-  const averageBlockTime = 6
-  const masterChefV1TotalAllocPoint = useMasterChefV1TotalAllocPoint()
-  const masterChefV1SushiPerBlock = useMasterChefV1SushiPerBlock()
+  // // const averageBlockTime = useAverageBlockTime()
+  // const averageBlockTime = 6
+  // const masterChefV1TotalAllocPoint = useMasterChefV1TotalAllocPoint()
+  // const masterChefV1SushiPerBlock = useMasterChefV1SushiPerBlock()
 
-  const blocksPerDay = 86400 / Number(averageBlockTime)
+  // const blocksPerDay = 86400 / Number(averageBlockTime)
 
   const map = (pool) => {
     // TODO: Account for fees generated in case of swap pairs, and use standard compounding
@@ -435,81 +413,81 @@ export default function Gridex(): JSX.Element {
     // How can we include this?
 
     // TODO: Deal with inconsistencies between properties on subgraph
-    pool.owner = pool?.owner || pool?.masterChef
-    pool.balance = pool?.balance || pool?.slpBalance
+    // pool.owner = pool?.owner || pool?.masterChef
+    // pool.balance = pool?.balance || pool?.slpBalance
 
-    const swapPair = swapPairs?.find((pair) => pair.id === pool.pair)
-    const kashiPair = kashiPairs?.find((pair) => pair.id === pool.pair)
+    // const swapPair = swapPairs?.find((pair) => pair.id === pool.pair)
+    // const kashiPair = kashiPairs?.find((pair) => pair.id === pool.pair)
 
-    const type = swapPair ? PairType.SWAP : PairType.KASHI
+    // const type = swapPair ? PairType.SWAP : PairType.KASHI
 
-    const pair = swapPair || kashiPair
+    // const pair = swapPair || kashiPair
 
-    const blocksPerDay = 15684 // calculated empirically
+    // const blocksPerDay = 15684 // calculated empirically
 
-    function getRewards() {
-      // TODO: Some subgraphs give sushiPerBlock & sushiPerSecond, and mcv2 gives nothing
-      const sushiPerBlock =
-        pool?.owner?.sushiPerBlock / 1e18 ||
-        (pool?.owner?.sushiPerSecond / 1e18) * averageBlockTime ||
-        masterChefV1SushiPerBlock
+    // function getRewards() {
+    //   // TODO: Some subgraphs give sushiPerBlock & sushiPerSecond, and mcv2 gives nothing
+    //   // const sushiPerBlock =
+    //   //   pool?.owner?.sushiPerBlock / 1e18 ||
+    //   //   (pool?.owner?.sushiPerSecond / 1e18) * averageBlockTime ||
+    //   //   masterChefV1SushiPerBlock
 
-      const rewardPerBlock = (pool.allocPoint / pool.owner.totalAllocPoint) * sushiPerBlock
+    //   const rewardPerBlock = (pool.allocPoint / pool.owner.totalAllocPoint) * sushiPerBlock
 
-      const defaultReward = {
-        token: 'TANGO',
-        icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png',
-        rewardPerBlock,
-        rewardPerDay: rewardPerBlock * blocksPerDay,
-        rewardPrice: +tangoPriceUSD,
-      }
+    //   const defaultReward = {
+    //     token: 'TANGO',
+    //     icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png',
+    //     rewardPerBlock,
+    //     rewardPerDay: rewardPerBlock * blocksPerDay,
+    //     rewardPrice: +tangoPriceUSD,
+    //   }
 
-      let rewards = [defaultReward]
+    //   let rewards = [defaultReward]
 
-      if (pool.chef === Chef.MASTERCHEF_V2) {
-        // override for mcv2...
-        pool.owner.totalAllocPoint = masterChefV1TotalAllocPoint
+    //   if (pool.chef === Chef.MASTERCHEF_V2) {
+    //     // override for mcv2...
+    //     pool.owner.totalAllocPoint = masterChefV1TotalAllocPoint
 
-        const icon = `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/${getAddress(
-          pool.rewarder.rewardToken
-        )}/logo.png`
+    //     const icon = `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/${getAddress(
+    //       pool.rewarder.rewardToken
+    //     )}/logo.png`
 
-        const decimals = 10 ** pool.rewardToken.decimals
-        // console.log("pool.rewardToken.decimals:      ", pool.rewardToken.decimals);
-        // console.log("pool.rewardToken.derivedETH:    ", pool.rewardToken.derivedETH);
-        // console.log("pool.rewarder.rewardPerSecond:  ", pool.rewarder.rewardPerSecond);
-        // console.log("decimals:      ", decimals);
+    //     const decimals = 10 ** pool.rewardToken.decimals
+    //     // console.log("pool.rewardToken.decimals:      ", pool.rewardToken.decimals);
+    //     // console.log("pool.rewardToken.derivedETH:    ", pool.rewardToken.derivedETH);
+    //     // console.log("pool.rewarder.rewardPerSecond:  ", pool.rewarder.rewardPerSecond);
+    //     // console.log("decimals:      ", decimals);
 
-        if (pool.rewarder.rewardToken !== '0x0000000000000000000000000000000000000000') {
-          // console.log("pool.rewarder.rewardPerSecond / decimals:      ", pool.rewarder.rewardPerSecond / decimals);
+    //     if (pool.rewarder.rewardToken !== '0x0000000000000000000000000000000000000000') {
+    //       // console.log("pool.rewarder.rewardPerSecond / decimals:      ", pool.rewarder.rewardPerSecond / decimals);
 
-          const rewardPerBlock = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime
+    //       const rewardPerBlock = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime
 
-          // console.log("rewardPerBlock:      ", rewardPerBlock);
+    //       // console.log("rewardPerBlock:      ", rewardPerBlock);
 
-          const rewardPerDay = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime * blocksPerDay
-          const rewardPrice = pool.rewardToken.derivedETH * bchPriceUSD
+    //       const rewardPerDay = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime * blocksPerDay
+    //       const rewardPrice = pool.rewardToken.derivedETH * bchPriceUSD
 
-          // console.log("rewardPrice:      ", rewardPrice);
+    //       // console.log("rewardPrice:      ", rewardPrice);
 
-          const reward = {
-            token: pool.rewardToken.symbol,
-            icon: icon,
-            rewardPerBlock,
-            rewardPerDay,
-            rewardPrice,
-          }
+    //       const reward = {
+    //         token: pool.rewardToken.symbol,
+    //         icon: icon,
+    //         rewardPerBlock,
+    //         rewardPerDay,
+    //         rewardPrice,
+    //       }
 
-          rewards[1] = reward
-        }
-      }
+    //       rewards[1] = reward
+    //     }
+    //   }
 
-      return rewards
-    }
+    //   return rewards
+    // }
 
-    const rewards = getRewards()
+    // const rewards = getRewards()
 
-    const balance = Number(pool.balance / 1e18)
+    // const balance = Number(pool.balance / 1e18)
 
     const roiPerBlock =
       rewards.reduce((previousValue, currentValue) => {
@@ -541,22 +519,22 @@ export default function Gridex(): JSX.Element {
   }
 
   const FILTER = {
-    buy: (farm) => farm.allocPoint !== 0, // buscar alguna estadistica que sea unica de los gridex activos y ponerlo aca
-    portfolio: (farm) => farm.pending !== 0, // buscar alguna estadistica que sea unica de los gridex propios y ponerlo aca
+    buy: (gridexList) => gridexList.moneyAmount !== 0, // buscar alguna estadistica que sea unica de los gridex activos y ponerlo aca
+    portfolio: (gridexList) => gridexList.stockAmount !== 0, // buscar alguna estadistica que sea unica de los gridex propios y ponerlo aca
   }
 
-  const data = farms
-    .filter((farm) => {
-      return (
-        (swapPairs && swapPairs.find((pair) => pair.id === farm.pair)) ||
-        (kashiPairs && kashiPairs.find((pair) => pair.id === farm.pair))
-      )
-    })
-    .map(map)
+  const data = gridexList
+    // .filter((farm) => {
+    //   return (
+    //     (swapPairs && swapPairs.find((pair) => pair.id === farm.pair)) ||
+    //     (kashiPairs && kashiPairs.find((pair) => pair.id === farm.pair))
+    //   )
+    // })
+    // .map(map)
     .filter((farm) => {
       return type in FILTER ? FILTER[type](farm) : true
     })
-
+  
   const options = {
     keys: ['pair.id', 'pair.token0.symbol', 'pair.token1.symbol'],
     threshold: 0.4,
