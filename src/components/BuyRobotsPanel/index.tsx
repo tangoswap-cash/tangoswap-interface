@@ -40,6 +40,7 @@ interface CurrencyInputPanelProps {
   locked?: boolean
   customBalanceText?: string
   readOnly?: boolean
+  searchFunction?: any
 }
 
 export default function BuyRobotsPanel({
@@ -64,6 +65,7 @@ export default function BuyRobotsPanel({
   locked = false,
   customBalanceText,
   readOnly = false,
+  searchFunction
 }: CurrencyInputPanelProps) {
   const { i18n } = useLingui()
 
@@ -93,7 +95,7 @@ export default function BuyRobotsPanel({
               !!currency ? 'text-primary' : 'text-high-emphesis',
               'open-currency-select-button h-full outline-none select-none cursor-pointer border-none text-xl font-medium items-center'
             )}
-            onClick={() => { 
+            onClick={() => {
               setCurrencySelector('A')
               if (onCurrencySelect) {
                 setModalOpen(true)
@@ -101,7 +103,7 @@ export default function BuyRobotsPanel({
             }}
           >
             <div className="flex">
-              { currency ? (
+              {currency ? (
                 <div className="flex items-center">
                   <CurrencyLogo currency={currency} size={'54px'} />
                 </div>
@@ -128,13 +130,13 @@ export default function BuyRobotsPanel({
                     <div className="text-lg font-bold token-symbol-container md:text-2xl">
                       {(currency && currency.symbol && currency.symbol.length > 20
                         ? currency.symbol.slice(0, 4) +
-                          '...' +
-                          currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
+                        '...' +
+                        currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
                         : currency?.symbol) || (
-                        <div className="px-2 py-1 mt-1 text-xs font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap ">
-                          {i18n._(t`Select a token`)}
-                        </div>
-                      )}
+                          <div className="px-2 py-1 mt-1 text-xs font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap ">
+                            {i18n._(t`Select a token`)}
+                          </div>
+                        )}
                     </div>
 
                     {!disableCurrencySelect && currency && (
@@ -156,7 +158,7 @@ export default function BuyRobotsPanel({
             )}
             onClick={() => {
               setCurrencySelector('B')
-              if (onCurrencyBSelect ) {
+              if (onCurrencyBSelect) {
                 setModalOpen(true)
               }
             }}
@@ -189,13 +191,13 @@ export default function BuyRobotsPanel({
                     <div className="text-lg font-bold token-symbol-container md:text-2xl">
                       {(currencyB && currencyB.symbol && currencyB.symbol.length > 20
                         ? currencyB.symbol.slice(0, 4) +
-                          '...' +
-                          currencyB.symbol.slice(currencyB.symbol.length - 5, currencyB.symbol.length)
+                        '...' +
+                        currencyB.symbol.slice(currencyB.symbol.length - 5, currencyB.symbol.length)
                         : currencyB?.symbol) || (
-                        <div className="px-2 py-1 mt-1 text-xs font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap ">
-                          {i18n._(t`Select a token`)}
-                        </div>
-                      )}
+                          <div className="px-2 py-1 mt-1 text-xs font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap ">
+                            {i18n._(t`Select a token`)}
+                          </div>
+                        )}
                     </div>
 
                     {!disableCurrencySelect && currencyB && (
@@ -207,87 +209,87 @@ export default function BuyRobotsPanel({
             </div>
           </button>
         </div>
-        
-          <div
-            className={classNames(
-              'flex items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-3/5'
-              // showMaxButton && selectedCurrencyBalance && 'px-3'
-            )}
-          >
-            <>
-              { showMaxButton && (
-                <Button
-                  onClick={onMax}
-                  size="xs"
-                  className="text-base font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap"
-                >
-                  {i18n._(t`Max`)}
-                </Button>
-              )}
-              <Input.Numeric
-                id="token-amount-input"
-                value={value}
-                onUserInput={(val) => {
-                  // console.log('val:', val);
-                  onUserInput(val)
-                }}
-                readOnly={readOnly}
-                className={`w-2/3 h-16 text-base  bg-transparent `}
-              />
-               {!hideBalance && currency && selectedCurrencyBBalance ? (
-                <div className="flex flex-col">
-                  <div onClick={onMax} className="text-xs  text-right  cursor-pointer text-low-emphesis">
-                    {renderBalance ? (
-                      renderBalance(selectedCurrencyBBalance)
-                    ) : (
-                      <>
-                        {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
-                      </>
-                    )}
-                  </div>
-                  <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
-                </div>
-              ) : null} 
-            </>
-          </div>
 
-          <Button
-           color={'gradient'} 
-           size="sm"
+        <div
+          className={classNames(
+            'flex items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-3/5'
+            // showMaxButton && selectedCurrencyBalance && 'px-3'
+          )}
+        >
+          <>
+            {showMaxButton && (
+              <Button
+                onClick={onMax}
+                size="xs"
+                className="text-base font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap"
+              >
+                {i18n._(t`Max`)}
+              </Button>
+            )}
+            <Input.Numeric
+              id="token-amount-input"
+              value={value}
+              onUserInput={(val) => {
+                // console.log('val:', val);
+                onUserInput(val)
+              }}
+              readOnly={readOnly}
+              className={`w-2/3 h-16 text-base  bg-transparent `}
+            />
+            {!hideBalance && currency && selectedCurrencyBBalance ? (
+              <div className="flex flex-col">
+                <div onClick={onMax} className="text-xs  text-right  cursor-pointer text-low-emphesis">
+                  {renderBalance ? (
+                    renderBalance(selectedCurrencyBBalance)
+                  ) : (
+                    <>
+                      {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
+                    </>
+                  )}
+                </div>
+                <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
+              </div>
+            ) : null}
+          </>
+        </div>
+
+        <Button
+          color={'gradient'}
+          size="sm"
           className='h-12 w-10/12 ml-2 text-sm  sm:pr-14 sm:text-sm  sm:w-1/12 sm:text-center '
-       
-          >{i18n._(t`Search`)}
+          onClick={searchFunction}
+        >{i18n._(t`Search`)}
           {/*{<SearchIcon size={24} />}*/}
-          </Button>
+        </Button>
       </div>
       <div className='ml-1 mt-1'>
-              <button className='text-sm hover:text-high-emphesis' onClick={() => setGridexInfoOpen(true)}>What is Tango CMM?</button>
-              <GridexInfo isOpen={gridexInfoOpen} setIsOpen={setGridexInfoOpen} />
-            </div>
-       {
+        <button className='text-sm hover:text-high-emphesis' onClick={() => setGridexInfoOpen(true)}>What is Tango CMM?</button>
+        <GridexInfo isOpen={gridexInfoOpen} setIsOpen={setGridexInfoOpen} />
+      </div>
+      {
         currencySelector == 'A' ? (
-        <CurrencySearchModal
-          isOpen={modalOpen}
-          onDismiss={handleDismissSearch}
-          onCurrencySelect={onCurrencySelect}
-          selectedCurrency={currency}
-          otherSelectedCurrency={currency}
-          showCommonBases={showCommonBases}
-        />
-         
-        )
-        : 
-        (
           <CurrencySearchModal
-          isOpen={modalOpen}
-          onDismiss={handleDismissSearch}
-          onCurrencySelect={onCurrencyBSelect}
-          selectedCurrency={currencyB}
-          otherSelectedCurrency={currencyB}
-          showCommonBases={showCommonBases}
-        /> 
-        ) 
-    }
+            isOpen={modalOpen}
+            onDismiss={handleDismissSearch}
+            onCurrencySelect={onCurrencySelect}
+            selectedCurrency={currency}
+            otherSelectedCurrency={currency}
+            showCommonBases={showCommonBases}
+          />
+
+        )
+          :
+          (
+            <CurrencySearchModal
+              isOpen={modalOpen}
+              onDismiss={handleDismissSearch}
+              onCurrencySelect={onCurrencyBSelect}
+              selectedCurrency={currencyB}
+              otherSelectedCurrency={currencyB}
+              showCommonBases={showCommonBases}
+            />
+          )
+      }
     </div>
   )
 }

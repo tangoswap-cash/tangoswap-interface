@@ -569,6 +569,38 @@ export default function Gridex(): JSX.Element {
     }
   ]
 
+  const [robot, setRobot] = useState([])
+  function listRobotsForBuying() {
+    console.log("sis");
+
+    useEffect(() => {
+      const robotsCall = async () => {
+        alert("haciedo la call")
+        try{
+        var robots = await getAllRobots("");
+        console.log("Robots:", robots);
+        if (robots.length == 0) {
+
+          return alert("No Robots availables")
+        }
+        robots.sort(function (a, b) {
+          return a.highPrice - b.highPrice;
+        });
+      alert("call hecha");
+      robotsCall();}catch(e){
+        alert("Fallo en la call")
+        alert(e);
+      }}
+      
+    }
+      , []);
+
+    
+    
+  }
+
+
+
   return (
     <Container
       id="robots-page"
@@ -601,6 +633,7 @@ export default function Gridex(): JSX.Element {
               // onOtherCurrencySelect={handleCurrencyBSelect}
               // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
               showCommonBases
+              searchFunction={ listRobotsForBuying }
             />
 
             <div>
@@ -660,6 +693,24 @@ export default function Gridex(): JSX.Element {
 
         <RobotList robots={result} term={term} />
       </div>
+
+      <BuyRobotsPanel
+        id="stock-robot-search"
+        showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+        onUserInput={onFieldBInput}
+        onMax={() => {
+          onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+        }}
+        value={formattedAmounts[Field.CURRENCY_B]}
+        onCurrencySelect={handleCurrencyASelect}
+        onCurrencyBSelect={handleCurrencyBSelect}
+        currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
+        currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+        // onOtherCurrencySelect={handleCurrencyBSelect}
+        // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+        showCommonBases
+        searchFunction={listRobotsForBuying}
+      />
     </Container>
   )
 }
