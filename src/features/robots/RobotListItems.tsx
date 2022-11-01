@@ -7,17 +7,17 @@ import Image from '../../components/Image'
 import React from 'react'
 import { useLingui } from '@lingui/react'
 import { t } from '@lingui/macro'
-import { useCurrency } from '../../hooks/Tokens'
+import { useCurrency, useToken } from '../../hooks/Tokens'
 import { isMobile } from 'react-device-detect'
 import { usePendingSushi } from '../onsen/hooks'
 import usePendingReward from '../onsen/usePendingReward'
 import RobotListItemDetails from './RobotListItemDetails'
 import { PairType } from '../onsen/enum'
 
-const RobotListItems = ({ robot, ...rest }) => {
-  const token0 = useCurrency(robot.pair.token0.id)
-  const token1 = useCurrency(robot.pair.token1.id)
-
+const RobotListItems = ({ stockAddress, moneyAddress, robot, ...rest }) => {
+  const token0 = robot?.stock
+  const token1 = robot?.money
+  
   const pendingSushi = usePendingSushi(robot)
   const rewardAmount = usePendingReward(robot)
 
@@ -40,19 +40,19 @@ const RobotListItems = ({ robot, ...rest }) => {
                 <DoubleLogo currency0={token0} currency1={token1} size={isMobile ? 30 : 40} />
                 <div className="flex flex-col justify-center">
                   <div>
-                    <p className="font-bold">{robot?.pair?.token0?.symbol}</p>
+                    <p className="font-bold">{token0?.symbol}</p>
                     <p className={robot?.pair?.type === PairType.KASHI ? 'font-thin' : 'font-bold'}>
-                      {robot?.pair?.token1?.symbol}
+                      {token1?.symbol}
                     </p>
                   </div>
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center font-bold">
-                $ {robot.allocPoint / 4}
+                $ {String(robot.lowPrice).slice(0,6)}
               </div>
               <div className="flex flex-col items-center justify-center">
                 <div className="font-bold text-righttext-high-emphesis">
-                  $ {robot.allocPoint}
+                  $ {String(robot.highPrice).slice(0,6)}
                 </div>
               </div>
               {pendingSushi && pendingSushi.greaterThan(ZERO) ? (
@@ -89,7 +89,7 @@ const RobotListItems = ({ robot, ...rest }) => {
               )}
             </div>
           </Disclosure.Button>
-          {open && <RobotListItemDetails robot={robot} />}
+          {open && <RobotListItemDetails stockAddress={stockAddress} moneyAddress={moneyAddress} robot={robot} />}
         </>
       )}
     </Disclosure>

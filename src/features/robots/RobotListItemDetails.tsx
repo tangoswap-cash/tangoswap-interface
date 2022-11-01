@@ -21,9 +21,18 @@ import { Chef, PairType } from '../onsen/enum'
 import { usePendingSushi, useUserInfo } from '../onsen/hooks'
 import useMasterChef from '../onsen/useMasterChef'
 import usePendingReward from '../onsen/usePendingReward'
+import { useFactoryGridexContract, useGridexMarketContract } from '../../hooks'
 
-const RobotListItemDetails = ({ robot }) => {
+const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
   const { i18n } = useLingui()
+  const [marketAddress, setMarketAddress] = useState('')
+
+  const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe" // add this to SDK
+
+  const factoryContract = useFactoryGridexContract()
+  factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then(a => setMarketAddress(a))
+
+  const marketContract = useGridexMarketContract(marketAddress)
 
   const router = useRouter()
 
@@ -34,20 +43,6 @@ const RobotListItemDetails = ({ robot }) => {
 
   const addTransaction = useTransactionAdder()
 
-  const liquidityToken = new Token(
-    chainId,
-    getAddress(robot.pair.id),
-    robot.pair.type === PairType.KASHI ? Number(robot.pair.asset.decimals) : 18,
-    robot.pair.symbol,
-    robot.pair.name
-  )
-
-  // User liquidity token balance
-  const balance = useTokenBalance(account, liquidityToken)
-
-  // TODO: Replace these
-  const amount = useUserInfo(robot, liquidityToken)
-
   const handleSellRobot = () => {
     console.log('Vendido')
   }
@@ -55,21 +50,15 @@ const RobotListItemDetails = ({ robot }) => {
   const handleBuyRobot = () => {
     console.log('Borrado')
   }
-
-  const handleDeleteRobot = () => {
-    console.log('Borrado')
+  
+  const DeleteRobot = async () => {
+    await marketContract.deleteRobot(robot.index, robot.fullId).then((response) => {
+      addTransaction(response, {
+        summary: `Delete Robot`
+      })      
+    });
   }
-
-  const { deposit, withdraw, harvest } = useMasterChef(robot.chef)
-
-  const poolFraction = (Number.parseFloat(amount?.toFixed()) / robot.chefBalance) || 0
-  const token0Reserve = robot.pool.reserves ? (robot.pool.reserves.reserve0 as BigNumber).toString() : 0
-  const token0Amount = CurrencyAmount.fromRawAmount(robot.pair.token0, JSBI.BigInt(token0Reserve)).multiply(Math.round(poolFraction * 1e8)).divide(1e8)
-  const token1Reserve = robot.pool.reserves ? (robot.pool.reserves.reserve1 as BigNumber).toString() : 0
-  const token1Amount = CurrencyAmount.fromRawAmount(robot.pair.token1, JSBI.BigInt(token1Reserve)).multiply(Math.round(poolFraction * 1e8)).divide(1e8)
-  const token0Name = robot.pool.token0 === robot.pair.token0.id ? robot.pair.token0.symbol : robot.pair.token1.symbol
-  const token1Name = robot.pool.token1 === robot.pair.token1.id ? robot.pair.token1.symbol : robot.pair.token0.symbol
-
+  
   return (
     <Transition
       show={true}
@@ -113,7 +102,7 @@ const RobotListItemDetails = ({ robot }) => {
                 <div>
                   <Button
                     color='red'
-                    onClick={handleDeleteRobot}
+                    onClick={DeleteRobot}
                   >
                     {i18n._(t`Delete Tango CMM`)}
                   </Button>

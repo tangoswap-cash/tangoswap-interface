@@ -56,47 +56,6 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../.
 import BuyRobotsPanel from "../../../components/BuyRobotsPanel"
 import { Field } from '../../../state/burn/actions'
 
-function getTokensSorted(pool, pair) {
-  if (pool.token0 == pair.token0.address && pool.token1 == pair.token1.address) {
-    return [pair.token0, pair.token1, pool.reserves[0], pool.reserves[1]]
-  }
-
-  if (pool.token0 == pair.token1.address && pool.token1 == pair.token0.address) {
-    return [pair.token0, pair.token1, pool.reserves[1], pool.reserves[0]]
-  }
-
-  return [undefined, undefined, undefined, undefined]
-}
-
-function getTokenPriceInBch(pool, pair, chainId, tangoPriceBCH, bchPriceUSD) {
-  let [token0, token1, reserve0, reserve1] = getTokensSorted(pool, pair)
-
-  if (!token0) return 0
-
-  let factor = 0
-  let tokenAmount0 = Number.parseFloat(CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(reserve0.toString())).toFixed())
-  let tokenAmount1 = Number.parseFloat(CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(reserve1.toString())).toFixed())
-
-  if (token0.address === TANGO[chainId].address) {
-    factor = tangoPriceBCH
-  } else if (token1.address === TANGO[chainId].address) {
-    ;[tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1]
-    factor = tangoPriceBCH
-  } else if (token0.address === FLEXUSD.address) {
-    factor = bchPriceUSD
-  } else if (token1.address === FLEXUSD.address) {
-    ;[tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1]
-    factor = bchPriceUSD
-  } else if (token0.address === WBCH[chainId].address) {
-    factor = 1
-  } else if (token1.address === WBCH[chainId].address) {
-    ;[tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1]
-    factor = 1
-  }
-  const derivedETH = (tokenAmount0 / tokenAmount1) * factor
-  return derivedETH
-}
-
 function packPrice(price) {
   var effBits = 1
   while (!price.mask(effBits).eq(price)) {
@@ -179,7 +138,7 @@ export default function Gridex(): JSX.Element {
     {}
   )
 
-  const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe"
+  const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe" // add this to SDK
 
   const stock = currenciesSelected?.currencyA
   const money = currenciesSelected?.currencyB
@@ -215,7 +174,9 @@ export default function Gridex(): JSX.Element {
         moneyAmountBN: '',
         stockAmountBN: '',
         moneyAmount: null,
-        stockAmount: null
+        stockAmount: null,
+        stock: stock,
+        money: money
       }
       robot.shortId = fullId.mod(twoPow96).toNumber()
       robot.ownerAddr = ethers.utils.getAddress(fullId.div(twoPow96).toHexString())
@@ -234,10 +195,10 @@ export default function Gridex(): JSX.Element {
     }
     return allRobots
   }
-  
-  useEffect(() => {
+
+  function getRobots() {
     getAllRobots(account).then(result => setGridexList(result))  
-  }, [stock || money])
+  }
 
   console.log(gridexList);
   // se necesita Stock amount, Money Amount, highprice, lowprice
@@ -249,288 +210,14 @@ export default function Gridex(): JSX.Element {
   const updateFarmFilter = useUpdateFarmFilter()
   updateFarmFilter(type)
 
-  const hardcodedPairs = {
-    [ChainId.SMARTBCH]: {
-      '0x7963269e8a854D3F9D98a6cDEa81efFb31B4D1f2': {
-        farmId: 0,
-        allocPoint: 9999999,
-        token0: TANGO[ChainId.SMARTBCH],
-        token1: new Token(ChainId.SMARTBCH, '0x98Ff640323C059d8C4CB846976973FEEB0E068aA', 18, 'XTANGO', 'TANGObar'),
-      },
-      '0xf8534BB9603c501Bbe16deF7D08D941F0241855b': {
-        farmId: 1,
-        allocPoint: 205699999,
-        token0: TANGO[ChainId.SMARTBCH],
-        token1: FLEXUSD,
-      },
-      '0x4b773a2ea30C6A77564E4FaE60204e7Bc0a81A90': {
-        farmId: 2,
-        allocPoint: 509999999,
-        token0: TANGO[ChainId.SMARTBCH],
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-      '0xA15F8102AB4723A4D1554363c0c8AFF471F16E21': {
-        farmId: 3,
-        allocPoint: 170250512,
-        token0: FLEXUSD,
-        token1: WBCH[ChainId.SMARTBCH],
-      },
-    },
-    [ChainId.SMARTBCH_AMBER]: {
-      '0x07DE6fc05597E0E4c92C83637A8a0CA411f3a769': {
-        farmId: 0,
-        allocPoint: 1000,
-        token0: WBCH[ChainId.SMARTBCH_AMBER],
-        token1: new Token(ChainId.SMARTBCH_AMBER, '0xC6F80cF669Ab9e4BE07B78032b4821ed5612A9ce', 18, 'sc', 'testcoin2'),
-      },
-    },
-  }
-
-  const kashiPairs = [] // unused
-  const swapPairs = []
-  const farms2 = useFarms()
-  let farms = []
-
-  // for (const [pairAddress, pair] of Object.entries(hardcodedPairs[chainId])) {
-  //   swapPairs.push({
-  //     id: pairAddress,
-  //     reserveUSD: '100000',
-  //     totalSupply: '1000',
-  //     timestamp: '1599830986',
-  //     token0: {
-  //       id: pair.token0.address,
-  //       name: pair.token0.name,
-  //       symbol: pair.token0.symbol,
-  //       decimals: pair.token0.decimals,
-  //     },
-  //     token1: {
-  //       id: pair.token1.address,
-  //       name: pair.token1.name,
-  //       symbol: pair.token1.symbol,
-  //       decimals: pair.token1.decimals,
-  //     },
-  //   })
-
-  //   const f = {
-  //     pair: pairAddress,
-  //     symbol: `${hardcodedPairs[chainId][pairAddress].token0.symbol}-${hardcodedPairs[chainId][pairAddress].token1.symbol}`,
-  //     // eslint-disable-next-line react-hooks/rules-of-hooks
-  //     pool: usePool(pairAddress),
-  //     allocPoint: pair.allocPoint,
-  //     balance: '1000000000000000000',
-  //     chef: 0,
-  //     id: pair.farmId,
-  //     pendingSushi: undefined,
-  //     pending: 0,
-  //     owner: {
-  //       id: MASTERCHEF_ADDRESS[chainId],
-  //       sushiPerBlock: '10000000000000000000',
-  //       totalAllocPoint: '999949984',
-  //     },
-  //     userCount: 1,
-  //   }
-  //   // eslint-disable-next-line react-hooks/rules-of-hooks
-  //   f.pendingSushi = usePendingSushi(f)
-  //   f.pending = Number.parseFloat(f.pendingSushi?.toFixed())
-
-  //   farms.push(f)
-  // }
-  
-  // const flexUSDTangoPool = farms[1].pool
-  // const bchFlexUSDPool = farms[3].pool
-  // const bchTangoPool = farms[2].pool
-  // let bchPriceUSD = 0
-  // let tangoPriceUSD = 0
-  // let tangoPriceBCH = 0
-  // if (bchFlexUSDPool.reserves) {
-  //   bchPriceUSD =
-  //     Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed())
-  // }
-  // if (flexUSDTangoPool.reserves) {
-  //   tangoPriceUSD =
-  //     1 /
-  //     (Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) /
-  //       Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
-  // }
-  // if (bchTangoPool.reserves) {
-  //   tangoPriceBCH =
-  //     Number.parseFloat(bchTangoPool.reserves[0].toFixed()) / Number.parseFloat(bchTangoPool.reserves[1].toFixed())
-  // }
-
-  // const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
-  //   MASTERCHEF_ADDRESS[chainId],
-  //   farms.map((farm) => new Token(chainId, farm.pair, 18, 'LP', 'LP Token'))
-  // )
-
-  // if (!fetchingV2PairBalances) {
-  //   for (let i = 0; i < farms.length; ++i) {
-  //     if (v2PairsBalances.hasOwnProperty(farms[i].pair) && farms[i].pool.totalSupply) {
-  //       const totalSupply = Number.parseFloat(farms[i].pool.totalSupply.toFixed())
-  //       let chefBalance = Number.parseFloat(v2PairsBalances[farms[i].pair].toFixed())
-
-  //       let tvl = 0
-  //       if (farms[i].pool.token0 === TANGO[chainId].address) {
-  //         const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed())
-  //         tvl = (reserve / totalSupply) * chefBalance * tangoPriceUSD * 2
-  //       } else if (farms[i].pool.token1 === TANGO[chainId].address) {
-  //         const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed())
-  //         tvl = (reserve / totalSupply) * chefBalance * tangoPriceUSD * 2
-  //       } else if (farms[i].pool.token0 === FLEXUSD.address) {
-  //         const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed())
-  //         tvl = (reserve / totalSupply) * chefBalance * 2
-  //       } else if (farms[i].pool.token1 === FLEXUSD.address) {
-  //         const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed())
-  //         tvl = (reserve / totalSupply) * chefBalance * 2
-  //       } else if (farms[i].pool.token0 === WBCH[chainId].address) {
-  //         const reserve = Number.parseFloat(farms[i].pool.reserves[0].toFixed())
-  //         tvl = (reserve / totalSupply) * chefBalance * bchPriceUSD * 2
-  //       } else if (farms[i].pool.token1 === WBCH[chainId].address) {
-  //         const reserve = Number.parseFloat(farms[i].pool.reserves[1].toFixed())
-  //         tvl = (reserve / totalSupply) * chefBalance * bchPriceUSD * 2
-  //       }
-  //       farms[i].tvl = tvl
-  //       farms[i].chefBalance = chefBalance
-  //     } else {
-  //       farms[i].tvl = '0'
-  //       farms[i].chefBalance = 0
-  //     }
-  //   }
-  // }
-
   const positions = usePositions(chainId)
 
-  // // const averageBlockTime = useAverageBlockTime()
-  // const averageBlockTime = 6
-  // const masterChefV1TotalAllocPoint = useMasterChefV1TotalAllocPoint()
-  // const masterChefV1SushiPerBlock = useMasterChefV1SushiPerBlock()
-
-  // const blocksPerDay = 86400 / Number(averageBlockTime)
-
-  const map = (pool) => {
-    // TODO: Account for fees generated in case of swap pairs, and use standard compounding
-    // algorithm with the same intervals acrosss chains to account for consistency.
-    // For lending pairs, what should the equivilent for fees generated? Interest gained?
-    // How can we include this?
-
-    // TODO: Deal with inconsistencies between properties on subgraph
-    // pool.owner = pool?.owner || pool?.masterChef
-    // pool.balance = pool?.balance || pool?.slpBalance
-
-    // const swapPair = swapPairs?.find((pair) => pair.id === pool.pair)
-    // const kashiPair = kashiPairs?.find((pair) => pair.id === pool.pair)
-
-    // const type = swapPair ? PairType.SWAP : PairType.KASHI
-
-    // const pair = swapPair || kashiPair
-
-    // const blocksPerDay = 15684 // calculated empirically
-
-    // function getRewards() {
-    //   // TODO: Some subgraphs give sushiPerBlock & sushiPerSecond, and mcv2 gives nothing
-    //   // const sushiPerBlock =
-    //   //   pool?.owner?.sushiPerBlock / 1e18 ||
-    //   //   (pool?.owner?.sushiPerSecond / 1e18) * averageBlockTime ||
-    //   //   masterChefV1SushiPerBlock
-
-    //   const rewardPerBlock = (pool.allocPoint / pool.owner.totalAllocPoint) * sushiPerBlock
-
-    //   const defaultReward = {
-    //     token: 'TANGO',
-    //     icon: 'https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/0x73BE9c8Edf5e951c9a0762EA2b1DE8c8F38B5e91/logo.png',
-    //     rewardPerBlock,
-    //     rewardPerDay: rewardPerBlock * blocksPerDay,
-    //     rewardPrice: +tangoPriceUSD,
-    //   }
-
-    //   let rewards = [defaultReward]
-
-    //   if (pool.chef === Chef.MASTERCHEF_V2) {
-    //     // override for mcv2...
-    //     pool.owner.totalAllocPoint = masterChefV1TotalAllocPoint
-
-    //     const icon = `https://raw.githubusercontent.com/tangoswap-cash/assets/master/blockchains/smartbch/assets/${getAddress(
-    //       pool.rewarder.rewardToken
-    //     )}/logo.png`
-
-    //     const decimals = 10 ** pool.rewardToken.decimals
-    //     // console.log("pool.rewardToken.decimals:      ", pool.rewardToken.decimals);
-    //     // console.log("pool.rewardToken.derivedETH:    ", pool.rewardToken.derivedETH);
-    //     // console.log("pool.rewarder.rewardPerSecond:  ", pool.rewarder.rewardPerSecond);
-    //     // console.log("decimals:      ", decimals);
-
-    //     if (pool.rewarder.rewardToken !== '0x0000000000000000000000000000000000000000') {
-    //       // console.log("pool.rewarder.rewardPerSecond / decimals:      ", pool.rewarder.rewardPerSecond / decimals);
-
-    //       const rewardPerBlock = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime
-
-    //       // console.log("rewardPerBlock:      ", rewardPerBlock);
-
-    //       const rewardPerDay = (pool.rewarder.rewardPerSecond / decimals) * averageBlockTime * blocksPerDay
-    //       const rewardPrice = pool.rewardToken.derivedETH * bchPriceUSD
-
-    //       // console.log("rewardPrice:      ", rewardPrice);
-
-    //       const reward = {
-    //         token: pool.rewardToken.symbol,
-    //         icon: icon,
-    //         rewardPerBlock,
-    //         rewardPerDay,
-    //         rewardPrice,
-    //       }
-
-    //       rewards[1] = reward
-    //     }
-    //   }
-
-    //   return rewards
-    // }
-
-    // const rewards = getRewards()
-
-    // const balance = Number(pool.balance / 1e18)
-
-    const roiPerBlock =
-      rewards.reduce((previousValue, currentValue) => {
-        return previousValue + currentValue.rewardPerBlock * currentValue.rewardPrice
-      }, 0) / pool.tvl
-
-    const roiPerDay = roiPerBlock * blocksPerDay
-    const roiPerYear = roiPerDay * 365
-
-    // console.log("rewards:      ", rewards);
-    // console.log("roiPerBlock:  ", roiPerBlock);
-    // console.log("roiPerDay:    ", roiPerDay);
-    // console.log("roiPerYear:   ", roiPerYear);
-
-    const position = positions.find((position) => position.id === pool.id && position.chef === pool.chef)
-
-    return {
-      ...pool,
-      ...position,
-      pair: {
-        ...pair,
-        decimals: pair.type === PairType.KASHI ? Number(pair.asset.tokenInfo.decimals) : 18,
-        type,
-      },
-      balance,
-      roiPerYear,
-      rewards,
-    }
-  }
-
   const FILTER = {
-    buy: (gridexList) => gridexList.moneyAmount !== 0, // buscar alguna estadistica que sea unica de los gridex activos y ponerlo aca
-    portfolio: (gridexList) => gridexList.stockAmount !== 0, // buscar alguna estadistica que sea unica de los gridex propios y ponerlo aca
+    buy: (gridexList) => gridexList.moneyAmount !== 0, // buscar alguna estadistica que sea unica de los gridex activos para comprar y ponerlo aca 
+    portfolio: (gridexList) => gridexList.index !== -1, // buscar alguna estadistica que sea unica de los gridex propios y ponerlo aca
   }
 
   const data = gridexList
-    // .filter((farm) => {
-    //   return (
-    //     (swapPairs && swapPairs.find((pair) => pair.id === farm.pair)) ||
-    //     (kashiPairs && kashiPairs.find((pair) => pair.id === farm.pair))
-    //   )
-    // })
-    // .map(map)
     .filter((farm) => {
       return type in FILTER ? FILTER[type](farm) : true
     })
@@ -545,6 +232,8 @@ export default function Gridex(): JSX.Element {
     options,
   })
 
+  console.log('result:', result);
+  
   const basePath = 'gridex/gridex-list'
 
   const optionsMenu = [
@@ -569,37 +258,32 @@ export default function Gridex(): JSX.Element {
     }
   ]
 
-  const [robot, setRobot] = useState([])
-  function listRobotsForBuying() {
-    console.log("sis");
+  // const [robot, setRobot] = useState([])
+  // function listRobotsForBuying() {
+  //   console.log("sis");
 
-    useEffect(() => {
-      const robotsCall = async () => {
-        alert("haciedo la call")
-        try{
-        var robots = await getAllRobots("");
-        console.log("Robots:", robots);
-        if (robots.length == 0) {
+  //   useEffect(() => {
+  //     const robotsCall = async () => {
+  //       alert("haciedo la call")
+  //       try{
+  //       var robots = await getAllRobots("");
+  //       console.log("Robots:", robots);
+  //       if (robots.length == 0) {
 
-          return alert("No Robots availables")
-        }
-        robots.sort(function (a, b) {
-          return a.highPrice - b.highPrice;
-        });
-      alert("call hecha");
-      robotsCall();}catch(e){
-        alert("Fallo en la call")
-        alert(e);
-      }}
+  //         return alert("No Robots availables")
+  //       }
+  //       robots.sort(function (a, b) {
+  //         return a.highPrice - b.highPrice;
+  //       });
+  //     alert("call hecha");
+  //     robotsCall();}catch(e){
+  //       alert("Fallo en la call")
+  //       alert(e);
+  //     }}
       
-    }
-      , []);
-
-    
-    
-  }
-
-
+  //   }
+  //     , []);
+  // }
 
   return (
     <Container
@@ -633,7 +317,7 @@ export default function Gridex(): JSX.Element {
               // onOtherCurrencySelect={handleCurrencyBSelect}
               // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
               showCommonBases
-              searchFunction={ listRobotsForBuying }
+              searchFunction={getRobots}
             />
 
             <div>
@@ -655,25 +339,6 @@ export default function Gridex(): JSX.Element {
           </div>
           :
           <>
-            <div className='w-full'>
-              <BuyRobotsPanel
-                id="stock-robot-search"
-                showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
-                onUserInput={onFieldBInput}
-                onMax={() => {
-                  onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
-                }}
-                value={formattedAmounts[Field.CURRENCY_B]}
-                onCurrencySelect={handleCurrencyASelect}
-                onCurrencyBSelect={handleCurrencyBSelect}
-                currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
-                currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
-                // onOtherCurrencySelect={handleCurrencyBSelect}
-                // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
-                showCommonBases
-              />
-            </div>
-
             <NavLink href="/gridex/create-gridex">
               <Button
                 color='border'
@@ -691,26 +356,9 @@ export default function Gridex(): JSX.Element {
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
 
-        <RobotList robots={result} term={term} />
+        <RobotList stockAddress={stockAddress} moneyAddress={moneyAddress} robots={result} term={term} />
       </div>
-
-      <BuyRobotsPanel
-        id="stock-robot-search"
-        showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
-        onUserInput={onFieldBInput}
-        onMax={() => {
-          onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
-        }}
-        value={formattedAmounts[Field.CURRENCY_B]}
-        onCurrencySelect={handleCurrencyASelect}
-        onCurrencyBSelect={handleCurrencyBSelect}
-        currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
-        currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
-        // onOtherCurrencySelect={handleCurrencyBSelect}
-        // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
-        showCommonBases
-        searchFunction={listRobotsForBuying}
-      />
     </Container>
   )
 }
+

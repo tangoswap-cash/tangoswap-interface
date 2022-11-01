@@ -106,8 +106,9 @@ export default function CreateGridexPage() {
 
   const stock = currenciesSelected?.currencyA
   const money = currenciesSelected?.currencyB
-  const stockAddress = stock?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : stock?.address
-  const moneyAddress = money?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : money?.address
+  const BCHADDRESS = '0x0000000000000000000000000000000000002711'
+  const stockAddress = stock?.symbol == 'BCH' ? BCHADDRESS : stock?.address
+  const moneyAddress = money?.symbol == 'BCH' ? BCHADDRESS : money?.address
 
   const stockContract = useTokenContract(stock?.address) 
   const moneyContract = useTokenContract(money?.address) 
@@ -130,11 +131,11 @@ export default function CreateGridexPage() {
     var robotInfo = stockAmountBN.mul(BigNumber.from(2).pow(96)).add(moneyAmountBN)
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(highPrice)
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(lowPrice)
-   
-    console.log(highPrice);
-    console.log(lowPrice);
-
-    await marketContract.createRobot(robotInfo).then((response) => {
+  
+    let val = null
+    val = stockAddress == BCHADDRESS ? {value: stockAmountBN} : moneyAddress == BCHADDRESS ? {value: moneyAmountBN} : null
+    
+    await marketContract.createRobot(robotInfo, val).then((response) => {
       addTransaction(response, {
         summary: `Create Robot`
       })
@@ -205,19 +206,20 @@ export default function CreateGridexPage() {
     marketAddress
   )
   
+  const nativeSymbol = 'BCH' || 'WBCH'
 
   const showStockApprove =
   chainId &&
   currenciesSelected?.currencyA &&
   parsedAmounts[Field.CURRENCY_A] &&
-  stock?.symbol !== 'BCH' &&
+  stock?.symbol !== nativeSymbol &&
   (stockApprovalState === ApprovalState.NOT_APPROVED || stockApprovalState === ApprovalState.PENDING)
 
   const showMoneyApprove =
   chainId &&
   currenciesSelected?.currencyB &&
   parsedAmounts[Field.CURRENCY_B] &&
-  money?.symbol !== 'BCH' &&
+  money?.symbol !== nativeSymbol &&
   (moneyApprovalState === ApprovalState.NOT_APPROVED || moneyApprovalState === ApprovalState.PENDING)
   
   const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
