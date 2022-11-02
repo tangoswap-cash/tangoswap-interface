@@ -24,7 +24,7 @@ const defaultOptions = [
     divider: true
   },
   {
-    href: `/gridex/buy-gridex`,
+    href: `/${basePath}/buy-gridex`,
     label: 'Buy Tango CMM',
     exact: true
   }]
@@ -43,7 +43,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
           activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
         >
           <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
-            Your Tango CMM
+          {i18n._(t` Your Tango CMM`)} 
           </a>
         </NavLink>
       ) : (
@@ -51,26 +51,17 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
           className="striped-background text-secondary flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800"
           onClick={toggleWalletModal}
         >
-          Your Tango CMM
+        {i18n._(t` Your Tango CMM`)}  
         </a>
       )}
-      <NavLink
-          exact
-          href={`/gridex/on-sale`}
-          activeClassName="bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
-        >
-          <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
-            Tango CMM on Sale
-          </a>
-      </NavLink>
-
+     
       <div className="hidden md:block w-full h-0 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20" />
 
       <NavLink
-        href="/gridex/buy-gridex"
+        href={`/${basePath}/?filter=buy`}
         activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
       >
-        <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
+        <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800 font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900">
           {i18n._(t`Buy Tango CMM`)}
         </a>
       </NavLink>

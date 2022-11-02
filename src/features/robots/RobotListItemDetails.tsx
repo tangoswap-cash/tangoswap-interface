@@ -69,64 +69,24 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <Disclosure.Panel className="flex flex-col w-full border-t-0 rounded rounded-t-none bg-dark-800" static>
-        <div className="grid grid-cols-2 gap-4 p-4 pt-0">
-          <div className="col-span-2 text-center md:col-span-1 pt-4">
-            <div className="relative flex flex-col items-start w-full mb-4">
-            <label className="text-sm text-secondary py-1">Min Price to Buy</label>
-              <Input.Numeric
-                className="w-full p-3 pr-20 rounded bg-dark-700 focus:ring focus:ring-blue"
-                value={minValue}
-                onUserInput={setMinValue}
-                
-              />
-            </div>
-          </div>
-          <div className="col-span-2 text-center md:col-span-1 pt-4">
-            <div className="relative flex flex-col items-start w-full mb-4">
-              <label className="text-sm text-secondary py-1">Max Price to Sell</label>
-              <Input.Numeric
-                className="w-full p-3 pr-20 rounded bg-dark-700 focus:ring focus:ring-pink"
-                value={maxValue}
-                onUserInput={(value) => {
-                  setMaxValue(value)
-                }}
-                
-              />
-            </div>
-          </div>
-        </div>
+      <Disclosure.Panel className="w-full" static>
+        
         {/* robot.pending !== 0 ?  */}
           {(
-              <div className="flex pb-4 gap-4 px-4">
-                <div>
+              
+                
                   <Button
                     color='red'
                     onClick={DeleteRobot}
+                    className={`w-full mx-auto`}
                   >
                     {i18n._(t`Delete Tango CMM`)}
                   </Button>
-                </div>
-                <div>
-                  <Button
-                    className='bg-green text-black'
-                    onClick={handleSellRobot}
-                  >
-                    {i18n._(t`Sell Tango CMM`)}
-                  </Button>
-                </div>
-              </div>
+                
+              
+             
             ) }
-             {/*: (    
-              <div className="px-4 pb-4">
-                <Button
-                  color="gradient"
-                  onClick={handleBuyRobot}
-                >
-                  {i18n._(t`Buy Gridex`)}
-                </Button>
-              </div>
-            )*/}
+
           
       </Disclosure.Panel>
     </Transition>

@@ -246,44 +246,12 @@ export default function Gridex(): JSX.Element {
       divider: true
     },
     {
-      href: `/${basePath}/on-Sale`,
-      label: 'Tango CMM on Sale'
-    }, {
-      divider: true
-    },
-    {
       href: `/gridex/buy-gridex`,
       label: 'Buy Tango CMM',
       exact: true
     }
   ]
 
-  // const [robot, setRobot] = useState([])
-  // function listRobotsForBuying() {
-  //   console.log("sis");
-
-  //   useEffect(() => {
-  //     const robotsCall = async () => {
-  //       alert("haciedo la call")
-  //       try{
-  //       var robots = await getAllRobots("");
-  //       console.log("Robots:", robots);
-  //       if (robots.length == 0) {
-
-  //         return alert("No Robots availables")
-  //       }
-  //       robots.sort(function (a, b) {
-  //         return a.highPrice - b.highPrice;
-  //       });
-  //     alert("call hecha");
-  //     robotsCall();}catch(e){
-  //       alert("Fallo en la call")
-  //       alert(e);
-  //     }}
-      
-  //   }
-  //     , []);
-  // }
 
   return (
     <Container
@@ -314,8 +282,6 @@ export default function Gridex(): JSX.Element {
               onCurrencyBSelect={handleCurrencyBSelect}
               currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
               currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
-              // onOtherCurrencySelect={handleCurrencyBSelect}
-              // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
               showCommonBases
               searchFunction={getRobots}
             />

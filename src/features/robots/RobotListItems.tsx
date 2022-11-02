@@ -13,6 +13,7 @@ import { usePendingSushi } from '../onsen/hooks'
 import usePendingReward from '../onsen/usePendingReward'
 import RobotListItemDetails from './RobotListItemDetails'
 import { PairType } from '../onsen/enum'
+import { useState } from 'react'
 
 const RobotListItems = ({ stockAddress, moneyAddress, robot, ...rest }) => {
   const token0 = robot?.stock
@@ -22,7 +23,6 @@ const RobotListItems = ({ stockAddress, moneyAddress, robot, ...rest }) => {
   const rewardAmount = usePendingReward(robot)
 
   const { i18n } = useLingui()
-
   return (
     <Disclosure {...rest}
     
@@ -81,10 +81,13 @@ const RobotListItems = ({ stockAddress, moneyAddress, robot, ...rest }) => {
                     ))}
                   </div>
                 </div>
-              ) : (
+              ) : (<div>
                 <div className="flex-row items-center justify-center flex pl-3 font-bold text-sm">
-                  {i18n._(t`Balance`)}
-                  {/* <DotsHorizontalIcon width={22} height={22}/> */}
+                  {i18n._(t`Stock: ${robot.stockAmount}`)}
+                </div>
+                <div className="flex-row items-center justify-center flex pl-3 font-bold text-sm">
+                {i18n._(t`Money: ${robot.stockAmount}`)}
+                </div>
                 </div>
               )}
             </div>

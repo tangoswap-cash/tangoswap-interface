@@ -60,7 +60,7 @@ const RobotList = ({ stockAddress, moneyAddress, robots, term }) => {
         hasMore={true}
         loader={null}
       >
-        <div className="space-y-5">
+        <div className="space-y-1">
           {items.slice(0, numDisplayed).map((robot, index) => (
             <RobotListItems stockAddress={stockAddress} moneyAddress={moneyAddress} key={index} robot={robot} />
           ))}

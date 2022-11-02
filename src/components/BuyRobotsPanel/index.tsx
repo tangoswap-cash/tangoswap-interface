@@ -259,10 +259,9 @@ export default function BuyRobotsPanel({
           className='h-12 w-10/12 ml-2 text-sm  sm:pr-14 sm:text-sm  sm:w-1/12 sm:text-center '
           onClick={searchFunction}
         >{i18n._(t`Search`)}
-          {/*{<SearchIcon size={24} />}*/}
         </Button>
       </div>
-      <div className='ml-1 mt-1'>
+      <div className='ml-2 mt-4'>
         <button className='text-sm hover:text-high-emphesis' onClick={() => setGridexInfoOpen(true)}>What is Tango CMM?</button>
         <GridexInfo isOpen={gridexInfoOpen} setIsOpen={setGridexInfoOpen} />
       </div>
