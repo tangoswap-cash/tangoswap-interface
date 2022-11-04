@@ -246,7 +246,7 @@ export default function Gridex(): JSX.Element {
       divider: true
     },
     {
-      href: `/gridex/buy-gridex`,
+      href: `/${basePath}/buy-gridex`,
       label: 'Buy Tango CMM',
       exact: true
     }
@@ -263,7 +263,7 @@ export default function Gridex(): JSX.Element {
         <title>Tango CMM | Tango</title>
         <meta key="description" name="description" content="Farm TANGO" />
       </Head>
-      <div className={classNames('px-3 md:px-0 lg:block md:col-span-1')}>
+      <div className={classNames('px-3 md:px-0 mb-8 lg:block md:col-span-1')}>
         <GridexMenu positionsLength={positions.length} options={optionsMenu} />
       </div>
 

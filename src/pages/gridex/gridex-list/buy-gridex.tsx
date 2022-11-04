@@ -1,4 +1,4 @@
-import React,{ useState } from "react"
+import React, { useState } from "react"
 import NavLink from "../../../components/NavLink"
 import Head from "next/head"
 import Container from "../../../components/Container"
@@ -9,11 +9,16 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../.
 import { useCurrency } from '../../../hooks/Tokens'
 import { useRouter } from 'next/router'
 import { Field } from '../../../state/mint/actions'
-import { currencyId, maxAmountSpend } from '../../../functions/currency'
+import { currencyId } from '../../../functions/currency'
 import BuyRobotsPanel from "../../../components/BuyRobotsPanel"
 import { i18n } from "@lingui/core"
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
+import GridexMenu from '../../../features/onsen/GridexMenu'
+import { classNames, maxAmountSpend } from '../../../functions'
+import { usePositions, usePendingSushi } from '../../../features/onsen/hooks'
+import { useActiveWeb3React, useFactoryGridexContract, useFuse, useGridexMarketContract, useTokenContract } from '../../../hooks'
+import { Twitter } from "react-feather"
 
 export default function BuyGridex() {
   const { i18n } = useLingui()
@@ -21,12 +26,12 @@ export default function BuyGridex() {
 
   const handleCurrencyASelect = (currencyA: Currency) => {
     // console.log('currencyA:', currencyA)
-    setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
+    setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
   }
-  const handleCurrencyBSelect = (currencyB: Currency) => {    
-    setCurrenciesSelected({...currenciesSelected, currencyB: currencyB})      
+  const handleCurrencyBSelect = (currencyB: Currency) => {
+    setCurrenciesSelected({ ...currenciesSelected, currencyB: currencyB })
   }
-  
+
   const router = useRouter()
   const tokens = router.query.tokens
   const [currencyIdA, currencyIdB] = (tokens as string[]) || [undefined, undefined]
@@ -76,47 +81,81 @@ export default function BuyGridex() {
     {}
   )
 
+  const { account, chainId } = useActiveWeb3React()
+
+  const positions = usePositions(chainId)
+
+  const basePath = 'gridex/gridex-list'
+
+  const optionsMenu = [
+    {
+      href: `/${basePath}`,
+      label: 'Your Tango CMM',
+      exact: true
+    },
+    {
+      divider: true
+    },
+    {
+      href: `/${basePath}/buy-gridex`,
+      label: 'Buy Tango CMM',
+      exact: true
+    }
+  ]
+
+  // function getRobots() {
+  //   getAllRobots(account).then(result => setGridexList(result))  
+  // }
+
+
   // console.log(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '');
 
   return (<>
-    <Head>
-      <title>Buy  | Tango CMM</title>
-      <meta
-        key="description"
-        name="description"
-        content="Add liquidity to the TANGOswap CMM to enable gas optimized and low slippage trades across countless networks"
-      />
-    </Head>
+  <Container
+      id="robots-page"
+      className="lg:grid lg:grid-cols-4 h-full py-4 mx-auto md:py-8 lg:py-12 gap-9"
+      maxWidth="7xl"
+    >
+      <Head>
+        <title>Buy | Tango CMM</title>
+        <meta key="description" name="description" content="Farm TANGO" />
+      </Head>
+      <div className={classNames('px-3 md:px-0 mb-8 lg:block md:col-span-1')}>
+        <GridexMenu positionsLength={positions.length} options={optionsMenu} />
+      </div>
+        <div className={classNames('space-y-6 lg:col-span-3')}>
+          <h1 className="lg:mx-0 mx-auto border-b-2 border-white w-64 text-xl font-bold">Search Tango CMM on sale</h1>
 
-    <Container id="buy-robot-page" className=" py-4 space-y-6 w-4/4 md:py-8 lg:py-12" maxWidth="2xl">
-    
-   
-      <DoubleGlowShadow className="w-full h-96">
-      <h1 className="text-4xl pb-2 font-bold text-center border-b-2 border-gray-400 border-separate m-3 mb-9 ">{i18n._(t`Search Your Tango CMM`)}</h1>
-        <BuyRobotsPanel
-        id="stock-robot-search"
-        showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
-        onUserInput={onFieldBInput}
-        onMax={() => {
-          onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
-        }}
-        value={formattedAmounts[Field.CURRENCY_B]}
-        onCurrencySelect={handleCurrencyASelect}
-        onCurrencyBSelect={handleCurrencyBSelect}
-        currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
-        currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
-        // onOtherCurrencySelect={handleCurrencyBSelect}
-        // otherCurrency={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
-        showCommonBases
-        />
-        
-      </DoubleGlowShadow>
-    </Container>
-  </>
+          <div className=' ml-4  w-4/5 lg:mx-0 md:mx-auto border-inset lg:border-4 border-blue rounded-2xl sm:flex sm:gap-2'>
+            <BuyRobotsPanel
+              id="stock-robot-search"
+              showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
+              onUserInput={onFieldBInput}
+              onMax={() => {
+                onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+              }}
+              value={formattedAmounts[Field.CURRENCY_B]}
+              onCurrencySelect={handleCurrencyASelect}
+              onCurrencyBSelect={handleCurrencyBSelect}
+              currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
+              currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+              showCommonBases
+              // searchFunction={getRobots}
+            />
 
-  )
+           </div>
+
+            </div>
+
+          
+        </Container>
+
+
+      </>
+
+      )
 }
-{/* <NavLink href="/robots/robots-list/buy"> 
+      {/* <NavLink href="/robots/robots-list/buy"> 
     
     <Button
       variant='outlined'
@@ -132,7 +171,7 @@ export default function BuyGridex() {
 
 
 
-{/*
+      {/*
 <div id="options-container" className="flex items-center bg-blue text-black ">
             <label className="text-green mr-4">Stock</label>
             <input type="text" className="buy-options  bg-gray-300"/>
