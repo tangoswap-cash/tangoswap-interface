@@ -196,7 +196,7 @@ export default function Gridex(): JSX.Element {
     return allRobots
   }
 
-  function getRobots() {
+  function getRobots() { 
     getAllRobots("").then(result => setGridexList(result))  
   }
 
@@ -215,7 +215,7 @@ export default function Gridex(): JSX.Element {
   const FILTER = {
     sell: (gridexList) => gridexList.moneyAmount !== 0,
     buy: (gridexList) => gridexList.stockAmount !== 0, 
-    portfolio: (gridexList) => gridexList.index !== -1, 
+    portfolio: (gridexList) => gridexList.ownerAddr == account, 
   } 
 
   const data = gridexList
