@@ -197,7 +197,7 @@ export default function Gridex(): JSX.Element {
   }
 
   function getRobots() {
-    getAllRobots(account).then(result => setGridexList(result))  
+    getAllRobots("").then(result => setGridexList(result))  
   }
 
   console.log(gridexList);
@@ -213,9 +213,10 @@ export default function Gridex(): JSX.Element {
   const positions = usePositions(chainId)
 
   const FILTER = {
-    buy: (gridexList) => gridexList.moneyAmount !== 0, // buscar alguna estadistica que sea unica de los gridex activos para comprar y ponerlo aca 
-    portfolio: (gridexList) => gridexList.index !== -1, // buscar alguna estadistica que sea unica de los gridex propios y ponerlo aca
-  }
+    sell: (gridexList) => gridexList.moneyAmount !== 0,
+    buy: (gridexList) => gridexList.stockAmount !== 0, 
+    portfolio: (gridexList) => gridexList.index !== -1, 
+  } 
 
   const data = gridexList
     .filter((farm) => {

@@ -53,11 +53,20 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
 
       <NavLink
         exact
-        href={`/${basePath}/buy-gridex?filter=buy`}
+        href={`/${basePath}/?filter=buy`}
         activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
       >
         <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800  focus:border-gradient-r-blue-pink-dark-900  ">
           {i18n._(t`Buy Tango CMM`)}
+        </a>
+      </NavLink>
+      <NavLink
+        exact
+        href={`/${basePath}/?filter=sell`}
+        activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
+      >
+        <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800  focus:border-gradient-r-blue-pink-dark-900  ">
+          {i18n._(t`Sell Tango CMM`)}
         </a>
       </NavLink>
       {/* <NavLink
