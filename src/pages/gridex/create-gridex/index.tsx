@@ -234,14 +234,13 @@ export default function CreateGridexPage() {
         <meta
           key="description"
           name="description"
-          content="Add liquidity to the TANGOswap CMM to enable gas optimized and low slippage trades across countless networks"
+          content="Add liquidity to the TANGO CMM to enable gas optimized and low slippage trades across countless networks"
         />
       </Head>
 
       <Container id="create-robot-page" className="py-4 space-y-6 md:py-8 lg:py-12" maxWidth="2xl">
         <div className="flex items-center justify-between mb-5">
-          {/* <NavLink href="/robots/robots-list?filter=portfolio"> */}
-          <NavLink href="/gridex/gridex-list">
+          <NavLink href="/gridex/gridex-list?filter=portfolio">
             <a className="flex items-center space-x-2 text-base font-medium text-center cursor-pointer text-secondary hover:text-high-emphesis">
               <span>{i18n._(t`View Your Tango CMM`)}</span>
               <svg

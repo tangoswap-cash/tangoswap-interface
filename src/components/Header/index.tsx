@@ -128,7 +128,7 @@ function AppBar(): JSX.Element {
                         </NavLink>
                       )}
                       {chainId && featureEnabled(Feature.GRIDEX, chainId) && (
-                        <NavLink href={'/gridex'}>
+                        <NavLink href={'/gridex/gridex-list?filter=portfolio'}>
                           <a
                             id={`gridex-nav-link`}
                             className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
@@ -341,7 +341,7 @@ function AppBar(): JSX.Element {
                   </Link>
                 )}
                 {chainId && featureEnabled(Feature.GRIDEX, chainId) && (
-                        <Link href={'/gridex'}>
+                        <Link href={'/gridex/gridex-list?filter=portfolio'}>
                           <a
                             id={`gridex-nav-link`}
                             className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
