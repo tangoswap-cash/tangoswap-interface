@@ -70,24 +70,40 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
       leaveTo="opacity-0"
     >
       <Disclosure.Panel className="w-full" static>
-        
-        {/* robot.pending !== 0 ?  */}
-          {(
-              
-                
-                  <Button
-                    color='red'
-                    onClick={DeleteRobot}
-                    className={`w-full mx-auto`}
-                  >
-                    {i18n._(t`Delete Tango CMM`)}
-                  </Button>
-                
-              
-             
-            ) }
-
-          
+        {
+          robot.ownerAddr == account &&
+          (
+            <Button
+              color='red'
+              onClick={DeleteRobot}
+              className={`w-full mx-auto`}
+            >
+              {i18n._(t`Delete Tango CMM`)}
+            </Button>
+          ) 
+          ||
+          robot.filter == 'buy' && 
+          (
+            <Button
+              onClick={DeleteRobot}
+              className={`w-full mx-auto`}
+              style={{ backgroundColor: '#060', color: '#FFF' }}
+            >
+              {i18n._(t`Buy Money from Tango CMM`)}
+            </Button>
+          ) 
+          ||
+          robot.filter == 'sell' && 
+          (
+            <Button
+              onClick={DeleteRobot}
+              className={`w-full mx-auto`}
+              style={{ backgroundColor: '#060', color: '#FFF' }}
+            >
+              {i18n._(t`Sell Stock to Tango CMM`)}
+            </Button>
+          )
+        }
       </Disclosure.Panel>
     </Transition>
   )

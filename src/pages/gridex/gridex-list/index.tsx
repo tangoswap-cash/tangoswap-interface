@@ -176,7 +176,8 @@ export default function Gridex(): JSX.Element {
         moneyAmount: null,
         stockAmount: null,
         stock: stock,
-        money: money
+        money: money,
+        filter: ''
       }
       robot.shortId = fullId.mod(twoPow96).toNumber()
       robot.ownerAddr = ethers.utils.getAddress(fullId.div(twoPow96).toHexString())
@@ -199,8 +200,6 @@ export default function Gridex(): JSX.Element {
   function getRobots() { 
     getAllRobots("").then(result => setGridexList(result))  
   }
-
-  console.log(gridexList);
   // se necesita Stock amount, Money Amount, highprice, lowprice
 
   const type = router.query.filter as string
@@ -212,12 +211,17 @@ export default function Gridex(): JSX.Element {
 
   const positions = usePositions(chainId)
 
+ 
+
   const FILTER = {
     sell: (gridexList) => gridexList.moneyAmount !== 0,
     buy: (gridexList) => gridexList.stockAmount !== 0, 
     portfolio: (gridexList) => gridexList.ownerAddr == account, 
   } 
 
+// gridexList.filter = 'sell' 
+// gridexList.filter = 'buy'
+  
   const data = gridexList
     .filter((farm) => {
       return type in FILTER ? FILTER[type](farm) : true
