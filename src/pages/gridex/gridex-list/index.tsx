@@ -218,6 +218,7 @@ export default function Gridex(): JSX.Element {
     portfolio: (gridexList) => gridexList.ownerAddr == account, 
   } 
 
+
   const data = gridexList
     .filter((farm) => {
       return type in FILTER ? FILTER[type](farm) : true
@@ -254,6 +255,7 @@ export default function Gridex(): JSX.Element {
   ]
 
 
+
   return (
     <Container
       id="robots-page"
@@ -262,14 +264,14 @@ export default function Gridex(): JSX.Element {
     >
       <Head>
         <title>Tango CMM | Tango</title>
-        <meta key="description" name="description" content="Farm TANGO" />
+        <meta key="description" name="description" content="TANGO CMM List" />
       </Head>
       <div className={classNames('px-3 md:px-0 mb-8 lg:block md:col-span-1')}>
         <GridexMenu positionsLength={positions.length} options={optionsMenu} />
       </div>
 
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
-        {!isMobile ?
+
           <div className='w-full sm:flex sm:gap-2'>
             <BuyRobotsPanel
               id="stock-robot-search"
@@ -304,19 +306,7 @@ export default function Gridex(): JSX.Element {
             </div>
 
           </div>
-          :
-          <>
-            <NavLink href="/gridex/create-gridex">
-              <Button
-                color='border'
-                className='w-[190px] mx-2 text-[#E3E3E3] border-gradient-r-blue-pink-dark-900 ring-2 ring-gray-600 hover:ring-white flex items-center gap-2'
-              >
-                <PlusIcon width={16} height={16} />
-                {i18n._(t`Create Tango CMM`)}
-              </Button>
-            </NavLink>
-          </>
-        }
+         
 
         <div className="hidden md:block flex items-center text-lg font-bold text-high-emphesis whitespace-nowrap">
           Tango CMM list{' '}

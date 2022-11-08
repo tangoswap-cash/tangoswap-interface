@@ -234,7 +234,7 @@ export default function CreateGridexPage() {
         <meta
           key="description"
           name="description"
-          content="Add liquidity to the TANGOswap CMM to enable gas optimized and low slippage trades across countless networks"
+          content="Add liquidity to the TANGO CMM to enable gas optimized and low slippage trades across countless networks"
         />
       </Head>
 
