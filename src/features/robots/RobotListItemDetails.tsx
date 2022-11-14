@@ -23,7 +23,7 @@ import useMasterChef from '../onsen/useMasterChef'
 import usePendingReward from '../onsen/usePendingReward'
 import { useFactoryGridexContract, useGridexMarketContract } from '../../hooks'
 
-const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
+const RobotListItemDetails = ({ stockAddress, moneyAddress, robot }) => {
   const { i18n } = useLingui()
   const [marketAddress, setMarketAddress] = useState('')
 
@@ -50,15 +50,15 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
   const handleBuyRobot = () => {
     console.log('Borrado')
   }
-  
+
   const DeleteRobot = async () => {
     await marketContract.deleteRobot(robot.index, robot.fullId).then((response) => {
       addTransaction(response, {
         summary: `Delete Robot`
-      })      
+      })
     });
   }
-  
+
   return (
     <Transition
       show={true}
@@ -69,40 +69,40 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <Disclosure.Panel className="w-full" static>
+      <Disclosure.Panel className="w-full mb-8" static>
         {
-          robot.ownerAddr == account &&
-          (
-            <Button
-              color='red'
-              onClick={DeleteRobot}
-              className={`w-full mx-auto`}
-            >
-              {i18n._(t`Delete Tango CMM`)}
-            </Button>
-          ) 
-          ||
-          robot.filter == 'buy' && 
-          (
-            <Button
-              onClick={DeleteRobot}
-              className={`w-full mx-auto`}
-              style={{ backgroundColor: '#060', color: '#FFF' }}
-            >
-              {i18n._(t`Buy Money from Tango CMM`)}
-            </Button>
-          ) 
-          ||
-          robot.filter == 'sell' && 
-          (
-            <Button
-              onClick={DeleteRobot}
-              className={`w-full mx-auto`}
-              style={{ backgroundColor: '#060', color: '#FFF' }}
-            >
-              {i18n._(t`Sell Stock to Tango CMM`)}
-            </Button>
-          )
+
+          window.location.href.endsWith("filter=portfolio") ?
+            (
+              <Button
+                color='red'
+                onClick={DeleteRobot}
+                className={`w-full mb-8`}
+              >
+                {i18n._(t`Delete Tango CMM`)}
+              </Button>
+            )
+            :
+            window.location.href.endsWith("filter=buy") ?
+              (
+                <Button
+                  onClick={DeleteRobot}
+                  className={`w-full mx-auto`}
+                  style={{ backgroundColor: '#060', color: '#FFF' }}
+                >
+                  {i18n._(t`Buy Money from Tango CMM`)}
+                </Button>
+              ) :
+              window.location.href.endsWith("filter=sell") ?
+                (
+                  <Button
+                    onClick={DeleteRobot}
+                    className={`w-full mx-auto`}
+                    style={{ backgroundColor: '#d94', color: '#FFF' }}
+                  >
+                    {i18n._(t`Sell Stock to Tango CMM`)}
+                  </Button>
+                ) : null
         }
       </Disclosure.Panel>
     </Transition>
