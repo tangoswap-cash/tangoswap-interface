@@ -36,7 +36,7 @@ import dynamic from 'next/dynamic'
 import { getAddress } from '@ethersproject/address'
 import useFarmRewards from '../../../hooks/useFarmRewards'
 import usePool from '../../../hooks/usePool'
-import { useTokenBalancesWithLoadingIndicator } from '../../../state/wallet/hooks'
+import { useCurrencyBalance, useTokenBalancesWithLoadingIndicator } from '../../../state/wallet/hooks'
 import { usePositions, usePendingSushi } from '../../../features/onsen/hooks'
 import { useRouter } from 'next/router'
 import { updateUserFarmFilter } from '../../../state/user/actions'
@@ -98,7 +98,6 @@ export default function Gridex(): JSX.Element {
   const [currenciesSelected, setCurrenciesSelected] = useState(null);
 
   const handleCurrencyASelect = (currencyA: Currency) => {
-    // console.log('currencyA:', currencyA)
     setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
     getRobots()
   }
@@ -267,6 +266,9 @@ export default function Gridex(): JSX.Element {
    
   }
 
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyA ?? undefined)
+  const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyB ?? undefined)
+
   // meter la funcion search en el currencySelect en robotspanel
   // poner abajo de todo el what is Tango CMM
   // poner el Input Numeric en robotListItemsDetails
@@ -286,22 +288,16 @@ export default function Gridex(): JSX.Element {
 
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
 
-        <div className='w-full sm:flex sm:gap-2'>
-          <BuyRobotsPanel
-            id="stock-robot-search"
-            showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
-            onUserInput={onFieldBInput}
-            onMax={() => {
-              onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
-            }}
-            value={formattedAmounts[Field.CURRENCY_B]}
-            onCurrencySelect={handleCurrencyASelect}
-            onCurrencyBSelect={handleCurrencyBSelect}
-            currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
-            currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
-            showCommonBases
-            searchFunction={getRobots}
-          />
+          <div className='w-full sm:flex sm:gap-2'>
+            <BuyRobotsPanel
+              id="stock-robot-search"
+              onCurrencySelect={handleCurrencyASelect}
+              onCurrencyBSelect={handleCurrencyBSelect}
+              currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
+              currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+              showCommonBases
+              searchFunction={getRobots}
+            />
 
         
           <div className='flex gap-2 my-6  sm:m-0'>
@@ -355,7 +351,23 @@ export default function Gridex(): JSX.Element {
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
 
-        <RobotList stockAddress={stockAddress} moneyAddress={moneyAddress} robots={result} term={term} inputValue={formattedAmounts[Field.CURRENCY_B]} RobotsMap={RobotsMap} />
+        <RobotList 
+        stockAddress={stockAddress} 
+        moneyAddress={moneyAddress} 
+        robots={result} 
+        term={term} 
+        inputValue={formattedAmounts[Field.CURRENCY_B]} 
+        RobotsMap={RobotsMap} 
+        showMaxButton={!atMaxAmounts[Field.CURRENCY_B]} 
+        onUserInput={onFieldBInput}
+        onMax={() => {
+          onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+        }}
+        currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
+        currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+        selectedCurrencyBBalance={selectedCurrencyBBalance}
+        selectedCurrencyBalance={selectedCurrencyBalance}
+        />
       </div>
     </Container>
   )

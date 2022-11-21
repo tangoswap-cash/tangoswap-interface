@@ -19,36 +19,20 @@ import { Search as SearchIcon } from 'react-feather'
 import GridexInfo from '../../modals/GridexModal'
 
 interface CurrencyInputPanelProps {
-  value?: string
-  onUserInput?: (value: string) => void
-  onMax?: () => void
-  showMaxButton: boolean
-  label?: string
   onCurrencySelect?: (currency: Currency) => void
   onCurrencyBSelect?: (currency: Currency) => void
   currency?: Currency | null
   currencyB?: Currency | null
   disableCurrencySelect?: boolean
-  hideBalance?: boolean
   pair?: Pair | null
   hideInput?: boolean
-  fiatValue?: CurrencyAmount<Token> | null
-  priceImpact?: Percent
   id: string
   showCommonBases?: boolean
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
-  locked?: boolean
-  customBalanceText?: string
-  readOnly?: boolean
   searchFunction?: any
 }
 
 export default function BuyRobotsPanel({
-  value,
-  onUserInput,
-  onMax,
-  showMaxButton,
-  label = 'Input',
   onCurrencySelect,
   onCurrencyBSelect,
   currency,
@@ -56,15 +40,8 @@ export default function BuyRobotsPanel({
   disableCurrencySelect = false,
   id,
   showCommonBases,
-  renderBalance,
-  fiatValue,
-  priceImpact,
-  hideBalance = false,
   pair = null, // used for double token logo
   hideInput = false,
-  locked = false,
-  customBalanceText,
-  readOnly = false,
   searchFunction
 }: CurrencyInputPanelProps) {
   const { i18n } = useLingui()
@@ -76,8 +53,6 @@ export default function BuyRobotsPanel({
   const [currencySelector, setCurrencySelector] = useState('')
 
   const { account } = useActiveWeb3React()
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-  const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currencyB ?? undefined)
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -210,53 +185,6 @@ export default function BuyRobotsPanel({
           </button>
         </div>
 
-     
-        <div
-          className={activeLink.endsWith('portfolio') ? `hidden` : classNames(
-            'flex items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-3/5'
-          )}
-        >
-          <>
-            {showMaxButton && (
-              <Button
-                onClick={onMax}
-                size="xs"
-                className="text-base font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap"
-              >
-                {i18n._(t`Max`)}
-              </Button>
-            )}
-            <Input.Numeric
-              id="token-amount-input"
-              value={value}
-              onUserInput={(val) => {
-                // console.log('val:', val);
-                onUserInput(val)
-              }}
-              readOnly={readOnly}
-              className= {`w-2/3 h-16 text-base bg-transparent `}
-            />
-            {!hideBalance && currency && selectedCurrencyBBalance ? (
-              <div className="flex flex-col">
-                <div onClick={onMax} className="text-xs  text-right  cursor-pointer text-low-emphesis">
-                  {renderBalance ? (
-                    renderBalance(selectedCurrencyBBalance)
-                  ) : activeLink.endsWith('buy') ? (
-                    <>
-                      {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
-                    </>
-                  ) : activeLink.endsWith('sell') && (
-                    <>
-                      {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBalance, 4)} {currency.symbol}
-                    </>
-                  )}
-                </div>
-                <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
-              </div>
-            ) : null}
-          </>
-        </div>
-      
         <Button
           color={'gradient'}
           size="sm"

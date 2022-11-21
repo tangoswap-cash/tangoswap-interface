@@ -15,7 +15,21 @@ import RobotListItemDetails from './RobotListItemDetails'
 import { PairType } from '../onsen/enum'
 import { useState } from 'react'
 
-const RobotListItems = ({ stockAddress, moneyAddress, robot, inputValue, RobotsMap, ...rest }) => {
+const RobotListItems = ({ 
+  stockAddress, 
+  moneyAddress,
+  robot, 
+  inputValue,
+  RobotsMap, 
+  showMaxButton, 
+  onUserInput, 
+  onMax, 
+  currency, 
+  currencyB, 
+  selectedCurrencyBBalance, 
+  selectedCurrencyBalance,
+  ...rest
+  }) => {
   const token0 = robot?.stock
   const token1 = robot?.money
   
@@ -102,7 +116,19 @@ const RobotListItems = ({ stockAddress, moneyAddress, robot, inputValue, RobotsM
               )}
             </div>
           </Disclosure.Button>
-          {open && <RobotListItemDetails stockAddress={stockAddress} moneyAddress={moneyAddress} robot={robot} inputValue={inputValue} RobotsMap={RobotsMap} />}
+          {open && <RobotListItemDetails stockAddress={stockAddress}
+          moneyAddress={moneyAddress} 
+          robot={robot} 
+          inputValue={inputValue}
+          RobotsMap={RobotsMap} 
+          showMaxButton={showMaxButton} 
+          onUserInput={onUserInput} 
+          onMax={onMax}
+          currency={currency}
+          currencyB={currencyB}
+          selectedCurrencyBBalance={selectedCurrencyBBalance}
+          selectedCurrencyBalance={selectedCurrencyBalance}
+          />}
         </>
       )}
     </Disclosure>
