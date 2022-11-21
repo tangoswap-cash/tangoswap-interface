@@ -55,6 +55,9 @@ import { formatCurrencyAmount } from '../../../functions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
 import BuyRobotsPanel from "../../../components/BuyRobotsPanel"
 import { Field } from '../../../state/burn/actions'
+import Toggle from '../../../components/Toggle'
+import Typography from '../../../components/Typography'
+
 
 function packPrice(price) {
   var effBits = 1
@@ -146,7 +149,7 @@ export default function Gridex(): JSX.Element {
   const money = currenciesSelected?.currencyB
   const stockAddress = stock?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : stock?.address
   const moneyAddress = money?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : money?.address
-  
+
   const factoryContract = useFactoryGridexContract()
   factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then(a => setMarketAddress(a))
 
@@ -154,7 +157,7 @@ export default function Gridex(): JSX.Element {
 
   const stockContract = useTokenContract(stock?.address)
   const moneyContract = useTokenContract(money?.address)
-  
+
   const RobotsMapF = {}
 
   async function getAllRobots(onlyForAddr) {
@@ -201,8 +204,8 @@ export default function Gridex(): JSX.Element {
   }
 
 
-  function getRobots() { 
-    getAllRobots("").then(result => setGridexList(result))  
+  function getRobots() {
+    getAllRobots("").then(result => setGridexList(result))
   }
 
   const type = router.query.filter as string
@@ -217,15 +220,15 @@ export default function Gridex(): JSX.Element {
 
   const FILTER = {
     sell: (gridexList) => gridexList.moneyAmount !== 0 && gridexList.ownerAddr !== account,
-    buy: (gridexList) => gridexList.stockAmount !== 0 && gridexList.ownerAddr !== account, 
-    portfolio: (gridexList) => gridexList.ownerAddr == account, 
-  } 
+    buy: (gridexList) => gridexList.stockAmount !== 0 && gridexList.ownerAddr !== account,
+    portfolio: (gridexList) => gridexList.ownerAddr == account,
+  }
 
   const data = gridexList
     .filter((farm) => {
       return type in FILTER ? FILTER[type](farm) : true
     })
-  
+
   const options = {
     keys: ['pair.id', 'pair.token0.symbol', 'pair.token1.symbol'],
     threshold: 0.4,
@@ -237,7 +240,7 @@ export default function Gridex(): JSX.Element {
   })
 
   console.log('result:', result);
-  
+
   const basePath = 'gridex/gridex-list'
 
   const optionsMenu = [
@@ -255,6 +258,13 @@ export default function Gridex(): JSX.Element {
       exact: true
     }
   ]
+  const [marketSelector, toggleMarketSelector] = useState(Boolean)
+
+  function functionSelector() {
+    window.location.href.endsWith( `?filter=sell`) ? toggleMarketSelector(true) : toggleMarketSelector(false);
+    window.location.href.endsWith( `?filter=sell`) ? history.pushState(null, '', `?filter=buy`) : history.pushState(null, '',`?filter=sell`) 
+   
+  }
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyA ?? undefined)
   const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyB ?? undefined)
@@ -289,27 +299,55 @@ export default function Gridex(): JSX.Element {
               searchFunction={getRobots}
             />
 
-            <div>
+        
+          <div className='flex gap-2 my-6  sm:m-0'>
 
+            <NavLink href="/gridex/create-gridex">
+              <Button
+                color='border'
+                className='w-full sm:w-[190px] mx-2 text-[#e3e3e3c6] border-gradient-r-blue-pink-dark-900 ring-2 ring-gray-800 hover:text-gray-200 hover:ring-gray-200 flex items-center gap-2'
+              >
+                <PlusIcon width={16} height={16} />
+                {i18n._(t`Create Tango CMM`)}
+              </Button>
+            </NavLink>
+          </div>
+
+        </div>
+
+
+        <div className="flex px-4 sm:px-0 items-center text-[25px] font-bold text-high-emphesis whitespace-nowrap">
+          Tango CMM list{' '}
+          <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full"}>
+            <div className='ml-4 sm:ml-8'>
+              <Typography variant="sm" className="font-bold text-xl text-primary pr-4">
+                {i18n._(t`Buy `)}{stock?.symbol == undefined ? ` Stock` : ` ${stock?.symbol}`}
+              </Typography>
             </div>
-            <div className='flex gap-2 my-6  sm:m-0'>
-
-              <NavLink href="/gridex/create-gridex">
-                <Button
-                  color='border'
-                  className='w-full sm:w-[190px] mx-2 text-[#e3e3e3c6] border-gradient-r-blue-pink-dark-900 ring-2 ring-gray-800 hover:text-gray-200 hover:ring-gray-200 flex items-center gap-2'
-                >
-                  <PlusIcon width={16} height={16} />
-                  {i18n._(t`Create Tango CMM`)}
-                </Button>
-              </NavLink>
+            <Toggle
+              id="toggle-market-selector"
+              isActive={ window.location.href.endsWith( `?filter=sell`)}
+              toggle={
+                marketSelector
+                  ? () => {
+                    toggleMarketSelector(false);
+                    functionSelector()
+                    
+                  }
+                  : () => {
+                    toggleMarketSelector(true)
+                    functionSelector()
+                  
+                  }
+              }
+            />
+            <div className=''>
+              <Typography variant="sm" className="text-primary  font-bold text-xl pl-4">
+                {i18n._(t`Sell `)}{stock?.symbol == undefined ? ` Stock` : ` ${money?.symbol}`}
+              </Typography>
             </div>
 
           </div>
-         
-
-        <div className="hidden sm:flex items-center text-lg font-bold text-high-emphesis whitespace-nowrap">
-          Tango CMM list{' '}
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
 
