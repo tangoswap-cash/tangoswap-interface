@@ -106,6 +106,8 @@ export default function Gridex(): JSX.Element {
     getRobots()
   }
 
+  console.log(gridexList);
+
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
   const {
@@ -198,18 +200,13 @@ export default function Gridex(): JSX.Element {
       robot.stockAmount = formatUnits(robot.stockAmountBN, moneyDecimals)
       allRobots.push(robot)
       RobotsMapF[robot.fullId] = robot
-      console.log(robot.stock);
-      console.log(robot.money);
     }
     setRobotsMap(RobotsMapF)
     return allRobots
   }
 
   function getRobots() {
-    getAllRobots("").then(result => {
-      setGridexList(result)
-      console.log('result:', result)
-    })
+    getAllRobots("").then(result => setGridexList(result))
   }
 
   const type = router.query.filter as string
@@ -320,7 +317,7 @@ export default function Gridex(): JSX.Element {
           <div className='sm:mr-24'>
           Tango CMM list{' '}
           </div>
-          <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full pl-2 sm:ml-32"}>
+          <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full pl-2 ml-8 sm:ml-96"}>
             <div className=''>
               <Typography variant="sm" className="font-bold text-md sm:text-xl text-primary pr-2 sm:pr-4">
                 {i18n._(t`Buy `)}{stock?.symbol == undefined ? ` Stock` : ` ${stock?.symbol}`}
