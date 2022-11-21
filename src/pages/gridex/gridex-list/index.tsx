@@ -321,7 +321,7 @@ export default function Gridex(): JSX.Element {
           <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full"}>
             <div className='ml-4 sm:ml-8'>
               <Typography variant="sm" className="font-bold text-xl text-primary pr-4">
-                {i18n._(t`Buy `)}{stock?.symbol == undefined ? ` Stock` : ` ${stock.symbol}`}
+                {i18n._(t`Buy `)}{stock?.symbol == undefined ? ` Stock` : ` ${stock?.symbol}`}
               </Typography>
             </div>
             <Toggle
@@ -343,7 +343,7 @@ export default function Gridex(): JSX.Element {
             />
             <div className=''>
               <Typography variant="sm" className="text-primary  font-bold text-xl pl-4">
-                {i18n._(t`Sell `)}{stock?.symbol == undefined ? ` Stock` : ` ${money.symbol}`}
+                {i18n._(t`Sell `)}{stock?.symbol == undefined ? ` Stock` : ` ${money?.symbol}`}
               </Typography>
             </div>
 
