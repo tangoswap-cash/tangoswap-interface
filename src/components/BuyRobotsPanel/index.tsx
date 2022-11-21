@@ -149,7 +149,7 @@ export default function BuyRobotsPanel({
           </button>
         </div>
         {/* Second input */}
-        <div className={classNames(`w-full p-2 sm:w-${activeLink.endsWith('portfolio') ? '6/6' : '2/5'}`)}>
+        <div className={classNames(`w-full p-2 sm:mx-2  sm:w-1/3 sm:p-0`)}>
           <button
             type="button"
             className={classNames(
@@ -165,7 +165,7 @@ export default function BuyRobotsPanel({
           >
             <div className="flex">
               {currencyB ? (
-                <div className="flex items-center">
+                <div className={"flex items-center"}>
                   <CurrencyLogo currency={currencyB} size={'54px'} />
                 </div>
               ) : (
@@ -210,9 +210,9 @@ export default function BuyRobotsPanel({
           </button>
         </div>
 
-      {activeLink.endsWith('portfolio') == false &&
+     
         <div
-          className={classNames(
+          className={activeLink.endsWith('portfolio') ? `hidden` : classNames(
             'flex items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-3/5'
           )}
         >
@@ -234,7 +234,7 @@ export default function BuyRobotsPanel({
                 onUserInput(val)
               }}
               readOnly={readOnly}
-              className={`w-2/3 h-16 text-base  bg-transparent `}
+              className= {`w-2/3 h-16 text-base bg-transparent `}
             />
             {!hideBalance && currency && selectedCurrencyBBalance ? (
               <div className="flex flex-col">
@@ -256,7 +256,7 @@ export default function BuyRobotsPanel({
             ) : null}
           </>
         </div>
-      } 
+      
         <Button
           color={'gradient'}
           size="sm"
