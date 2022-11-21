@@ -12,7 +12,7 @@ const PanelLimitPrice = ({label, currencyA, currencyB, minPrice, maxPrice}) => {
   const defaultClassName = 'w-0 p-0 text-2xl bg-transparent'
 
   const enforcer = (nextUserInput: string) => { 
-    inputRegex.test(escapeRegExp(nextUserInput)) && (label == 'Min price to Buy' ? setMinPriceValue(nextUserInput) : setMaxPriceValue(nextUserInput))
+    inputRegex.test(escapeRegExp(nextUserInput)) && (label == 'Price to Buy' ? setMinPriceValue(nextUserInput) : setMaxPriceValue(nextUserInput))
   }
   
   return (
@@ -21,7 +21,7 @@ const PanelLimitPrice = ({label, currencyA, currencyB, minPrice, maxPrice}) => {
         {label}
       </div>
       <input
-        value={label == 'Min price to Buy' ? minPriceValue : maxPriceValue}
+        value={label == 'Price to Buy' ? minPriceValue : maxPriceValue}
         onChange={(event) => {
           // replace commas with periods, because uniswap exclusively uses period as the decimal separator
           enforcer(event.target.value.replace(/,/g, '.'))
