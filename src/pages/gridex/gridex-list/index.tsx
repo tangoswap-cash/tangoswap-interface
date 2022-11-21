@@ -314,7 +314,7 @@ export default function Gridex(): JSX.Element {
 
 
         <div className="flex  px-4  sm:px-0 items-center sm:items-start  sm:text-[25px] text-lg font-bold text-high-emphesis whitespace-nowrap">
-          <div className=''>
+          <div className='sm:mr-24'>
           Tango CMM list{' '}
           </div>
           <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full pl-2 ml-8 sm:ml-96"}>
