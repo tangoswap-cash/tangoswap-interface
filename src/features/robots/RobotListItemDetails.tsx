@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 import Button, { ButtonError } from '../../components/Button'
 import Dots from '../../components/Dots'
 import Input from '../../components/Input'
-import { formatCurrencyAmount, formatNumber, formatPercent } from '../../functions'
+import { classNames, formatCurrencyAmount, formatNumber, formatPercent } from '../../functions'
 import { getAddress } from '@ethersproject/address'
 import { t } from '@lingui/macro'
 import { tryParseAmount } from '../../functions/parse'
@@ -23,8 +23,23 @@ import useMasterChef from '../onsen/useMasterChef'
 import usePendingReward from '../onsen/usePendingReward'
 import { useFactoryGridexContract, useGridexMarketContract, useTokenContract } from '../../hooks'
 import { parseUnits } from '@ethersproject/units'
+import { FiatValue } from '../../components/BuyRobotsPanel/FiatValue'
 
-const RobotListItemDetails = ({ stockAddress, moneyAddress, robot, inputValue, RobotsMap }) => {
+const RobotListItemDetails = ({ 
+  stockAddress, 
+  moneyAddress, 
+  robot, 
+  inputValue, 
+  RobotsMap, 
+  showMaxButton, 
+  onUserInput, 
+  onMax, 
+  currency, 
+  currencyB, 
+  selectedCurrencyBBalance, 
+  selectedCurrencyBalance
+  }) => {
+    
   const { i18n } = useLingui()
   const [marketAddress, setMarketAddress] = useState('')
 
@@ -115,7 +130,51 @@ const RobotListItemDetails = ({ stockAddress, moneyAddress, robot, inputValue, R
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <Disclosure.Panel className="w-full mb-8" static>
+    <Disclosure.Panel className="mb-3 flex flex-col w-full border-t-0 rounded rounded-t-none bg-dark-800" static>
+      <>
+        <div
+          className={activeLink.endsWith('portfolio') ? `hidden` : classNames(
+            'flex items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-full'
+          )}
+        >
+          <>
+            {showMaxButton && (
+              <Button
+                onClick={onMax}
+                size="xs"
+                className="text-base font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap"
+              >
+                {i18n._(t`Max`)}
+              </Button>
+            )}
+            <Input.Numeric
+              id="token-amount-input"
+              value={inputValue}
+              onUserInput={(val) => {
+                // console.log('val:', val);
+                onUserInput(val)
+              }}
+              className= {`w-2/3 h-16 text-base bg-transparent `}
+            />
+            {currency && selectedCurrencyBBalance ? (
+              <div className="flex flex-col">
+                <div onClick={onMax} className="text-xs  text-right  cursor-pointer text-low-emphesis">
+                  {activeLink.endsWith('buy') ? (
+                    <>
+                      {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
+                    </>
+                  ) : activeLink.endsWith('sell') && (
+                    <>
+                      {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBalance, 4)} {currency.symbol}
+                    </>
+                  )}
+                </div>
+                {/* <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} /> */}
+              </div>
+            ) : null}
+          </>
+        </div>
+      </>
         {
           robot.ownerAddr == account &&
           (

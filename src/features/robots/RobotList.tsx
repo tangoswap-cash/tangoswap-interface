@@ -9,7 +9,21 @@ import { useInfiniteScroll } from '../onsen/hooks'
 import RobotListItems from './RobotListItems'
 import { isMobile } from 'react-device-detect'
 
-const RobotList = ({ stockAddress, moneyAddress, robots, term, inputValue, RobotsMap }) => {
+const RobotList = ({ 
+  stockAddress, 
+  moneyAddress, 
+  robots, 
+  term, 
+  inputValue, 
+  RobotsMap, 
+  showMaxButton,
+  onUserInput, 
+  onMax, 
+  currency, 
+  currencyB, 
+  selectedCurrencyBBalance, 
+  selectedCurrencyBalance 
+}) => {
   const { items, requestSort, sortConfig } = useSortableData(robots)
   const { i18n } = useLingui()
   const [numDisplayed, setNumDisplayed] = useInfiniteScroll(items)
@@ -62,7 +76,21 @@ const RobotList = ({ stockAddress, moneyAddress, robots, term, inputValue, Robot
       >
         <div className="space-y-1">
           {items.slice(0, numDisplayed).map((robot, index) => (
-            <RobotListItems stockAddress={stockAddress} moneyAddress={moneyAddress} key={index} robot={robot} inputValue={inputValue} RobotsMap={RobotsMap} />
+          <RobotListItems 
+          stockAddress={stockAddress} 
+          moneyAddress={moneyAddress} 
+          key={index} 
+          robot={robot} 
+          inputValue={inputValue} 
+          RobotsMap={RobotsMap} 
+          showMaxButton={showMaxButton}  
+          onUserInput={onUserInput} 
+          onMax={onMax}
+          currency={currency}
+          currencyB={currencyB}
+          selectedCurrencyBBalance={selectedCurrencyBBalance}
+          selectedCurrencyBalance={selectedCurrencyBalance}
+          />
           ))}
         </div>
       </InfiniteScroll>
