@@ -61,7 +61,6 @@ const RobotListItemDetails = ({
 
   const stockContract = useTokenContract(stockAddress)
   const moneyContract = useTokenContract(moneyAddress)
-  console.log(RobotsMap);
 
   async function Buy(robotId) {
     const moneyDecimals = await moneyContract?.decimals()
@@ -130,7 +129,7 @@ const RobotListItemDetails = ({
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-    <Disclosure.Panel className="m-auto mb-3 flex flex-col justify-center w-full border-t-0 rounded rounded-t-none p-2 bg-dark-800" static>
+    <Disclosure.Panel className="m-auto mt-2 mb-3 flex flex-col justify-center w-full border-t-0 rounded rounded-t-none p-2 bg-dark-800" static>
       <>
         <div
           className={activeLink.endsWith('portfolio') ? `hidden` : classNames(
@@ -194,7 +193,7 @@ const RobotListItemDetails = ({
               className={`w-full mx-auto`}
               style={{ backgroundColor: '#060', color: '#FFF' }}
             >
-              {i18n._(t`Buy Stock from Tango CMM`)}
+              {i18n._(t`Buy Stock from CMM`)}
             </Button>
           ) 
           ||
@@ -205,7 +204,7 @@ const RobotListItemDetails = ({
               className={`w-full mx-auto`}
               style={{ backgroundColor: 'red', color: '#FFF' }}
             >
-              {i18n._(t`Sell Money to Tango CMM`)}
+              {i18n._(t`Sell Money to CMM`)}
             </Button>
           )
         }

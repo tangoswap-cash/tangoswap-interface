@@ -56,20 +56,9 @@ const GridexMenu = ({ positionsLength, options = defaultOptions, robots }) => {
         activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
         >
         <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800  focus:border-gradient-r-blue-pink-dark-900  ">
-          {i18n._(t`Buy Stock`)}
+          {i18n._(t`CMM Market`)}
         </a>
       </NavLink>
-      <NavLink
-        exact
-        href={`/${basePath}/?filter=sell`}
-        activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
-        >
-        <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800  focus:border-gradient-r-blue-pink-dark-900  ">
-          {i18n._(t`Sell Stock`)}
-        </a>
-      </NavLink>
-     
-
       <div className="md:hidden w-full h-0 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20" />
     </div>
   )
