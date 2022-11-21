@@ -86,7 +86,7 @@ const RobotListItems = ({ stockAddress, moneyAddress, robot, inputValue, RobotsM
                   {i18n._(t`Stock: ${robot.stockAmount}`)}
                 </div>
                 <div className="flex-row items-center justify-center flex pl-3 font-bold text-sm">
-                {i18n._(t`Money: ${robot.stockAmount}`)}
+                {i18n._(t`Money: ${robot.moneyAmount}`)}
                 </div>
                 </div>
               )}

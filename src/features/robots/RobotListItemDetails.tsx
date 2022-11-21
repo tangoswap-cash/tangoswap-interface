@@ -53,16 +53,17 @@ const RobotListItemDetails = ({ stockAddress, moneyAddress, robot, inputValue, R
     var moneyDelta = inputValue //*1.0
     var moneyDeltaBN = parseUnits(inputValue, moneyDecimals)
     var robot = RobotsMap[robotId]
-  
+    var moneyBalance = moneyContract.balanceOf(account)
+
     var stockDelta = moneyDelta / robot.highPrice
-    if(stockDelta > robot.stockAmount) {
+    
+    if(moneyDeltaBN > moneyBalance) {
+      alert(`You don't have enough money.`)
+    } else if(stockDelta > robot.stockAmount) {  
       alert('Tango CMM has not enough stock')
     }
-
-
-    // checkAllowanceAndBalance(window.moneyContract, window.moneySymbol, myAddr, moneyDelta, window.moneyDecimals)
-  
-    let val = null;
+    
+    let val = null
     val = moneyAddress == '0x0000000000000000000000000000000000002711' ? {value: moneyDeltaBN} : null
   
     await marketContract.buyFromRobot(robotId, moneyDeltaBN, val)
@@ -73,13 +74,26 @@ const RobotListItemDetails = ({ stockAddress, moneyAddress, robot, inputValue, R
     })
   }
 
-  const handleSellRobot = () => {
-    console.log('Vendido')
-  }
+  async function Sell(robotId) {
+    const stockDecimals = await stockContract?.decimals()
+    var stockDelta = inputValue
+    var stockDeltaBN = parseUnits(inputValue, stockDecimals)
+    var robot = RobotsMap[robotId]
+    var moneyDelta = stockDelta * robot.lowPrice
+    var stockBalance = stockContract.balanceOf(account)
 
-  const handleBuyRobot = () => {
-    console.log('Borrado')
+    if (stockDeltaBN > stockBalance) {
+      alert(`You don't have enough stock.`)
+    } else if(moneyDelta > robot.moneyAmount) {
+      alert(`Tango CMM has not enough money`)
+    }
+
+    let val = null;
+    val = stockAddress == '0x0000000000000000000000000000000000002711' ? {value: stockDeltaBN} : null
+  
+    await marketContract.sellToRobot(robotId, stockDeltaBN, val)
   }
+  
 
   const DeleteRobot = async () => {
     await marketContract.deleteRobot(robot.index, robot.fullId).then((response) => {
@@ -128,7 +142,7 @@ const RobotListItemDetails = ({ stockAddress, moneyAddress, robot, inputValue, R
           activeLink.endsWith('sell') && 
           (
             <Button
-              onClick={DeleteRobot}
+              onClick={() => Sell(robot.fullId)}
               className={`w-full mx-auto`}
               style={{ backgroundColor: 'red', color: '#FFF' }}
             >
