@@ -130,11 +130,11 @@ const RobotListItemDetails = ({
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-    <Disclosure.Panel className="mb-3 flex flex-col w-full border-t-0 rounded rounded-t-none bg-dark-800" static>
+    <Disclosure.Panel className="m-auto mb-3 flex flex-col justify-center w-full border-t-0 rounded rounded-t-none p-2 bg-dark-800" static>
       <>
         <div
           className={activeLink.endsWith('portfolio') ? `hidden` : classNames(
-            'flex items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-full'
+            'flex mb-2 items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-full'
           )}
         >
           <>
@@ -154,7 +154,7 @@ const RobotListItemDetails = ({
                 // console.log('val:', val);
                 onUserInput(val)
               }}
-              className= {`w-2/3 h-16 text-base bg-transparent `}
+              className= {`w-2/3 h-16 text-base bg-transparent`}
             />
             {currency && selectedCurrencyBBalance ? (
               <div className="flex flex-col">
