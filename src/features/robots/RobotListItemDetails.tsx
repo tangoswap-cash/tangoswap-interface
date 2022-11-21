@@ -24,7 +24,7 @@ import usePendingReward from '../onsen/usePendingReward'
 import { useFactoryGridexContract, useGridexMarketContract, useTokenContract } from '../../hooks'
 import { parseUnits } from '@ethersproject/units'
 
-const RobotListItemDetails = ({stockAddress, moneyAddress, robot, inputValue, RobotsMap }) => {
+const RobotListItemDetails = ({ stockAddress, moneyAddress, robot, inputValue, RobotsMap }) => {
   const { i18n } = useLingui()
   const [marketAddress, setMarketAddress] = useState('')
 
@@ -80,12 +80,12 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot, inputValue, Ro
   const handleBuyRobot = () => {
     console.log('Borrado')
   }
-  
+
   const DeleteRobot = async () => {
     await marketContract.deleteRobot(robot.index, robot.fullId).then((response) => {
       addTransaction(response, {
         summary: `Delete Robot`
-      })      
+      })
     });
   }
 
@@ -101,7 +101,7 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot, inputValue, Ro
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <Disclosure.Panel className="w-full" static>
+      <Disclosure.Panel className="w-full mb-8" static>
         {
           robot.ownerAddr == account &&
           (

@@ -215,8 +215,8 @@ export default function Gridex(): JSX.Element {
 
 
   const FILTER = {
-    sell: (gridexList) => gridexList.moneyAmount !== 0,
-    buy: (gridexList) => gridexList.stockAmount !== 0, 
+    sell: (gridexList) => gridexList.moneyAmount !== 0 && gridexList.ownerAddr !== account,
+    buy: (gridexList) => gridexList.stockAmount !== 0 && gridexList.ownerAddr !== account, 
     portfolio: (gridexList) => gridexList.ownerAddr == account, 
   } 
 
