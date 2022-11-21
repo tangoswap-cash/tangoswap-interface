@@ -31,7 +31,7 @@ const RobotList = ({ stockAddress, moneyAddress, robots, term, inputValue, Robot
           className="flex items-center justify-center pl-4 sm:px-4 cursor-pointer text-sm sm:text-lg hover:text-high-emphesis"
           onClick={() => requestSort('lowPrice')}
         >
-          {i18n._(t`Min Price to Buy`)}
+          {i18n._(t`Price to Buy`)}
           {sortConfig &&
             sortConfig.key === 'lowPrice' &&
             ((sortConfig.direction === 'ascending' && <ChevronUpIcon width={12} height={12} />) ||
@@ -41,7 +41,7 @@ const RobotList = ({ stockAddress, moneyAddress, robots, term, inputValue, Robot
           className="flex items-center justify-center pl-4 sm:px-4 cursor-pointer text-sm sm:text-lg hover:text-high-emphesis"
           onClick={() => requestSort('highPrice')}
         >
-          {i18n._(t`Max Price to Sell`)}
+          {i18n._(t`Price to Sell`)}
           {sortConfig &&
             sortConfig.key === 'highPrice' &&
             ((sortConfig.direction === 'ascending' && <ChevronUpIcon width={12} height={12} />) ||

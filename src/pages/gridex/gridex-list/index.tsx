@@ -97,9 +97,11 @@ export default function Gridex(): JSX.Element {
   const handleCurrencyASelect = (currencyA: Currency) => {
     // console.log('currencyA:', currencyA)
     setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
+    getRobots()
   }
   const handleCurrencyBSelect = (currencyB: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyB: currencyB })
+    getRobots()
   }
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
@@ -255,6 +257,9 @@ export default function Gridex(): JSX.Element {
     }
   ]
 
+  // meter la funcion search en el currencySelect en robotspanel
+  // poner abajo de todo el what is Tango CMM
+  // poner el Input Numeric en robotListItemsDetails
   return (
     <Container
       id="robots-page"

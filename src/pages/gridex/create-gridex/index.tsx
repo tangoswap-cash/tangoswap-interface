@@ -301,8 +301,8 @@ export default function CreateGridexPage() {
               </div>
               {
                   <div className='flex justify-center gap-5'>
-                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Max price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol}/>
-                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Min price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol}/>
+                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} />
+                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyA?.symbol}/>
                   </div>
               }
             
