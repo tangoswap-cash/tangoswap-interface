@@ -55,8 +55,8 @@ import { formatCurrencyAmount } from '../../../functions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
 import BuyRobotsPanel from "../../../components/BuyRobotsPanel"
 import { Field } from '../../../state/burn/actions'
-import Toggle from '../../../components/Toggle'
 import Typography from '../../../components/Typography'
+import GridexToggle from '../../../components/Toggle/gridexToggle'
 
 
 function packPrice(price) {
@@ -316,15 +316,17 @@ export default function Gridex(): JSX.Element {
         </div>
 
 
-        <div className="flex px-4 sm:px-0 items-center text-[25px] font-bold text-high-emphesis whitespace-nowrap">
+        <div className="flex  px-4  sm:px-0 items-center sm:items-start  sm:text-[25px] text-lg font-bold text-high-emphesis whitespace-nowrap">
+          <div className=''>
           Tango CMM list{' '}
-          <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full"}>
-            <div className='ml-4 sm:ml-8'>
-              <Typography variant="sm" className="font-bold text-xl text-primary pr-4">
+          </div>
+          <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full pl-2 sm:ml-32"}>
+            <div className=''>
+              <Typography variant="sm" className="font-bold text-md sm:text-xl text-primary pr-2 sm:pr-4">
                 {i18n._(t`Buy `)}{stock?.symbol == undefined ? ` Stock` : ` ${stock?.symbol}`}
               </Typography>
             </div>
-            <Toggle
+            <GridexToggle
               id="toggle-market-selector"
               isActive={ window.location.href.endsWith( `?filter=sell`)}
               toggle={
@@ -342,8 +344,8 @@ export default function Gridex(): JSX.Element {
               }
             />
             <div className=''>
-              <Typography variant="sm" className="text-primary  font-bold text-xl pl-4">
-                {i18n._(t`Sell `)}{stock?.symbol == undefined ? ` Stock` : ` ${money?.symbol}`}
+              <Typography variant="sm" className="text-primary  font-bold text-md sm:text-xl pl-2 sm:pl-4">
+                {i18n._(t`Sell `)}{money?.symbol == undefined || stock?.symbol == undefined ? ` Stock` : ` ${stock?.symbol}`}
               </Typography>
             </div>
 
