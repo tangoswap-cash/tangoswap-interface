@@ -15,7 +15,7 @@ import RobotListItemDetails from './RobotListItemDetails'
 import { PairType } from '../onsen/enum'
 import { useState } from 'react'
 
-const RobotListItems = ({ stockAddress, moneyAddress, robot, ...rest }) => {
+const RobotListItems = ({ stockAddress, moneyAddress, robot, inputValue, RobotsMap, ...rest }) => {
   const token0 = robot?.stock
   const token1 = robot?.money
   
@@ -48,11 +48,11 @@ const RobotListItems = ({ stockAddress, moneyAddress, robot, ...rest }) => {
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center font-bold">
-                $ {String(robot.lowPrice).slice(0,6)}
+                  {String(robot.lowPrice).slice(0,6)}
               </div>
               <div className="flex flex-col items-center justify-center">
                 <div className="font-bold text-righttext-high-emphesis">
-                  $ {String(robot.highPrice).slice(0,6)}
+                  {String(robot.highPrice).slice(0,6)}
                 </div>
               </div>
               {pendingSushi && pendingSushi.greaterThan(ZERO) ? (
@@ -92,7 +92,7 @@ const RobotListItems = ({ stockAddress, moneyAddress, robot, ...rest }) => {
               )}
             </div>
           </Disclosure.Button>
-          {open && <RobotListItemDetails stockAddress={stockAddress} moneyAddress={moneyAddress} robot={robot} />}
+          {open && <RobotListItemDetails stockAddress={stockAddress} moneyAddress={moneyAddress} robot={robot} inputValue={inputValue} RobotsMap={RobotsMap} />}
         </>
       )}
     </Disclosure>

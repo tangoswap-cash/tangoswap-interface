@@ -21,9 +21,10 @@ import { Chef, PairType } from '../onsen/enum'
 import { usePendingSushi, useUserInfo } from '../onsen/hooks'
 import useMasterChef from '../onsen/useMasterChef'
 import usePendingReward from '../onsen/usePendingReward'
-import { useFactoryGridexContract, useGridexMarketContract } from '../../hooks'
+import { useFactoryGridexContract, useGridexMarketContract, useTokenContract } from '../../hooks'
+import { parseUnits } from '@ethersproject/units'
 
-const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
+const RobotListItemDetails = ({stockAddress, moneyAddress, robot, inputValue, RobotsMap }) => {
   const { i18n } = useLingui()
   const [marketAddress, setMarketAddress] = useState('')
 
@@ -34,6 +35,8 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
 
   const marketContract = useGridexMarketContract(marketAddress)
 
+  const addTransaction = useTransactionAdder()
+
   const router = useRouter()
 
   const { account, chainId } = useActiveWeb3React()
@@ -41,7 +44,34 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
   const [maxValue, setMaxValue] = useState(robot.maxValue ? robot.maxValue : 0)
   const [minValue, setMinValue] = useState(robot.minValue ? robot.minValue : 0)
 
-  const addTransaction = useTransactionAdder()
+  const stockContract = useTokenContract(stockAddress)
+  const moneyContract = useTokenContract(moneyAddress)
+  console.log(RobotsMap);
+
+  async function Buy(robotId) {
+    const moneyDecimals = await moneyContract?.decimals()
+    var moneyDelta = inputValue //*1.0
+    var moneyDeltaBN = parseUnits(inputValue, moneyDecimals)
+    var robot = RobotsMap[robotId]
+  
+    var stockDelta = moneyDelta / robot.highPrice
+    if(stockDelta > robot.stockAmount) {
+      alert('Tango CMM has not enough stock')
+    }
+
+
+    // checkAllowanceAndBalance(window.moneyContract, window.moneySymbol, myAddr, moneyDelta, window.moneyDecimals)
+  
+    let val = null;
+    val = moneyAddress == '0x0000000000000000000000000000000000002711' ? {value: moneyDeltaBN} : null
+  
+    await marketContract.buyFromRobot(robotId, moneyDeltaBN, val)
+    .then((response) => {
+      addTransaction(response, {
+        summary: `Buy Stock from ${(robot.fullId).slice(0,8)}...`
+      })
+    })
+  }
 
   const handleSellRobot = () => {
     console.log('Vendido')
@@ -58,6 +88,8 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
       })      
     });
   }
+
+  const activeLink = String(window.location)
   
   return (
     <Transition
@@ -82,25 +114,25 @@ const RobotListItemDetails = ({stockAddress, moneyAddress, robot }) => {
             </Button>
           ) 
           ||
-          robot.filter == 'buy' && 
+          activeLink.endsWith('buy') && 
           (
             <Button
-              onClick={DeleteRobot}
+              onClick={() => Buy(robot.fullId)}
               className={`w-full mx-auto`}
               style={{ backgroundColor: '#060', color: '#FFF' }}
             >
-              {i18n._(t`Buy Money from Tango CMM`)}
+              {i18n._(t`Buy Stock from Tango CMM`)}
             </Button>
           ) 
           ||
-          robot.filter == 'sell' && 
+          activeLink.endsWith('sell') && 
           (
             <Button
               onClick={DeleteRobot}
               className={`w-full mx-auto`}
-              style={{ backgroundColor: '#060', color: '#FFF' }}
+              style={{ backgroundColor: 'red', color: '#FFF' }}
             >
-              {i18n._(t`Sell Stock to Tango CMM`)}
+              {i18n._(t`Sell Money to Tango CMM`)}
             </Button>
           )
         }

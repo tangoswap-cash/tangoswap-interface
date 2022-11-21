@@ -90,6 +90,7 @@ export default function Gridex(): JSX.Element {
 
   const [marketAddress, setMarketAddress] = useState('')
   const [gridexList, setGridexList] = useState([])
+  const [RobotsMap, setRobotsMap] = useState({})
 
   const [currenciesSelected, setCurrenciesSelected] = useState(null);
 
@@ -152,6 +153,8 @@ export default function Gridex(): JSX.Element {
 
   const stockContract = useTokenContract(stock?.address)
   const moneyContract = useTokenContract(money?.address)
+  
+  const RobotsMapF = {}
 
   async function getAllRobots(onlyForAddr) {
     const moneyDecimals = await moneyContract?.decimals()
@@ -161,7 +164,6 @@ export default function Gridex(): JSX.Element {
     let allRobots = []
     let twoPow96 = BigNumber.from(2).pow(96)
     let twoPow32 = BigNumber.from(2).pow(32)
-    const RobotsMap = {}
     for (var i = 0; i < allRobotsArr?.length; i += 2) {
       let fullId = allRobotsArr[i]
       let robot = {
@@ -177,7 +179,6 @@ export default function Gridex(): JSX.Element {
         stockAmount: null,
         stock: stock,
         money: money,
-        filter: ''
       }
       robot.shortId = fullId.mod(twoPow96).toNumber()
       robot.ownerAddr = ethers.utils.getAddress(fullId.div(twoPow96).toHexString())
@@ -192,15 +193,16 @@ export default function Gridex(): JSX.Element {
       robot.moneyAmount = formatUnits(robot.stockAmountBN, stockDecimals)
       robot.stockAmount = formatUnits(robot.stockAmountBN, moneyDecimals)
       allRobots.push(robot)
-      RobotsMap[robot.fullId] = robot
+      RobotsMapF[robot.fullId] = robot
     }
+    setRobotsMap(RobotsMapF)
     return allRobots
   }
+
 
   function getRobots() { 
     getAllRobots("").then(result => setGridexList(result))  
   }
-  // se necesita Stock amount, Money Amount, highprice, lowprice
 
   const type = router.query.filter as string
 
@@ -211,7 +213,6 @@ export default function Gridex(): JSX.Element {
 
   const positions = usePositions(chainId)
 
- 
 
   const FILTER = {
     sell: (gridexList) => gridexList.moneyAmount !== 0,
@@ -219,9 +220,6 @@ export default function Gridex(): JSX.Element {
     portfolio: (gridexList) => gridexList.ownerAddr == account, 
   } 
 
-// gridexList.filter = 'sell' 
-// gridexList.filter = 'buy'
-  
   const data = gridexList
     .filter((farm) => {
       return type in FILTER ? FILTER[type](farm) : true
@@ -257,8 +255,6 @@ export default function Gridex(): JSX.Element {
     }
   ]
 
-
-
   return (
     <Container
       id="robots-page"
@@ -270,7 +266,7 @@ export default function Gridex(): JSX.Element {
         <meta key="description" name="description" content="TANGO CMM List" />
       </Head>
       <div className={classNames('px-3 md:px-0 mb-8 lg:block md:col-span-1')}>
-        <GridexMenu positionsLength={positions.length} options={optionsMenu} />
+        <GridexMenu positionsLength={positions.length} options={optionsMenu} robots={result} />
       </div>
 
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
@@ -316,7 +312,7 @@ export default function Gridex(): JSX.Element {
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
 
-        <RobotList stockAddress={stockAddress} moneyAddress={moneyAddress} robots={result} term={term} />
+        <RobotList stockAddress={stockAddress} moneyAddress={moneyAddress} robots={result} term={term} inputValue={formattedAmounts[Field.CURRENCY_B]} RobotsMap={RobotsMap} />
       </div>
     </Container>
   )

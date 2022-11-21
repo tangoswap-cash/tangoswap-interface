@@ -83,7 +83,7 @@ export default function BuyRobotsPanel({
     setModalOpen(false)
   }, [setModalOpen])
 
-
+  const activeLink = String(window.location)
 
   return (
     <div id={id} className={classNames(hideInput ? 'p-3' : 'p-4', 'w-full px-2 rounded m-6 sm:m-0  bg-dark-800')}>
@@ -210,10 +210,10 @@ export default function BuyRobotsPanel({
           </button>
         </div>
 
+      {activeLink.endsWith('portfolio') == false &&
         <div
           className={classNames(
             'flex items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-3/5'
-            // showMaxButton && selectedCurrencyBalance && 'px-3'
           )}
         >
           <>
@@ -241,9 +241,13 @@ export default function BuyRobotsPanel({
                 <div onClick={onMax} className="text-xs  text-right  cursor-pointer text-low-emphesis">
                   {renderBalance ? (
                     renderBalance(selectedCurrencyBBalance)
-                  ) : (
+                  ) : activeLink.endsWith('buy') ? (
                     <>
                       {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
+                    </>
+                  ) : activeLink.endsWith('sell') && (
+                    <>
+                      {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBalance, 4)} {currency.symbol}
                     </>
                   )}
                 </div>
@@ -252,7 +256,7 @@ export default function BuyRobotsPanel({
             ) : null}
           </>
         </div>
-
+      } 
         <Button
           color={'gradient'}
           size="sm"

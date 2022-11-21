@@ -23,7 +23,7 @@ const defaultOptions = [
  
   }]
 
-const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
+const GridexMenu = ({ positionsLength, options = defaultOptions, robots }) => {
   const { account, chainId } = useActiveWeb3React()
   const { i18n } = useLingui()
   const toggleWalletModal = useWalletModalToggle()
@@ -34,8 +34,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
         <NavLink
           exact
           href={`/${basePath}?filter=portfolio`}
-          activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
-        >
+          activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"        >
           <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800">
           {i18n._(t` Your Tango CMM`)} 
           </a>
@@ -55,7 +54,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
         exact
         href={`/${basePath}/?filter=buy`}
         activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
-      >
+        >
         <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800  focus:border-gradient-r-blue-pink-dark-900  ">
           {i18n._(t`Buy Tango CMM`)}
         </a>
@@ -64,7 +63,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions}) => {
         exact
         href={`/${basePath}/?filter=sell`}
         activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"
-      >
+        >
         <a className="flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer bg-dark-900 hover:bg-dark-800  focus:border-gradient-r-blue-pink-dark-900  ">
           {i18n._(t`Sell Tango CMM`)}
         </a>
