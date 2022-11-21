@@ -16,19 +16,19 @@ const RobotList = ({ stockAddress, moneyAddress, robots, term, inputValue, Robot
 
   return items ? (
     <>
-      <div className={isMobile ? "grid grid-cols-5 text-base font-bold text-primary" :"grid grid-cols-4 text-base font-bold text-primary"}>
+      <div className={ "grid grid-cols-4 text-base font-bold text-primary" }>
         <div
-          className="flex items-center col-span-2 px-4 cursor-pointer md:col-span-1"
+          className="flex items-center col-span-1 sm:px-4 cursor-pointer"
           onClick={() => requestSort('symbol')}
         >
-          <div className="hover:text-high-emphesis">{i18n._(t`Stock/Money`)}</div>
+          <div className="hover:text-high-emphesis px-2 sm:px-4 text-sm sm:text-lg">{i18n._(t`Stock/Money`)}</div>
           {sortConfig &&
             sortConfig.key === 'symbol' &&
             ((sortConfig.direction === 'ascending' && <ChevronUpIcon width={12} height={12} />) ||
               (sortConfig.direction === 'descending' && <ChevronDownIcon width={12} height={12} />))}
         </div>
         <div
-          className="flex items-center justify-center px-4 cursor-pointer hover:text-high-emphesis"
+          className="flex items-center justify-center pl-4 sm:px-4 cursor-pointer text-sm sm:text-lg hover:text-high-emphesis"
           onClick={() => requestSort('lowPrice')}
         >
           {i18n._(t`Min Price to Buy`)}
@@ -38,7 +38,7 @@ const RobotList = ({ stockAddress, moneyAddress, robots, term, inputValue, Robot
               (sortConfig.direction === 'descending' && <ChevronDownIcon width={12} height={12} />))}
         </div>
         <div
-          className="flex items-center justify-center px-4 cursor-pointer hover:text-high-emphesis"
+          className="flex items-center justify-center pl-4 sm:px-4 cursor-pointer text-sm sm:text-lg hover:text-high-emphesis"
           onClick={() => requestSort('highPrice')}
         >
           {i18n._(t`Max Price to Sell`)}
@@ -48,7 +48,7 @@ const RobotList = ({ stockAddress, moneyAddress, robots, term, inputValue, Robot
               (sortConfig.direction === 'descending' && <ChevronDownIcon width={12} height={12} />))}
         </div>
         <div
-          className="items-center justify-center px-4 cursor-pointer md:flex hover:text-high-emphesis"
+          className="items-center justify-center pl-4 sm:px-4 cursor-pointer md:flex hover:text-high-emphesis"
           
         >
           {i18n._(t`Balance`)}

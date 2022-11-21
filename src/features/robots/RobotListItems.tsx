@@ -32,19 +32,21 @@ const RobotListItems = ({ stockAddress, moneyAddress, robot, inputValue, RobotsM
           <Disclosure.Button
             className={classNames(
               open && 'rounded-b-none',
-              'w-full px-4 py-6 text-left rounded cursor-pointer select-none bg-dark-900 text-primary text-sm md:text-lg'
+              'w-full sm:px-4 px-2 py-6 text-left rounded cursor-pointer select-none bg-dark-900 text-primary text-sm md:text-lg'
             )}
           >
-            <div className={isMobile ? "grid grid-cols-5":"grid grid-cols-4" }>
-              <div className="flex col-span-2 space-x-5 md:col-span-1">
+            <div className={"grid grid-cols-4" }>
+              <div className="flex col-span-1 space-x-5 ">
                 <DoubleLogo currency0={token0} currency1={token1} size={isMobile ? 30 : 40} />
-                <div className="flex flex-col justify-center">
+              
+                <div className="sm:flex flex-col hidden justify-center">
                   <div>
                     <p className="font-bold">{token0?.symbol}</p>
                     <p className={robot?.pair?.type === PairType.KASHI ? 'font-thin' : 'font-bold'}>
                       {token1?.symbol}
                     </p>
                   </div>
+                  
                 </div>
               </div>
               <div className="flex flex-col items-center justify-center font-bold">
@@ -82,13 +84,21 @@ const RobotListItems = ({ stockAddress, moneyAddress, robot, inputValue, RobotsM
                   </div>
                 </div>
               ) : (<div>
-                <div className="flex-row items-center justify-center flex pl-3 font-bold text-sm">
-                  {i18n._(t`Stock: ${robot.stockAmount}`)}
+                <div className="flex-row items-center flex justify-center font-bold text-xs sm:text-sm">
+                {robot.stockAmount < 0.01 ?
+                  i18n._(t`Stock: < 0.01`)
+                  :
+                  i18n._(t`Stock: ${(Math.round(robot.stockAmount* 100) / 100).toFixed(3)}`)}
                 </div>
-                <div className="flex-row items-center justify-center flex pl-3 font-bold text-sm">
-                {i18n._(t`Money: ${robot.moneyAmount}`)}
+                <div className="flex-row  items-center justify-center flex font-bold text-xs sm:text-sm">{robot.moneyAmount < 0.01 ?
+                  i18n._(t`Money: < 0.01`)
+                  :
+                  i18n._(t`Money: ${(Math.round(robot.moneyAmount * 100) / 100).toFixed(3)}`)
+                }
                 </div>
+               
                 </div>
+                
               )}
             </div>
           </Disclosure.Button>

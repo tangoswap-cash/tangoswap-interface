@@ -86,7 +86,7 @@ export default function BuyRobotsPanel({
   const activeLink = String(window.location)
 
   return (
-    <div id={id} className={classNames(hideInput ? 'p-3' : 'p-4', 'w-full px-2 rounded m-6 sm:m-0  bg-dark-800')}>
+    <div id={id} className={classNames(hideInput ? 'p-3' : 'p-4', 'w-11/12 mx-4 sm:w-full px-2 rounded  sm:m-0  bg-dark-800')}>
       <div className="flex flex-col justify-center items-center space-y-3 sm:space-y-0 sm:flex-row">
         <div className={classNames('w-full p-2 sm:w-2/5')}>
           <button
