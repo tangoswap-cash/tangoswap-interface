@@ -56,8 +56,8 @@ import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../.
 import BuyRobotsPanel from "../../../components/BuyRobotsPanel"
 import { Field } from '../../../state/burn/actions'
 import Typography from '../../../components/Typography'
+import GridexInfo from '../../../modals/GridexModal'
 import GridexToggle from '../../../components/Toggle/gridexToggle'
-
 
 function packPrice(price) {
   var effBits = 1
@@ -99,12 +99,14 @@ export default function Gridex(): JSX.Element {
 
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
-    getRobots()
   }
+
   const handleCurrencyBSelect = (currencyB: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyB: currencyB })
     getRobots()
   }
+
+  console.log(gridexList);
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
@@ -118,6 +120,7 @@ export default function Gridex(): JSX.Element {
 
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
+  const [gridexInfoOpen, setGridexInfoOpen] = useState(false)
 
   const formattedAmounts = {
     [independentField]: typedValue,
@@ -163,7 +166,6 @@ export default function Gridex(): JSX.Element {
   async function getAllRobots(onlyForAddr) {
     const moneyDecimals = await moneyContract?.decimals()
     const stockDecimals = await stockContract?.decimals()
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
     let allRobotsArr = await marketContract?.getAllRobots()
     let allRobots = []
     let twoPow96 = BigNumber.from(2).pow(96)
@@ -203,7 +205,6 @@ export default function Gridex(): JSX.Element {
     return allRobots
   }
 
-
   function getRobots() {
     getAllRobots("").then(result => setGridexList(result))
   }
@@ -239,8 +240,6 @@ export default function Gridex(): JSX.Element {
     options,
   })
 
-  console.log('result:', result);
-
   const basePath = 'gridex/gridex-list'
 
   const optionsMenu = [
@@ -270,8 +269,6 @@ export default function Gridex(): JSX.Element {
   const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyB ?? undefined)
 
   // meter la funcion search en el currencySelect en robotspanel
-  // poner abajo de todo el what is Tango CMM
-  // poner el Input Numeric en robotListItemsDetails
   return (
     <Container
       id="robots-page"
@@ -370,6 +367,10 @@ export default function Gridex(): JSX.Element {
         selectedCurrencyBBalance={selectedCurrencyBBalance}
         selectedCurrencyBalance={selectedCurrencyBalance}
         />
+        <div className='ml-2 mt-4'>
+          <button className='text-sm hover:text-high-emphesis' onClick={() => setGridexInfoOpen(true)}>What is Tango CMM?</button>
+          <GridexInfo isOpen={gridexInfoOpen} setIsOpen={setGridexInfoOpen} />
+        </div>
       </div>
     </Container>
   )
