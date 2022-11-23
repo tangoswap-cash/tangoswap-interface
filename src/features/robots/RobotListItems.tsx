@@ -99,15 +99,15 @@ const RobotListItems = ({
                 </div>
               ) : (<div>
                 <div className="flex-row items-center flex justify-center font-bold text-xs sm:text-sm">
-                {robot.stockAmount < 0.01 ?
-                  i18n._(t`Stock: < 0.01`)
+                {robot.stockAmount < 0.001 ?
+                  i18n._(t`Stock: < 0.001`)
                   :
-                  i18n._(t`Stock: ${(Math.round(robot.stockAmount* 100) / 100).toFixed(3)}`)}
+                  i18n._(t`Stock: ${Number(robot.stockAmount).toFixed(5)}`)}
                 </div>
-                <div className="flex-row  items-center justify-center flex font-bold text-xs sm:text-sm">{robot.moneyAmount < 0.01 ?
-                  i18n._(t`Money: < 0.01`)
+                <div className="flex-row  items-center justify-center flex font-bold text-xs sm:text-sm">{robot.moneyAmount < 0.001 ?
+                  i18n._(t`Money: < 0.001`)
                   :
-                  i18n._(t`Money: ${(Math.round(robot.moneyAmount * 100) / 100).toFixed(3)}`)
+                  i18n._(t`Money: ${Number(robot.moneyAmount).toFixed(5)}`)
                 }
                 </div>
                

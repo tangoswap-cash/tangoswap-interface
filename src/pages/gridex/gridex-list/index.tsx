@@ -94,26 +94,29 @@ export default function Gridex(): JSX.Element {
   const [marketAddress, setMarketAddress] = useState('')
   const [gridexList, setGridexList] = useState([])
   const [RobotsMap, setRobotsMap] = useState({})
+  const [stock, setStock] = useState(null)
+  const [money, setMoney] = useState(null)
 
   const [currenciesSelected, setCurrenciesSelected] = useState(null);
 
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
+    console.log(currenciesSelected);
+    getRobots()
   }
 
   const handleCurrencyBSelect = (currencyB: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyB: currencyB })
+    console.log(currenciesSelected);
     getRobots()
   }
-
-  console.log(gridexList);
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
   const {
     dependentField,
     currencies,
-    currencyBalances,
+    currencyBalances, 
     parsedAmounts,
     noLiquidity
   } = useDerivedMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
@@ -148,8 +151,6 @@ export default function Gridex(): JSX.Element {
 
   const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe" // add this to SDK
 
-  const stock = currenciesSelected?.currencyA
-  const money = currenciesSelected?.currencyB
   const stockAddress = stock?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : stock?.address
   const moneyAddress = money?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : money?.address
 
@@ -196,8 +197,8 @@ export default function Gridex(): JSX.Element {
       info = info.div(twoPow32)
       robot.moneyAmountBN = info.mod(twoPow96)
       robot.stockAmountBN = info.div(twoPow96)
-      robot.moneyAmount = formatUnits(robot.stockAmountBN, stockDecimals)
-      robot.stockAmount = formatUnits(robot.stockAmountBN, moneyDecimals)
+      robot.moneyAmount = formatUnits(robot.moneyAmountBN, moneyDecimals)
+      robot.stockAmount = formatUnits(robot.stockAmountBN, stockDecimals)
       allRobots.push(robot)
       RobotsMapF[robot.fullId] = robot
     }
