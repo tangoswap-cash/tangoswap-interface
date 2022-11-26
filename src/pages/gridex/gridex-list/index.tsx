@@ -94,8 +94,6 @@ export default function Gridex(): JSX.Element {
   const [marketAddress, setMarketAddress] = useState('')
   const [gridexList, setGridexList] = useState([])
   const [RobotsMap, setRobotsMap] = useState({})
-  const [stock, setStock] = useState(null)
-  const [money, setMoney] = useState(null)
 
   const [currenciesSelected, setCurrenciesSelected] = useState(null);
 
@@ -108,7 +106,7 @@ export default function Gridex(): JSX.Element {
   const handleCurrencyBSelect = (currencyB: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyB: currencyB })
     console.log(currenciesSelected);
-    getRobots()
+    getRobots() 
   }
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
@@ -150,6 +148,9 @@ export default function Gridex(): JSX.Element {
   )
 
   const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe" // add this to SDK
+
+  const stock = currenciesSelected?.currencyA
+  const money = currenciesSelected?.currencyB
 
   const stockAddress = stock?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : stock?.address
   const moneyAddress = money?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : money?.address
