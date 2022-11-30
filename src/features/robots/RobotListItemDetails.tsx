@@ -193,7 +193,7 @@ const RobotListItemDetails = ({
               className={`w-full mx-auto`}
               style={{ backgroundColor: '#060', color: '#FFF' }}
             >
-              {i18n._(t`Buy Stock from CMM`)}
+              {i18n._(t`Buy ${robot?.stock?.symbol} from CMM`)}
             </Button>
           ) 
           ||
@@ -204,7 +204,7 @@ const RobotListItemDetails = ({
               className={`w-full mx-auto`}
               style={{ backgroundColor: 'red', color: '#FFF' }}
             >
-              {i18n._(t`Sell Money to CMM`)}
+              {i18n._(t`Sell ${robot?.stock?.symbol} to CMM`)}
             </Button>
           )
         }
