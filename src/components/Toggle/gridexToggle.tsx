@@ -18,7 +18,7 @@ export default function GridexToggle({ id, isActive, onChange }: ToggleProps) {
         'relative inline-flex flex-shrink-0 sm:h-8 h-6 w-11 sm:w-20 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none'
       )}
     >
-      <span className="sr-only">Use setting</span>
+
       <span
         className={classNames(
           isActive ? 'sm:translate-x-11 translate-x-5' : 'sm:translate-x-1 translate-x-0',
