@@ -58,6 +58,53 @@ import { Field } from '../../../state/burn/actions'
 import Typography from '../../../components/Typography'
 import GridexInfo from '../../../modals/GridexModal'
 import GridexToggle from '../../../components/Toggle/gridexToggle'
+import { NextPage } from 'next'
+
+async function getAllRobots(onlyForAddr, moneyContract, stockContract, marketContract, token1, token2) {
+  const moneyDecimals = await moneyContract?.decimals()
+  const stockDecimals = await stockContract?.decimals()
+  
+  let allRobotsArr = await marketContract?.getAllRobots()
+  // const RobotsMapF = {}
+
+  let allRobots = []
+  let twoPow96 = BigNumber.from(2).pow(96)
+  let twoPow32 = BigNumber.from(2).pow(32)
+  for (var i = 0; i < allRobotsArr?.length; i += 2) {
+    let fullId = allRobotsArr[i]
+    let robot = {
+      fullId: fullId.toHexString(),
+      index: i / 2,
+      shortId: '',
+      ownerAddr: '',
+      lowPrice: null,
+      highPrice: null,
+      moneyAmountBN: '',
+      stockAmountBN: '',
+      moneyAmount: null,
+      stockAmount: null,
+      stock: token1,
+      money: token2,
+    }
+    robot.shortId = fullId.mod(twoPow96).toNumber()
+    robot.ownerAddr = ethers.utils.getAddress(fullId.div(twoPow96).toHexString())
+    if (onlyForAddr && onlyForAddr != robot.ownerAddr) { continue }
+    let info = allRobotsArr[i + 1]
+    robot.lowPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
+    info = info.div(twoPow32)
+    robot.highPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
+    info = info.div(twoPow32)
+    robot.moneyAmountBN = info.mod(twoPow96)
+    robot.stockAmountBN = info.div(twoPow96)
+    robot.moneyAmount = formatUnits(robot.moneyAmountBN, moneyDecimals)
+    robot.stockAmount = formatUnits(robot.stockAmountBN, stockDecimals)
+    allRobots.push(robot)
+    // RobotsMapF[robot.fullId] = robot
+  }
+  // setRobotsMap(RobotsMapF)
+  console.log("allRobots: ", allRobots)
+  return allRobots
+}
 
 function packPrice(price) {
   var effBits = 1
@@ -86,7 +133,7 @@ function unpackPrice(packed) {
   return low24.add(twoPow24).mul(shiftBN)
 }
 
-export default function Gridex(): JSX.Element {
+export default function Gridex() {
   const { i18n } = useLingui()
   const { account, chainId } = useActiveWeb3React()
   const router = useRouter()
@@ -95,19 +142,24 @@ export default function Gridex(): JSX.Element {
   const [gridexList, setGridexList] = useState([])
   const [RobotsMap, setRobotsMap] = useState({})
 
-  const [currenciesSelected, setCurrenciesSelected] = useState(null);
+  const [currenciesSelected, setCurrenciesSelected] = useState({
+    currencyA: null, 
+    currencyB: null
+  })
 
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
-    console.log(currenciesSelected);
-    getRobots()
+    // console.log(currenciesSelected?.currencyA)
   }
 
   const handleCurrencyBSelect = (currencyB: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyB: currencyB })
-    console.log(currenciesSelected);
-    getRobots() 
+    // console.log(currenciesSelected?.currencyB)
   }
+  
+  // useEffect(() => {
+  //   console.log(currenciesSelected)
+  // }, [currenciesSelected])
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
@@ -149,12 +201,15 @@ export default function Gridex(): JSX.Element {
 
   const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe" // add this to SDK
 
-  const stock = currenciesSelected?.currencyA
-  const money = currenciesSelected?.currencyB
-
+  const stock = currenciesSelected.currencyA 
+  const money = currenciesSelected.currencyB
+  
+  // console.log("stock: ", stock);
+  // console.log("money: ", money);
+  
   const stockAddress = stock?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : stock?.address
   const moneyAddress = money?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : money?.address
-
+  
   const factoryContract = useFactoryGridexContract()
   factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then(a => setMarketAddress(a))
 
@@ -162,54 +217,10 @@ export default function Gridex(): JSX.Element {
 
   const stockContract = useTokenContract(stock?.address)
   const moneyContract = useTokenContract(money?.address)
-
-  const RobotsMapF = {}
-
-  async function getAllRobots(onlyForAddr) {
-    const moneyDecimals = await moneyContract?.decimals()
-    const stockDecimals = await stockContract?.decimals()
-    let allRobotsArr = await marketContract?.getAllRobots()
-    let allRobots = []
-    let twoPow96 = BigNumber.from(2).pow(96)
-    let twoPow32 = BigNumber.from(2).pow(32)
-    for (var i = 0; i < allRobotsArr?.length; i += 2) {
-      let fullId = allRobotsArr[i]
-      let robot = {
-        fullId: fullId.toHexString(),
-        index: i / 2,
-        shortId: '',
-        ownerAddr: '',
-        lowPrice: null,
-        highPrice: null,
-        moneyAmountBN: '',
-        stockAmountBN: '',
-        moneyAmount: null,
-        stockAmount: null,
-        stock: stock,
-        money: money,
-      }
-      robot.shortId = fullId.mod(twoPow96).toNumber()
-      robot.ownerAddr = ethers.utils.getAddress(fullId.div(twoPow96).toHexString())
-      if (onlyForAddr && onlyForAddr != robot.ownerAddr) { continue }
-      let info = allRobotsArr[i + 1]
-      robot.lowPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
-      info = info.div(twoPow32)
-      robot.highPrice = formatUnits(unpackPrice(info.mod(twoPow32)))
-      info = info.div(twoPow32)
-      robot.moneyAmountBN = info.mod(twoPow96)
-      robot.stockAmountBN = info.div(twoPow96)
-      robot.moneyAmount = formatUnits(robot.moneyAmountBN, moneyDecimals)
-      robot.stockAmount = formatUnits(robot.stockAmountBN, stockDecimals)
-      allRobots.push(robot)
-      RobotsMapF[robot.fullId] = robot
-    }
-    setRobotsMap(RobotsMapF)
-    return allRobots
-  }
-
-  function getRobots() {
-    getAllRobots("").then(result => setGridexList(result))
-  }
+  
+  useEffect(() => {
+    // getAllRobots("", currenciesSelected?.currencyA, currenciesSelected?.currencyB, ).then(result => setGridexList(result))
+  }, [currenciesSelected])
 
   const type = router.query.filter as string
 
@@ -259,18 +270,25 @@ export default function Gridex(): JSX.Element {
       exact: true
     }
   ]
-  const [marketSelector, toggleMarketSelector] = useState(Boolean)
+  const [marketSelector, setMarketSelector] = useState(window.location.href.endsWith( `?filter=sell`))
 
-  function functionSelector() {
-    window.location.href.endsWith( `?filter=sell`) ? toggleMarketSelector(true) : toggleMarketSelector(false);
-    window.location.href.endsWith( `?filter=sell`) ? history.pushState(null, '', `?filter=buy`) : history.pushState(null, '',`?filter=sell`) 
-   
-  }
+  // function functionSelector() {
+  //   window.location.href.endsWith( `?filter=sell`) ? setMarketSelector(true) : setMarketSelector(false);
+  //   window.location.href.endsWith( `?filter=sell`) ? history.pushState(null, '', `?filter=buy`) : history.pushState(null, '',`?filter=sell`) 
+  // }
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyA ?? undefined)
   const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyB ?? undefined)
-
-  // meter la funcion search en el currencySelect en robotspanel
+                // marketSelector
+                //   ? () => {
+                //     toggleMarketSelector(false);
+                //     functionSelector()
+                    
+                //   }
+                //   : () => {
+                //     toggleMarketSelector(true)
+                //     functionSelector()
+                //   }
   return (
     <Container
       id="robots-page"
@@ -286,19 +304,16 @@ export default function Gridex(): JSX.Element {
       </div>
 
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
-
           <div className='w-full sm:flex sm:gap-2'>
             <BuyRobotsPanel
               id="stock-robot-search"
               onCurrencySelect={handleCurrencyASelect}
               onCurrencyBSelect={handleCurrencyBSelect}
-              currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
-              currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
+              currency={currenciesSelected.currencyA}
+              currencyB={currenciesSelected.currencyB}
               showCommonBases
-              searchFunction={getRobots}
+              // searchFunction={() => getAllRobots("", currenciesSelected?.currencyA, currenciesSelected?.currencyB).then(result => setGridexList(result))}
             />
-
-        
           <div className='flex gap-2 my-6  sm:m-0'>
 
             <NavLink href="/gridex/create-gridex">
@@ -311,7 +326,6 @@ export default function Gridex(): JSX.Element {
               </Button>
             </NavLink>
           </div>
-
         </div>
 
 
@@ -327,20 +341,8 @@ export default function Gridex(): JSX.Element {
             </div>
             <GridexToggle
               id="toggle-market-selector"
-              isActive={ window.location.href.endsWith( `?filter=sell`)}
-              toggle={
-                marketSelector
-                  ? () => {
-                    toggleMarketSelector(false);
-                    functionSelector()
-                    
-                  }
-                  : () => {
-                    toggleMarketSelector(true)
-                    functionSelector()
-                  
-                  }
-              }
+              isActive={marketSelector}
+              onChange={() => setMarketSelector(!marketSelector)}
             />
             <div className=''>
               <Typography variant="sm" className="text-primary  font-bold text-md sm:text-xl pl-2 sm:pl-4">
@@ -353,21 +355,21 @@ export default function Gridex(): JSX.Element {
         </div>
 
         <RobotList 
-        stockAddress={stockAddress} 
-        moneyAddress={moneyAddress} 
-        robots={result} 
-        term={term} 
-        inputValue={formattedAmounts[Field.CURRENCY_B]} 
-        RobotsMap={RobotsMap} 
-        showMaxButton={!atMaxAmounts[Field.CURRENCY_B]} 
-        onUserInput={onFieldBInput}
-        onMax={() => {
-          onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
-        }}
-        currency={currenciesSelected && currenciesSelected.currencyA && currenciesSelected.currencyA}
-        currencyB={currenciesSelected && currenciesSelected.currencyB && currenciesSelected.currencyB}
-        selectedCurrencyBBalance={selectedCurrencyBBalance}
-        selectedCurrencyBalance={selectedCurrencyBalance}
+          stockAddress={stockAddress} 
+          moneyAddress={moneyAddress} 
+          robots={result} 
+          term={term} 
+          inputValue={formattedAmounts[Field.CURRENCY_B]} 
+          RobotsMap={RobotsMap} 
+          showMaxButton={!atMaxAmounts[Field.CURRENCY_B]} 
+          onUserInput={onFieldBInput}
+          onMax={() => {
+            onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')
+          }}
+          currency={currenciesSelected.currencyA}
+          currencyB={currenciesSelected.currencyB}
+          selectedCurrencyBBalance={selectedCurrencyBBalance}
+          selectedCurrencyBalance={selectedCurrencyBalance}
         />
         <div className='ml-2 mt-4'>
           <button className='text-sm hover:text-high-emphesis' onClick={() => setGridexInfoOpen(true)}>What is Tango CMM?</button>

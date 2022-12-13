@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, Pair, Percent, Token } from '@tangoswapcash/sdk'
-import React, { ReactNode, useCallback, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import { classNames, formatCurrencyAmount } from '../../functions'
 
 import Button from '../Button'
@@ -48,8 +48,6 @@ export default function BuyRobotsPanel({
   const [modalOpen, setModalOpen] = useState(false)
 
   const [currencySelector, setCurrencySelector] = useState('')
-
-  const { account } = useActiveWeb3React()
 
   const handleDismissSearch = useCallback(() => {
     setModalOpen(false)
@@ -131,7 +129,7 @@ export default function BuyRobotsPanel({
             onClick={() => {
               setCurrencySelector('B')
               if (onCurrencyBSelect) {
-                setModalOpen(true)
+                setModalOpen(true) 
               }
             }}
           >
