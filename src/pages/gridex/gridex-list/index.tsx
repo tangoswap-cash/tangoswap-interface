@@ -217,12 +217,17 @@ export default function Gridex() {
 
   const stockContract = useTokenContract(stock?.address)
   const moneyContract = useTokenContract(money?.address)
-  
+
+  const [marketSelector, setMarketSelector] = useState(false)
+
   useEffect(() => {
     // getAllRobots("", currenciesSelected?.currencyA, currenciesSelected?.currencyB, ).then(result => setGridexList(result))
   }, [currenciesSelected])
 
   const type = router.query.filter as string
+  const portfolio = type == 'portfolio'
+  const sell = marketSelector
+  const buy = !marketSelector
 
   const savedFilter = getFarmFilter()
 
@@ -231,16 +236,25 @@ export default function Gridex() {
 
   const positions = usePositions(chainId)
 
-
   const FILTER = {
-    sell: (gridexList) => gridexList.moneyAmount !== 0 && gridexList.ownerAddr !== account,
-    buy: (gridexList) => gridexList.stockAmount !== 0 && gridexList.ownerAddr !== account,
-    portfolio: (gridexList) => gridexList.ownerAddr == account,
+    sell: (x) => x.moneyAmount !== 0 && x.ownerAddr !== account,
+    buy: (x) => x.stockAmount !== 0 && x.ownerAddr !== account,
+    portfolio: (x) => x.ownerAddr == account,
   }
 
   const data = gridexList
-    .filter((farm) => {
-      return type in FILTER ? FILTER[type](farm) : true
+    .filter((x) => {
+      if (portfolio) {
+        return x.ownerAddr == account
+      }
+      if (buy) {
+        return x.stockAmount !== 0 && x.ownerAddr !== account
+      }
+      if (sell) {
+        return x.moneyAmount !== 0 && x.ownerAddr !== account
+      }
+      return false
+      // return type in FILTER ? FILTER[type](element) : true
     })
 
   const options = {
@@ -270,7 +284,7 @@ export default function Gridex() {
       exact: true
     }
   ]
-  const [marketSelector, setMarketSelector] = useState(window.location.href.endsWith( `?filter=sell`))
+  
 
   // function functionSelector() {
   //   window.location.href.endsWith( `?filter=sell`) ? setMarketSelector(true) : setMarketSelector(false);
@@ -279,16 +293,7 @@ export default function Gridex() {
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyA ?? undefined)
   const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyB ?? undefined)
-                // marketSelector
-                //   ? () => {
-                //     toggleMarketSelector(false);
-                //     functionSelector()
-                    
-                //   }
-                //   : () => {
-                //     toggleMarketSelector(true)
-                //     functionSelector()
-                //   }
+
   return (
     <Container
       id="robots-page"
@@ -312,7 +317,7 @@ export default function Gridex() {
               currency={currenciesSelected.currencyA}
               currencyB={currenciesSelected.currencyB}
               showCommonBases
-              // searchFunction={() => getAllRobots("", currenciesSelected?.currencyA, currenciesSelected?.currencyB).then(result => setGridexList(result))}
+              searchFunction={() => getAllRobots("", moneyContract, stockContract, marketContract, currenciesSelected?.currencyA, currenciesSelected?.currencyB).then(result => setGridexList(result))}
             />
           <div className='flex gap-2 my-6  sm:m-0'>
 
@@ -334,7 +339,7 @@ export default function Gridex() {
           Tango CMM list{' '}
           </div>
           <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full pl-2 ml-8 sm:ml-96"}>
-            <div className='cursor-pointer' onClick={ !marketSelector ? ()=>{ toggleMarketSelector(false);  functionSelector()}:null}>
+            <div className='cursor-pointer' onClick={() => setMarketSelector(false)}>
               <Typography variant="sm" className="font-bold text-md sm:text-xl text-primary pr-2 sm:pr-4">
                 {i18n._(t`Buy `)}{stock?.symbol == undefined ? ` Stock` : ` ${stock?.symbol}`}
               </Typography>
@@ -344,7 +349,7 @@ export default function Gridex() {
               isActive={marketSelector}
               onChange={() => setMarketSelector(!marketSelector)}
             />
-            <div className='cursor-pointer'  onClick={ marketSelector ? ()=>{ toggleMarketSelector(false);  functionSelector()}:null}>
+            <div className='cursor-pointer'  onClick={() => setMarketSelector(true)}>
               <Typography variant="sm" className="text-primary  font-bold text-md sm:text-xl pl-2 sm:pl-4">
                 {i18n._(t`Sell `)}{money?.symbol == undefined || stock?.symbol == undefined ? ` Stock` : ` ${stock?.symbol}`}
               </Typography>
@@ -370,6 +375,7 @@ export default function Gridex() {
           currencyB={currenciesSelected.currencyB}
           selectedCurrencyBBalance={selectedCurrencyBBalance}
           selectedCurrencyBalance={selectedCurrencyBalance}
+          marketSelector={marketSelector}
         />
         <div className='ml-2 mt-4'>
           <button className='text-sm hover:text-high-emphesis' onClick={() => setGridexInfoOpen(true)}>What is Tango CMM?</button>

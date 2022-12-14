@@ -28,11 +28,16 @@ const RobotListItems = ({
   currencyB, 
   selectedCurrencyBBalance, 
   selectedCurrencyBalance,
+  marketSelector,
   ...rest
   }) => {
   const token0 = robot?.stock
   const token1 = robot?.money
-  
+
+  const sell = marketSelector
+  const buy = !marketSelector
+  const portfolio = window.location.href.endsWith("?filter=portfolio")
+
   const pendingSushi = usePendingSushi(robot)
   const rewardAmount = usePendingReward(robot)
 
@@ -49,7 +54,7 @@ const RobotListItems = ({
               'w-full sm:px-4 px-2 py-6 text-left rounded cursor-pointer select-none bg-dark-900 text-primary text-sm md:text-lg'
             )}
           >
-            <div className={window.location.href.endsWith("?filter=portfolio") ? "grid grid-cols-4" : "grid grid-cols-3" }>
+            <div className={portfolio ? "grid grid-cols-4" : "grid grid-cols-3" }>
               <div className="flex col-span-1 space-x-5 ">
                 <DoubleLogo currency0={token0} currency1={token1} size={isMobile ? 30 : 40} />
               
@@ -63,10 +68,10 @@ const RobotListItems = ({
                   
                 </div>
               </div>
-              <div className={window.location.href.endsWith("?filter=sell") || window.location.href.endsWith("?filter=portfolio") ? "flex flex-col items-center justify-center font-bold" : "hidden"}>
+              <div className={ sell || portfolio ? "flex flex-col items-center justify-center font-bold" : "hidden" }>
                   {String(robot.lowPrice).slice(0,6)}
               </div>
-              <div className={ window.location.href.endsWith("?filter=buy") || window.location.href.endsWith("?filter=portfolio") ?"flex flex-col items-center justify-center" : "hidden"}>
+              <div className={ buy || portfolio ? "flex flex-col items-center justify-center" : "hidden" }>
                 <div className="font-bold text-righttext-high-emphesis">
                   {String(robot.highPrice).slice(0,6)}
                 </div>
@@ -128,6 +133,7 @@ const RobotListItems = ({
           currencyB={currencyB}
           selectedCurrencyBBalance={selectedCurrencyBBalance}
           selectedCurrencyBalance={selectedCurrencyBalance}
+          marketSelector={marketSelector}
           />}
         </>
       )}

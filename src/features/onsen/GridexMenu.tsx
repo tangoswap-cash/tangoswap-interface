@@ -28,6 +28,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions, robots }) => {
   const { account, chainId } = useActiveWeb3React()
   const { i18n } = useLingui()
   const toggleWalletModal = useWalletModalToggle()
+  const portfolio = window.location.href.endsWith("?filter=portfolio")
 
   return (
     <div className="space-y-4">
@@ -46,7 +47,7 @@ const GridexMenu = ({ positionsLength, options = defaultOptions, robots }) => {
           exact
           href={`/${basePath}/?filter=buy`}
           activeClassName="font-bold bg-transparent border rounded text-high-emphesis border-transparent border-gradient-r-blue-pink-dark-900"        >
-          <a className={classNames(window.location.href.endsWith("?filter=portfolio")? null: "border-gradient-r-blue-pink-dark-900"  ,"flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer  bg-dark-900 hover:bg-dark-800")}>
+          <a className={classNames(portfolio ? null: "border-gradient-r-blue-pink-dark-900"  ,"flex items-center justify-between px-2 py-3 md:px-4 md:py-6 text-base font-bold border border-transparent rounded cursor-pointer  bg-dark-900 hover:bg-dark-800")}>
             {i18n._(t`CMM Market`)}
           </a>
         </NavLink>

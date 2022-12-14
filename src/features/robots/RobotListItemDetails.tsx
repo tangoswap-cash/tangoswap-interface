@@ -37,11 +37,16 @@ const RobotListItemDetails = ({
   currency, 
   currencyB, 
   selectedCurrencyBBalance, 
-  selectedCurrencyBalance
+  selectedCurrencyBalance,
+  marketSelector
   }) => {
     
   const { i18n } = useLingui()
   const [marketAddress, setMarketAddress] = useState('')
+
+  const sell = marketSelector
+  const buy = !marketSelector
+  const portfolio = window.location.href.endsWith("?filter=portfolio")
 
   const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe" // add this to SDK
 
@@ -132,7 +137,7 @@ const RobotListItemDetails = ({
     <Disclosure.Panel className="m-auto mt-2 mb-3 flex flex-col justify-center w-full border-t-0 rounded rounded-t-none p-2 bg-dark-800" static>
       <>
         <div
-          className={activeLink.endsWith('portfolio') ? `hidden` : classNames(
+          className={portfolio ? `hidden` : classNames(
             'flex mb-2 items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-full'
           )}
         >
@@ -158,11 +163,11 @@ const RobotListItemDetails = ({
             {currency && selectedCurrencyBBalance ? (
               <div className="flex flex-col">
                 <div onClick={onMax} className="text-xs  text-right  cursor-pointer text-low-emphesis">
-                  {activeLink.endsWith('buy') ? (
+                  {buy ? (
                     <>
                       {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
                     </>
-                  ) : activeLink.endsWith('sell') && (
+                  ) : sell && (
                     <>
                       {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBalance, 4)} {currency.symbol}
                     </>
@@ -186,7 +191,7 @@ const RobotListItemDetails = ({
             </Button>
           ) 
           ||
-          activeLink.endsWith('buy') && 
+          buy && 
           (
             <Button
               onClick={() => Buy(robot.fullId)}
@@ -197,7 +202,7 @@ const RobotListItemDetails = ({
             </Button>
           ) 
           ||
-          activeLink.endsWith('sell') && 
+          sell && 
           (
             <Button
               onClick={() => Sell(robot.fullId)}
