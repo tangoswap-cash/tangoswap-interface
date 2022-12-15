@@ -65,7 +65,7 @@ async function getAllRobots(onlyForAddr, moneyContract, stockContract, marketCon
   const stockDecimals = await stockContract?.decimals()
   
   let allRobotsArr = await marketContract?.getAllRobots()
-  // const RobotsMapF = {}
+  const RobotsMapF = {}
 
   let allRobots = []
   let twoPow96 = BigNumber.from(2).pow(96)
@@ -99,11 +99,11 @@ async function getAllRobots(onlyForAddr, moneyContract, stockContract, marketCon
     robot.moneyAmount = formatUnits(robot.moneyAmountBN, moneyDecimals)
     robot.stockAmount = formatUnits(robot.stockAmountBN, stockDecimals)
     allRobots.push(robot)
-    // RobotsMapF[robot.fullId] = robot
+    RobotsMapF[robot.fullId] = robot
   }
   // setRobotsMap(RobotsMapF)
-  console.log("allRobots: ", allRobots)
-  return allRobots
+  // console.log("allRobots: ", allRobots)
+  return { RobotsMapF, allRobots }
 }
 
 function packPrice(price) {
@@ -221,8 +221,11 @@ export default function Gridex() {
   const [marketSelector, setMarketSelector] = useState(false)
 
   useEffect(() => {
-    // getAllRobots("", currenciesSelected?.currencyA, currenciesSelected?.currencyB, ).then(result => setGridexList(result))
-  }, [currenciesSelected])
+    getAllRobots("", moneyContract, stockContract, marketContract, currenciesSelected?.currencyA, currenciesSelected?.currencyB).then(result => {
+      setGridexList(result.allRobots)
+      setRobotsMap(result.RobotsMapF)
+    })
+  }, [currenciesSelected, moneyContract, stockContract, marketContract])
 
   const type = router.query.filter as string
   const portfolio = type == 'portfolio'
@@ -317,7 +320,10 @@ export default function Gridex() {
               currency={currenciesSelected.currencyA}
               currencyB={currenciesSelected.currencyB}
               showCommonBases
-              searchFunction={() => getAllRobots("", moneyContract, stockContract, marketContract, currenciesSelected?.currencyA, currenciesSelected?.currencyB).then(result => setGridexList(result))}
+              searchFunction={() => getAllRobots("", moneyContract, stockContract, marketContract, currenciesSelected?.currencyA, currenciesSelected?.currencyB).then(result => {
+                setGridexList(result.allRobots)
+                setRobotsMap(result.RobotsMapF)
+              })}
             />
           <div className='flex gap-2 my-6  sm:m-0'>
 
