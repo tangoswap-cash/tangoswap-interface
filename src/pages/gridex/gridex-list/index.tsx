@@ -320,10 +320,6 @@ export default function Gridex() {
               currency={currenciesSelected.currencyA}
               currencyB={currenciesSelected.currencyB}
               showCommonBases
-              searchFunction={() => getAllRobots("", moneyContract, stockContract, marketContract, currenciesSelected?.currencyA, currenciesSelected?.currencyB).then(result => {
-                setGridexList(result.allRobots)
-                setRobotsMap(result.RobotsMapF)
-              })}
             />
           <div className='flex gap-2 my-6  sm:m-0'>
 

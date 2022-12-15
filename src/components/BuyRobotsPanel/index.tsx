@@ -41,7 +41,7 @@ export default function BuyRobotsPanel({
   showCommonBases,
   pair = null, // used for double token logo
   hideInput = false,
-  searchFunction
+  // searchFunction
 }: CurrencyInputPanelProps) {
   const { i18n } = useLingui()
 
@@ -56,7 +56,7 @@ export default function BuyRobotsPanel({
   const activeLink = String(window.location)
 
   return (
-    <div id={id} className={classNames(hideInput ? 'p-3' : 'p-4', 'w-11/12 mx-4 sm:w-full px-2 rounded  sm:m-0  bg-dark-800')}>
+    <div id={id} className={classNames(hideInput ? 'p-2' : 'p-2', 'w-11/12 mx-4 sm:w-full px-2 rounded  sm:m-0  bg-dark-800')}>
       <div className="flex flex-col justify-center items-center space-y-3 sm:space-y-0 sm:flex-row">
         <div className={classNames('w-full p-2 sm:w-2/5')}>
           <button
@@ -180,13 +180,13 @@ export default function BuyRobotsPanel({
           </button>
         </div>
 
-        <Button
+        {/* <Button
           color={'gradient'}
           size="sm"
           className='h-12 w-10/12 ml-2 text-sm  sm:pr-14 sm:text-sm  sm:w-1/12 sm:text-center '
           onClick={searchFunction}
         >{i18n._(t`Search`)}
-        </Button>
+        </Button> */}
       </div>
       {
         currencySelector == 'A' ? (
