@@ -195,8 +195,7 @@ const RobotListItemDetails = ({
           (
             <Button
               onClick={() => Buy(robot.fullId)}
-              className={`w-full mx-auto`}
-              style={{ backgroundColor: '#060', color: '#FFF' }}
+              className={`w-full mx-auto bg-[#B95C40]  text-gray-200 hover:text-white`}
             >
               {i18n._(t`Buy ${robot?.stock?.symbol} from CMM`)}
             </Button>
@@ -206,8 +205,8 @@ const RobotListItemDetails = ({
           (
             <Button
               onClick={() => Sell(robot.fullId)}
-              className={`w-full mx-auto`}
-              style={{ backgroundColor: 'red', color: '#FFF' }}
+              className={`w-full mx-auto bg-[#5C1B0B] text-gray-200 hover:text-white`}
+            
             >
               {i18n._(t`Sell ${robot?.stock?.symbol} to CMM`)}
             </Button>
