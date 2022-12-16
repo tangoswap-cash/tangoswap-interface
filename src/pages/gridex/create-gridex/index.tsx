@@ -56,21 +56,39 @@ export default function CreateGridexPage() {
 
   const addTransaction = useTransactionAdder()
 
-  function minPriceValue(value) {
-    useMemo(() => {
-        setMinValue(value)
-      },
-      [value]
-    )
-  }
+  // const minPriceValue = (value) => {
+  //   useMemo(() => {
+  //     setMinValue(value)
+  //   },
+  //   [value]
+  // )
+  // }
+  // function minPriceValue(value) {
+  //   useMemo(() => {
+  //       setMinValue(value)
+  //     },
+  //     [value]
+  //   )
+  // }
 
-  function maxPriceValue(value) {
-     useMemo(() => {
-        setMaxValue(value)
-      },
-      [value]
-    )
-  }
+//   const maxPriceValue = (value) => {
+//     useMemo(() => {
+//        setMaxValue(value)
+//      },
+//      [value]
+//    )
+//  }
+
+  // function maxPriceValue(value) {
+  //    useMemo(() => {
+  //       setMaxValue(value)
+  //     },
+  //     [value]
+  //   )
+  // }
+
+  // console.log(minValue)
+  // console.log(maxValue)
 
   
   function packPrice(price) {
@@ -140,6 +158,7 @@ export default function CreateGridexPage() {
         summary: `Create Robot`
       })
     })
+    .catch(error => console.log("error", error))
   }
 
 
@@ -301,8 +320,10 @@ export default function CreateGridexPage() {
               </div>
               {
                   <div className='flex justify-center gap-5'>
-                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} />
-                    <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyA?.symbol}/>
+                    {/* <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} /> */}
+                    {/* <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyA?.symbol}/> */}
+                    <PanelLimitPrice minPriceValue={minValue} maxPriceValue={maxValue} setMinPriceValue={setMinValue} setMaxPriceValue={setMaxValue} label='Price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} /> 
+                    <PanelLimitPrice minPriceValue={minValue} maxPriceValue={maxValue} setMaxPriceValue={setMaxValue} setMinPriceValue={setMinValue} label='Price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyA?.symbol}/>                
                   </div>
               }
             

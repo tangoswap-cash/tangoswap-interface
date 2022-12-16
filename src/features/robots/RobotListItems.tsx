@@ -69,11 +69,11 @@ const RobotListItems = ({
                 </div>
               </div>
               <div className={ sell || portfolio ? "flex flex-col items-center justify-center font-bold" : "hidden" }>
-                  {String(robot.lowPrice).slice(0,6)}
+                  {String(robot.lowPrice).slice(0,8)}
               </div>
               <div className={ buy || portfolio ? "flex flex-col items-center justify-center" : "hidden" }>
                 <div className="font-bold text-righttext-high-emphesis">
-                  {String(robot.highPrice).slice(0,6)}
+                  {String(robot.highPrice).slice(0,8)}
                 </div>
               </div>
               {pendingSushi && pendingSushi.greaterThan(ZERO) ? (

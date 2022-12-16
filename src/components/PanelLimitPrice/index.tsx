@@ -1,12 +1,18 @@
 import { escapeRegExp } from 'lodash'
 import React, { useState } from 'react'
 
-const PanelLimitPrice = ({label, currencyA, currencyB, minPrice, maxPrice}) => {
-  const [minPriceValue, setMinPriceValue] = useState('')
-  const [maxPriceValue, setMaxPriceValue] = useState('')
+// const PanelLimitPrice = ({label, currencyA, currencyB, minPrice, maxPrice}) => {
+//   const [minPriceValue, setMinPriceValue] = useState('')
+//   const [maxPriceValue, setMaxPriceValue] = useState('')
 
-  minPrice(minPriceValue)
-  maxPrice(maxPriceValue)
+//   minPrice(minPriceValue)
+//   maxPrice(maxPriceValue)
+const PanelLimitPrice = ({label, currencyA, currencyB, minPriceValue, maxPriceValue, setMinPriceValue, setMaxPriceValue}) => {
+  // const [minPriceValue, setMinPriceValue] = useState('')
+  // const [maxPriceValue, setMaxPriceValue] = useState('')
+
+  // minPrice(minPriceValue)
+  // maxPrice(maxPriceValue)
 
   const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group
   const defaultClassName = 'w-0 p-0 text-2xl bg-transparent'
@@ -51,3 +57,4 @@ const PanelLimitPrice = ({label, currencyA, currencyB, minPrice, maxPrice}) => {
 }
 
 export default PanelLimitPrice
+
