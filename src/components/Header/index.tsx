@@ -66,7 +66,7 @@ function AppBar(): JSX.Element {
                           id={`smart-swap-nav-link`}
                           className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                         >
-                          {i18n._(t`Limit`)} <sup>NEW</sup>
+                          {i18n._(t`Limit`)}
                         </a>
                       </NavLink>
                       <NavLink href="/pool">
@@ -124,6 +124,16 @@ function AppBar(): JSX.Element {
                             className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                           >
                             {i18n._(t`Stake`)}
+                          </a>
+                        </NavLink>
+                      )}
+                      {chainId && featureEnabled(Feature.GRIDEX, chainId) && (
+                        <NavLink href={'/gridex/gridex-list?filter=portfolio'}>
+                          <a
+                            id={`gridex-nav-link`}
+                            className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                          >
+                            {i18n._(t`Tango CMM`)} <sup>NEW</sup>
                           </a>
                         </NavLink>
                       )}
@@ -262,7 +272,7 @@ function AppBar(): JSX.Element {
                     id={`limit-order-nav-link`}
                     className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                   >
-                    {i18n._(t`Limit`)} <sup>NEW</sup>
+                    {i18n._(t`Limit`)}
                   </a>
                 </Link>
                 <Link href={'/pool'}>
@@ -330,6 +340,16 @@ function AppBar(): JSX.Element {
                     </a>
                   </Link>
                 )}
+                {chainId && featureEnabled(Feature.GRIDEX, chainId) && (
+                        <Link href={'/gridex/gridex-list?filter=portfolio'}>
+                          <a
+                            id={`gridex-nav-link`}
+                            className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                          >
+                            {i18n._(t`Tango CMM`)} <sup>NEW</sup>
+                          </a>
+                        </Link>
+                      )}
 
                 {/* {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
                   <ExternalLink

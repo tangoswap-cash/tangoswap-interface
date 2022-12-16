@@ -1,0 +1,7 @@
+[
+    "function getAllRobots() view public returns (uint[] memory robotsIdAndInfo)",
+    "function createRobot(uint robotInfo) external payable",
+    "function deleteRobot(uint index, uint robotId) external",
+    "function sellToRobot(uint robotId, uint stockDelta) external payable",
+    "function buyFromRobot(uint robotId, uint moneyDelta) external payable"
+]

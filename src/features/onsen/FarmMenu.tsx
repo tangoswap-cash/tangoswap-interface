@@ -6,7 +6,31 @@ import { useLingui } from '@lingui/react'
 import { useActiveWeb3React } from '../../hooks'
 import { useWalletModalToggle } from '../../state/application/hooks'
 
-const Menu = ({ positionsLength }) => {
+const defaultOptions = [
+  {
+    href: `/farm?filter=portfolio`,
+    label: 'Your Farms',
+    exact: true
+  },
+  {
+    divider: true
+  },
+  {
+    href: "/farm?filter=all",
+    label: 'All Farms'
+  },
+  {
+    href: `/farm?filter=2x`,
+    label: '2x Reward Farms',
+    exact: true
+  },
+  {
+    href: "/farm?filter=past",
+    label: 'Past Farms'
+  }
+]
+
+const Menu = ({ positionsLength, options = defaultOptions}) => {
   const { account, chainId } = useActiveWeb3React()
   const { i18n } = useLingui()
   const toggleWalletModal = useWalletModalToggle()

@@ -127,6 +127,10 @@ const nextConfig = {
         source: '/find',
         destination: '/exchange/find',
       },
+      {
+        source: '/gridex',
+        destination: '/gridex/gridex-list'
+      }
     ]
   },
   i18n: {

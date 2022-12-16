@@ -48,7 +48,7 @@ const VARIANT = {
   link: LINK,
 }
 
-export type ButtonColor = 'blue' | 'pink' | 'gradient' | 'gray' | 'default' | 'red' | 'green'
+export type ButtonColor = 'blue' | 'pink' | 'gradient' | 'gray' | 'default' | 'red' | 'green' | 'border'
 
 export type ButtonSize = 'xs' | 'sm' | 'lg' | 'default' | 'none'
 
