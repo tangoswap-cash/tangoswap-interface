@@ -337,10 +337,10 @@ export default function Gridex() {
 
 
         <div className="flex  px-4  sm:px-0 items-center sm:items-start  sm:text-[25px] text-lg font-bold text-high-emphesis whitespace-nowrap">
-          <div className='sm:mr-24'>
+          <div className='sm:mr-40'>
           Tango CMM list{' '}
           </div>
-          <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full pl-2 ml-8 sm:ml-96"}>
+          <div className={window.location.href.endsWith(`?filter=portfolio`) ? "hidden" : "flex items-center h-full pl-2 ml-8 sm:ml-auto"}>
             <div className='cursor-pointer' onClick={() => setMarketSelector(false)}>
               <Typography variant="sm" className="font-bold text-md sm:text-xl text-primary pr-2 sm:pr-4">
                 {i18n._(t`Buy `)}{stock?.symbol == undefined ? ` Stock` : ` ${stock?.symbol}`}
@@ -352,7 +352,7 @@ export default function Gridex() {
               onChange={() => setMarketSelector(!marketSelector)}
             />
             <div className='cursor-pointer'  onClick={() => setMarketSelector(true)}>
-              <Typography variant="sm" className="text-primary  font-bold text-md sm:text-xl pl-2 sm:pl-4">
+              <Typography variant="sm" className="text-primary  font-bold text-md sm:text-xl pl-2 sm:pl-4 ">
                 {i18n._(t`Sell `)}{money?.symbol == undefined || stock?.symbol == undefined ? ` Stock` : ` ${stock?.symbol}`}
               </Typography>
             </div>

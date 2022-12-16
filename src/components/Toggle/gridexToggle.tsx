@@ -14,7 +14,7 @@ export default function GridexToggle({ id, isActive, onChange }: ToggleProps) {
       checked={isActive}
       onChange={onChange}
       className={classNames(
-        isActive ? 'bg-blue' : 'bg-[#060]',
+        isActive ? 'bg-blue' : 'bg-pink',
         'relative inline-flex flex-shrink-0 sm:h-8 h-6 w-11 sm:w-20 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none'
       )}
     >
