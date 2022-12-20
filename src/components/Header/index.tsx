@@ -127,7 +127,7 @@ function AppBar(): JSX.Element {
                           </a>
                         </NavLink>
                       )}
-                      {chainId && featureEnabled(Feature.GRIDEX, chainId) && (
+                      {/* {chainId && featureEnabled(Feature.GRIDEX, chainId) && (
                         <NavLink href={'/gridex/gridex-list?filter=portfolio'}>
                           <a
                             id={`gridex-nav-link`}
@@ -136,7 +136,7 @@ function AppBar(): JSX.Element {
                             {i18n._(t`Tango CMM`)} <sup>NEW</sup>
                           </a>
                         </NavLink>
-                      )}
+                      )} */}
                       {/* {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
                         <ExternalLink
                           id={`analytics-nav-link`}
@@ -340,16 +340,17 @@ function AppBar(): JSX.Element {
                     </a>
                   </Link>
                 )}
-                {chainId && featureEnabled(Feature.GRIDEX, chainId) && (
-                        <Link href={'/gridex/gridex-list?filter=portfolio'}>
-                          <a
-                            id={`gridex-nav-link`}
-                            className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                          >
-                            {i18n._(t`Tango CMM`)} <sup>NEW</sup>
-                          </a>
-                        </Link>
-                      )}
+
+                {/* {chainId && featureEnabled(Feature.GRIDEX, chainId) && (
+                  <Link href={'/gridex/gridex-list?filter=portfolio'}>
+                    <a
+                      id={`gridex-nav-link`}
+                      className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                    >
+                      {i18n._(t`Tango CMM`)} <sup>NEW</sup>
+                    </a>
+                  </Link>
+                )} */}
 
                 {/* {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
                   <ExternalLink
