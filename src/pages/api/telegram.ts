@@ -1,4 +1,4 @@
-import { withSentry } from '@sentry/nextjs'
+// import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
 
 const handler = async (req, res) => {
@@ -47,4 +47,5 @@ const handler = async (req, res) => {
   res.status(200).json({ok: true})
 }
 
-export default withSentry(handler)
+// export default withSentry(handler)
+export default handler
