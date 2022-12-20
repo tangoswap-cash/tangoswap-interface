@@ -51,7 +51,7 @@ export default function CreateGridexPage() {
 
   const [minValue, setMinValue] = useState()
   const [maxValue, setMaxValue] = useState()
-
+  
   const [foundMarketAddress, setFoundMarketAddress] = useState(true)
 
   const addTransaction = useTransactionAdder()
@@ -90,7 +90,6 @@ export default function CreateGridexPage() {
   // console.log(minValue)
   // console.log(maxValue)
 
-  
   function packPrice(price) {
     var effBits = 1
     while(!price.mask(effBits).eq(price)) {
@@ -158,7 +157,9 @@ export default function CreateGridexPage() {
         summary: `Create Robot`
       })
     })
-    .catch(error => console.log("error", error))
+    .catch(error => {
+      console.log("error", error)
+    })
   }
 
 
@@ -370,10 +371,17 @@ export default function CreateGridexPage() {
                 </Button>
               )
               :
+              minValue > maxValue ?
               (
-                <Button color="gradient" size="lg" disabled={!currenciesSelected} onClick={CreateRobot}>
-                  {i18n._(t`Create Tango CMM`)}
-                </Button>
+              <Button color="blue" size="lg" disabled={true}>
+                {i18n._(t`Invalid Price`)}
+              </Button>
+              )
+              :
+              (
+              <Button color="gradient" size="lg" disabled={!currenciesSelected} onClick={CreateRobot}>
+                {i18n._(t`Create Tango CMM`)}
+              </Button>
               )
               }
             </div>
