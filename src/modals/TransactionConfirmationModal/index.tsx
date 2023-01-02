@@ -110,7 +110,7 @@ export const TransactionSubmittedContent: FC<TransactionSubmittedContentProps> =
 
 interface ConfirmationModelContentProps {
   title: string
-  onDismiss: () => void
+  onDismiss: () => void 
   topContent: () => React.ReactNode
   bottomContent: () => React.ReactNode
 }

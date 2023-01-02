@@ -1,10 +1,19 @@
 import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
 import { AutoRow, RowBetween } from '../../../components/Row'
 import Button, { ButtonError } from '../../../components/Button'
-import { Currency, CurrencyAmount, Percent, WNATIVE, currencyEquals, SmartBCH, Token } from '@tangoswapcash/sdk'
+import {
+  Currency,
+  CurrencyAmount,
+  Percent,
+  WNATIVE,
+  currencyEquals,
+  SmartBCH,
+  Token,
+  TradeType,
+  Trade as V2Trade,
+} from '@tangoswapcash/sdk'
 import { ONE_BIPS, ZERO_PERCENT } from '../../../constants'
 import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react'
-import TransactionConfirmationModal, { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
 import { calculateGasMargin, calculateSlippageAmount, getGasPrice } from '../../../functions/trade'
 import { currencyId, maxAmountSpend } from '../../../functions/currency'
 import { useDerivedMintInfo, useGridexMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
@@ -32,7 +41,12 @@ import { useCurrency } from '../../../hooks/Tokens'
 import { useIsSwapUnsupported } from '../../../hooks/useIsSwapUnsupported'
 import { useLingui } from '@lingui/react'
 import { useRouter } from 'next/router'
-import { useApproveSep206Callback, useFactoryGridexContract, useGridexMarketContract, useTokenContract } from '../../../hooks'
+import {
+  useApproveSep206Callback,
+  useFactoryGridexContract,
+  useGridexMarketContract,
+  useTokenContract,
+} from '../../../hooks'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
 import { useWalletModalToggle } from '../../../state/application/hooks'
@@ -42,6 +56,16 @@ import { ethers } from 'ethers'
 import { parseUnits } from '@ethersproject/units'
 import { formatUnits } from '@ethersproject/units'
 import { formatCurrencyAmount } from '../../../functions'
+import ConfirmCreateModal from '../../../features/robots/ConfirmCreateModal'
+import { useDerivedSwapInfo, useSwapState } from '../../../state/swap/hooks'
+import { useSwapCallback } from '../../../hooks/useSwapCallback'
+import Modal from '../../../components/Modal'
+import TransactionConfirmationModal, {
+  ConfirmationModalContent,
+  TransactionErrorContent,
+} from '../../../modals/TransactionConfirmationModal'
+import CreateModalHeader from '../../../features/robots/CreateModalHeader'
+import CreateModalFooter from '../../../features/robots/CreateModalFooter'
 
 export default function CreateGridexPage() {
   const { i18n } = useLingui()
@@ -49,10 +73,15 @@ export default function CreateGridexPage() {
 
   const [currenciesSelected, setCurrenciesSelected] = useState(null)
 
-  const [minValue, setMinValue] = useState()
-  const [maxValue, setMaxValue] = useState()
-  
+  const [minValue, setMinValue] = useState('')
+  const [maxValue, setMaxValue] = useState('')
+
   const [foundMarketAddress, setFoundMarketAddress] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
+  const [attemptingTxn, setAttempingTxn] = useState(false)
+  const [hash, setHash] = useState("")
+
+  // const [showConfirm, setShowConfirm] = useState(false)
 
   const addTransaction = useTransactionAdder()
 
@@ -71,13 +100,13 @@ export default function CreateGridexPage() {
   //   )
   // }
 
-//   const maxPriceValue = (value) => {
-//     useMemo(() => {
-//        setMaxValue(value)
-//      },
-//      [value]
-//    )
-//  }
+  //   const maxPriceValue = (value) => {
+  //     useMemo(() => {
+  //        setMaxValue(value)
+  //      },
+  //      [value]
+  //    )
+  //  }
 
   // function maxPriceValue(value) {
   //    useMemo(() => {
@@ -92,14 +121,14 @@ export default function CreateGridexPage() {
 
   function packPrice(price) {
     var effBits = 1
-    while(!price.mask(effBits).eq(price)) {
+    while (!price.mask(effBits).eq(price)) {
       effBits += 1
     }
     var twoPow24 = BigNumber.from(2).pow(24)
-    if(effBits <= 25) {
+    if (effBits <= 25) {
       return price
     }
-    var shift = effBits-25
+    var shift = effBits - 25
     var shiftBN = BigNumber.from(2).pow(shift)
     var low24 = price.div(shiftBN).sub(twoPow24)
     var high8 = BigNumber.from(shift).add(1).mul(twoPow24)
@@ -109,17 +138,14 @@ export default function CreateGridexPage() {
   const [isExpertMode] = useExpertModeManager()
   // mint state
   const { independentField, typedValue, otherTypedValue } = useMintState()
-  const {
-    dependentField,
-    currencyBalances,
-    parsedAmounts,
-    noLiquidity,
-    error,
-  } = useGridexMintInfo(currenciesSelected?.currencyA ?? undefined, currenciesSelected?.currencyB ?? undefined)
+  const { dependentField, currencyBalances, parsedAmounts, noLiquidity, error } = useGridexMintInfo(
+    currenciesSelected?.currencyA ?? undefined,
+    currenciesSelected?.currencyB ?? undefined
+  )
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
-  
-  const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe"
+
+  const ImplAddr = '0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe'
 
   const stock = currenciesSelected?.currencyA
   const money = currenciesSelected?.currencyB
@@ -127,20 +153,22 @@ export default function CreateGridexPage() {
   const stockAddress = stock?.symbol == 'BCH' ? BCHADDRESS : stock?.address
   const moneyAddress = money?.symbol == 'BCH' ? BCHADDRESS : money?.address
 
-  const stockContract = useTokenContract(stock?.address) 
-  const moneyContract = useTokenContract(money?.address) 
+  const stockContract = useTokenContract(stock?.address)
+  const moneyContract = useTokenContract(money?.address)
   const factoryContract = useFactoryGridexContract()
-
+  
   const [marketAddress, setMarketAddress] = useState()
-  factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then(a => setMarketAddress(a))
+  factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then((a) => setMarketAddress(a))
 
   const marketContract = useGridexMarketContract(marketAddress)
-  
+
   async function CreateRobot() {
     const moneyDecimals = await moneyContract?.decimals()
     const stockDecimals = await stockContract?.decimals()
     const stockAmount = formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4)
     const moneyAmount = formatCurrencyAmount(parsedAmounts[Field.CURRENCY_B], 4)
+    console.log(stockAmount);
+    console.log(moneyAmount);
     var stockAmountBN = parseUnits(stockAmount, stockDecimals)
     var moneyAmountBN = parseUnits(moneyAmount, moneyDecimals)
     var highPrice = packPrice(parseUnits(maxValue))
@@ -148,40 +176,49 @@ export default function CreateGridexPage() {
     var robotInfo = stockAmountBN.mul(BigNumber.from(2).pow(96)).add(moneyAmountBN)
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(highPrice)
     robotInfo = robotInfo.mul(BigNumber.from(2).pow(32)).add(lowPrice)
-  
-    let val = null
-    val = stockAddress == BCHADDRESS ? {value: stockAmountBN} : moneyAddress == BCHADDRESS ? {value: moneyAmountBN} : null
-    
-    await marketContract.createRobot(robotInfo, val).then((response) => {
-      addTransaction(response, {
-        summary: `Create Robot`
-      })
-    })
-    .catch(error => {
-      console.log("error", error)
-    })
-  }
 
+    let val = null
+    val =
+      stockAddress == BCHADDRESS
+        ? { value: stockAmountBN }
+        : moneyAddress == BCHADDRESS
+        ? { value: moneyAmountBN }
+        : null
+        
+    setAttempingTxn(true)
+    await marketContract
+      .createRobot(robotInfo, val)
+      .then((response) => {
+        setHash(response.hash)
+        setAttempingTxn(false)
+        addTransaction(response, {
+          summary: `Create Robot`,
+        })
+      })
+      .catch((error) => {
+        setHash("")
+        console.log('error', error)
+        setAttempingTxn(false)
+      })
+  }
 
   async function createMarket() {
-    factoryContract.create(stockAddress, moneyAddress, ImplAddr)
-    .then((response: TransactionResponse) => {
+    factoryContract.create(stockAddress, moneyAddress, ImplAddr).then((response: TransactionResponse) => {
       addTransaction(response, {
-        summary: `Create Market for ${stock?.symbol}-${money?.symbol}`
+        summary: `Create Market for ${stock?.symbol}-${money?.symbol}`,
       })
     })
   }
-  
+
   async function marketAddressCheck() {
     let provider = new ethers.providers.Web3Provider(window.ethereum)
     let code = await provider.getCode(marketAddress)
-    code == "0x" ? setFoundMarketAddress(false) : setFoundMarketAddress(true)   
+    code == '0x' ? setFoundMarketAddress(false) : setFoundMarketAddress(true)
   }
 
   useEffect(() => {
     marketAddressCheck()
   })
-
 
   const formattedAmounts = {
     [independentField]: typedValue,
@@ -208,45 +245,40 @@ export default function CreateGridexPage() {
     },
     {}
   )
-  
+
   const handleCurrencyASelect = (currencyA: Currency) => {
-    setCurrenciesSelected({...currenciesSelected, currencyA: currencyA})
+    setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
   }
   const handleCurrencyBSelect = (currencyB: Currency) => {
-    setCurrenciesSelected({...currenciesSelected, currencyB: currencyB})      
+    setCurrenciesSelected({ ...currenciesSelected, currencyB: currencyB })
   }
- 
-  const [stockApprovalState, stockApprove] = useApproveSep206Callback(
-    parsedAmounts[Field.CURRENCY_A],
-    marketAddress
-  )
 
-  const [moneyApprovalState, moneyApprove] = useApproveSep206Callback(
-    parsedAmounts[Field.CURRENCY_B],
-    marketAddress
-  )
-  
+  const [stockApprovalState, stockApprove] = useApproveSep206Callback(parsedAmounts[Field.CURRENCY_A], marketAddress)
+
+  const [moneyApprovalState, moneyApprove] = useApproveSep206Callback(parsedAmounts[Field.CURRENCY_B], marketAddress)
+
   const nativeSymbol = 'BCH' || 'WBCH'
 
   const showStockApprove =
-  chainId &&
-  currenciesSelected?.currencyA &&
-  parsedAmounts[Field.CURRENCY_A] &&
-  stock?.symbol !== nativeSymbol &&
-  (stockApprovalState === ApprovalState.NOT_APPROVED || stockApprovalState === ApprovalState.PENDING)
+    chainId &&
+    currenciesSelected?.currencyA &&
+    parsedAmounts[Field.CURRENCY_A] &&
+    stock?.symbol !== nativeSymbol &&
+    (stockApprovalState === ApprovalState.NOT_APPROVED || stockApprovalState === ApprovalState.PENDING)
 
   const showMoneyApprove =
-  chainId &&
-  currenciesSelected?.currencyB &&
-  parsedAmounts[Field.CURRENCY_B] &&
-  money?.symbol !== nativeSymbol &&
-  (moneyApprovalState === ApprovalState.NOT_APPROVED || moneyApprovalState === ApprovalState.PENDING)
-  
+    chainId &&
+    currenciesSelected?.currencyB &&
+    parsedAmounts[Field.CURRENCY_B] &&
+    money?.symbol !== nativeSymbol &&
+    (moneyApprovalState === ApprovalState.NOT_APPROVED || moneyApprovalState === ApprovalState.PENDING)
+
   const disabled = stockApprovalState === ApprovalState.PENDING || moneyApprovalState === ApprovalState.PENDING
 
-  const minValueFilled = minValue !== ''
-  const maxValueFilled = maxValue !== ''
-  
+  const minValueFilled = minValue !== '' ? true : false
+  const maxValueFilled = maxValue !== '' ? true : false
+
+ 
   return (
     <>
       <Head>
@@ -293,6 +325,28 @@ export default function CreateGridexPage() {
                   id="add-liquidity-input-tokena"
                   showCommonBases
                 />
+{/* 
+                <TransactionConfirmationModal
+                  isOpen={isOpen}
+                  onDismiss={() => setIsOpen(false)}
+                  attemptingTxn={attemptingTxn}
+                  hash={hash}
+                /> */}
+
+                <ConfirmCreateModal
+                  currencyA={currenciesSelected?.currencyA}
+                  currencyB={currenciesSelected?.currencyB}
+                  maxValue={maxValue}
+                  minValue={minValue}
+                  stockInputValue={parsedAmounts[Field.CURRENCY_A]}
+                  moneyInputValue={parsedAmounts[Field.CURRENCY_A]}
+                  isOpen={isOpen}
+                  onConfirm={() => CreateRobot()}
+                  onDismiss={() => setIsOpen(false)}
+                  attemptingTxn={attemptingTxn}
+                  txHash={hash}
+                  swapErrorMessage={undefined}
+                />
 
                 <AutoColumn justify="space-between" className="py-2.5">
                   <AutoRow justify={isExpertMode ? 'space-between' : 'flex-start'} style={{ padding: '0 1rem' }}>
@@ -305,7 +359,6 @@ export default function CreateGridexPage() {
                 </AutoColumn>
 
                 <CurrencyInputPanel
-                
                   label="Money"
                   onUserInput={onFieldBInput}
                   onCurrencySelect={handleCurrencyBSelect}
@@ -320,32 +373,41 @@ export default function CreateGridexPage() {
                 />
               </div>
               {
-                  <div className='flex justify-center gap-5'>
-                    {/* <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} /> */}
-                    {/* <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyA?.symbol}/> */}
-                    <PanelLimitPrice minPriceValue={minValue} maxPriceValue={maxValue} setMinPriceValue={setMinValue} setMaxPriceValue={setMaxValue} label='Price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} /> 
-                    <PanelLimitPrice minPriceValue={minValue} maxPriceValue={maxValue} setMaxPriceValue={setMaxValue} setMinPriceValue={setMinValue} label='Price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyA?.symbol}/>                
-                  </div>
+                <div className="flex justify-center gap-5">
+                  {/* <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Buy' currencyA={!currenciesSelected ?'TANGO': currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'BCH':currenciesSelected?.currencyA?.symbol} /> */}
+                  {/* <PanelLimitPrice minPrice={minPriceValue} maxPrice={maxPriceValue} label='Price to Sell' currencyA={!currenciesSelected ?'BCH':currenciesSelected?.currencyB?.symbol} currencyB={!currenciesSelected ?'TANGO': currenciesSelected?.currencyA?.symbol}/> */}
+                  <PanelLimitPrice
+                    minPriceValue={minValue}
+                    maxPriceValue={maxValue}
+                    setMinPriceValue={setMinValue}
+                    setMaxPriceValue={setMaxValue}
+                    label="Price to Buy"
+                    currencyA={!currenciesSelected ? 'TANGO' : currenciesSelected?.currencyB?.symbol}
+                    currencyB={!currenciesSelected ? 'BCH' : currenciesSelected?.currencyA?.symbol}
+                  />
+                  <PanelLimitPrice
+                    minPriceValue={minValue}
+                    maxPriceValue={maxValue}
+                    setMaxPriceValue={setMaxValue}
+                    setMinPriceValue={setMinValue}
+                    label="Price to Sell"
+                    currencyA={!currenciesSelected ? 'BCH' : currenciesSelected?.currencyB?.symbol}
+                    currencyB={!currenciesSelected ? 'TANGO' : currenciesSelected?.currencyA?.symbol}
+                  />
+                </div>
               }
-            
-              {
-              !account ? (
+
+              {!account ? (
                 <Web3Connect size="lg" color="blue" className="w-full" />
-              )
-              : 
-              error ? (
+              ) : error ? (
                 <Button color="blue" size="lg" disabled>
                   {i18n._(t`${error}`)}
                 </Button>
-              )
-              :
-              !foundMarketAddress ? (
+              ) : !foundMarketAddress ? (
                 <Button color="gradient" size="lg" disabled={!currenciesSelected} onClick={createMarket}>
-                 {i18n._(t`Create Market`)}
+                  {i18n._(t`Create Market`)}
                 </Button>
-              )
-              :
-              showStockApprove ? (
+              ) : showStockApprove ? (
                 <Button onClick={stockApprove} color={disabled ? 'gray' : 'gradient'} className="mb-4">
                   {stockApprovalState === ApprovalState.PENDING ? (
                     <Dots>{i18n._(t`Approving ${stock.symbol}`)}</Dots>
@@ -353,37 +415,33 @@ export default function CreateGridexPage() {
                     i18n._(t`Approve ${stock.symbol}`)
                   )}
                 </Button>
-              ) 
-              :
-              showMoneyApprove ? (
+              ) : showMoneyApprove ? (
                 <Button onClick={moneyApprove} color={disabled ? 'gray' : 'gradient'} className="mb-4">
-                   {moneyApprovalState === ApprovalState.PENDING ? (
+                  {moneyApprovalState === ApprovalState.PENDING ? (
                     <Dots>{i18n._(t`Approving ${money.symbol}`)}</Dots>
                   ) : (
                     i18n._(t`Approve ${money.symbol}`)
                   )}
                 </Button>
-              )
-              :
-              !minValueFilled || !maxValueFilled ? (
+              ) : !minValueFilled || !maxValueFilled ? (
                 <Button color="blue" size="lg" disabled>
                   {i18n._(t`Fill the parameters`)}
                 </Button>
-              )
-              :
-              minValue > maxValue ?
-              (
-              <Button color="blue" size="lg" disabled={true}>
-                {i18n._(t`Invalid Price`)}
-              </Button>
-              )
-              :
-              (
-              <Button color="gradient" size="lg" disabled={!currenciesSelected} onClick={CreateRobot}>
-                {i18n._(t`Create Tango CMM`)}
-              </Button>
-              )
-              }
+              ) : minValue > maxValue ? (
+                <Button color="blue" size="lg" disabled={true}>
+                  {i18n._(t`Invalid Price`)}
+                </Button>
+              ) : (
+                <Button
+                  color="gradient"
+                  size="lg"
+                  disabled={!currenciesSelected}
+                  //  onClick={CreateRobot}
+                  onClick={() => setIsOpen(true)}
+                >
+                  {i18n._(t`Create Tango CMM`)}
+                </Button>
+              )}
             </div>
           </div>
         </DoubleGlowShadow>
