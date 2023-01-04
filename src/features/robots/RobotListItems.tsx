@@ -15,37 +15,38 @@ import RobotListItemDetails from './RobotListItemDetails'
 import { PairType } from '../onsen/enum'
 import { useState } from 'react'
 
-const RobotListItems = ({ 
-  stockAddress, 
+const RobotListItems = ({
+  stockAddress,
   moneyAddress,
-  robot, 
+  robot,
   inputValue,
-  RobotsMap, 
-  showMaxButton, 
-  onUserInput, 
-  onMax, 
-  currency, 
-  currencyB, 
-  selectedCurrencyBBalance, 
+  RobotsMap,
+  showMaxButton,
+  onUserInput,
+  onMax,
+  currency,
+  currencyB,
+  selectedCurrencyBBalance,
   selectedCurrencyBalance,
   marketSelector,
+  setModalOpen,
+  setActionToCall,
+  value,
   ...rest
-  }) => {
+}) => {
   const token0 = robot?.stock
   const token1 = robot?.money
 
   const sell = marketSelector
   const buy = !marketSelector
-  const portfolio = window.location.href.endsWith("?filter=portfolio")
+  const portfolio = window.location.href.endsWith('?filter=portfolio')
 
   const pendingSushi = usePendingSushi(robot)
   const rewardAmount = usePendingReward(robot)
 
   const { i18n } = useLingui()
   return (
-    <Disclosure {...rest}
-    
-    >
+    <Disclosure {...rest}>
       {({ open }) => (
         <>
           <Disclosure.Button
@@ -54,32 +55,26 @@ const RobotListItems = ({
               'w-full sm:px-4 px-2 py-6 text-left rounded cursor-pointer select-none bg-dark-900 text-primary text-sm md:text-lg'
             )}
           >
-            <div className={portfolio ? "grid grid-cols-4" : "grid grid-cols-3" }>
+            <div className={portfolio ? 'grid grid-cols-4' : 'grid grid-cols-3'}>
               <div className="flex col-span-1 space-x-5 ">
                 <DoubleLogo currency0={token0} currency1={token1} size={isMobile ? 30 : 40} />
-              
+
                 <div className="sm:flex flex-col hidden justify-center">
                   <div>
                     <p className="font-bold">{token0?.symbol}</p>
-                    <p className={robot?.pair?.type === PairType.KASHI ? 'font-thin' : 'font-bold'}>
-                      {token1?.symbol}
-                    </p>
+                    <p className={robot?.pair?.type === PairType.KASHI ? 'font-thin' : 'font-bold'}>{token1?.symbol}</p>
                   </div>
-                  
                 </div>
               </div>
-              <div className={ sell || portfolio ? "flex flex-col items-center justify-center font-bold" : "hidden" }>
-                  {String(robot.lowPrice).slice(0,8)}
+              <div className={sell || portfolio ? 'flex flex-col items-center justify-center font-bold' : 'hidden'}>
+                {String(robot.lowPrice).slice(0, 8)}
               </div>
-              <div className={ buy || portfolio ? "flex flex-col items-center justify-center" : "hidden" }>
-                <div className="font-bold text-righttext-high-emphesis">
-                  {String(robot.highPrice).slice(0,8)}
-                </div>
+              <div className={buy || portfolio ? 'flex flex-col items-center justify-center' : 'hidden'}>
+                <div className="font-bold text-righttext-high-emphesis">{String(robot.highPrice).slice(0, 8)}</div>
               </div>
               {pendingSushi && pendingSushi.greaterThan(ZERO) ? (
                 <div className="flex flex-col items-center justify-center md:flex-row space-x-4 font-bold md:flex">
                   <div className="hidden md:flex items-center space-x-2">
-
                     {robot?.rewards?.map((reward, i) => (
                       <div key={i} className="flex items-center">
                         <Image
@@ -102,44 +97,45 @@ const RobotListItems = ({
                     ))}
                   </div>
                 </div>
-              ) : (<div>
-                <div className="flex-row items-center flex justify-center font-bold text-xs sm:text-sm">
-                {robot.stockAmount < 0.001 ?
-                  i18n._(t`Stock: < 0.001`)
-                  :
-                  i18n._(t`Stock: ${Number(robot.stockAmount).toFixed(5)}`)}
+              ) : (
+                <div>
+                  <div className="flex-row items-center flex justify-center font-bold text-xs sm:text-sm">
+                    {robot.stockAmount < 0.001
+                      ? i18n._(t`Stock: < 0.001`)
+                      : i18n._(t`Stock: ${Number(robot.stockAmount).toFixed(5)}`)}
+                  </div>
+                  <div className="flex-row  items-center justify-center flex font-bold text-xs sm:text-sm">
+                    {robot.moneyAmount < 0.001
+                      ? i18n._(t`Money: < 0.001`)
+                      : i18n._(t`Money: ${Number(robot.moneyAmount).toFixed(5)}`)}
+                  </div>
                 </div>
-                <div className="flex-row  items-center justify-center flex font-bold text-xs sm:text-sm">{robot.moneyAmount < 0.001 ?
-                  i18n._(t`Money: < 0.001`)
-                  :
-                  i18n._(t`Money: ${Number(robot.moneyAmount).toFixed(5)}`)
-                }
-                </div>
-               
-                </div>
-                
               )}
             </div>
           </Disclosure.Button>
-          {open && <RobotListItemDetails stockAddress={stockAddress}
-          moneyAddress={moneyAddress} 
-          robot={robot} 
-          inputValue={inputValue}
-          RobotsMap={RobotsMap} 
-          showMaxButton={showMaxButton} 
-          onUserInput={onUserInput} 
-          onMax={onMax}
-          currency={currency}
-          currencyB={currencyB}
-          selectedCurrencyBBalance={selectedCurrencyBBalance}
-          selectedCurrencyBalance={selectedCurrencyBalance}
-          marketSelector={marketSelector}
-          />}
+          {open && (
+            <RobotListItemDetails
+              stockAddress={stockAddress}
+              moneyAddress={moneyAddress}
+              robot={robot}
+              inputValue={inputValue}
+              RobotsMap={RobotsMap}
+              showMaxButton={showMaxButton}
+              onUserInput={onUserInput}
+              onMax={onMax}
+              currency={currency}
+              currencyB={currencyB}
+              selectedCurrencyBBalance={selectedCurrencyBBalance}
+              selectedCurrencyBalance={selectedCurrencyBalance}
+              marketSelector={marketSelector}
+              setModalOpen={setModalOpen}
+              setActionToCall={setActionToCall}
+              value={value}
+            />
+          )}
         </>
       )}
     </Disclosure>
-
-    
   )
 }
 

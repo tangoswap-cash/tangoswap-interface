@@ -1,5 +1,13 @@
 import { ApprovalState, useApproveCallback } from '../../hooks/useApproveCallback'
-import { ChainId, CurrencyAmount, JSBI, MASTERCHEF_ADDRESS, MASTERCHEF_V2_ADDRESS, Token, ZERO } from '@tangoswapcash/sdk'
+import {
+  ChainId,
+  CurrencyAmount,
+  JSBI,
+  MASTERCHEF_ADDRESS,
+  MASTERCHEF_V2_ADDRESS,
+  Token,
+  ZERO,
+} from '@tangoswapcash/sdk'
 import { Disclosure, Transition } from '@headlessui/react'
 import React, { useState } from 'react'
 
@@ -25,33 +33,35 @@ import { useFactoryGridexContract, useGridexMarketContract, useTokenContract } f
 import { parseUnits } from '@ethersproject/units'
 import { FiatValue } from '../../components/BuyRobotsPanel/FiatValue'
 
-const RobotListItemDetails = ({ 
-  stockAddress, 
-  moneyAddress, 
-  robot, 
-  inputValue, 
-  RobotsMap, 
-  showMaxButton, 
-  onUserInput, 
-  onMax, 
-  currency, 
-  currencyB, 
-  selectedCurrencyBBalance, 
+const RobotListItemDetails = ({
+  stockAddress,
+  moneyAddress,
+  robot,
+  inputValue,
+  RobotsMap,
+  showMaxButton,
+  onUserInput,
+  onMax,
+  currency,
+  currencyB,
+  selectedCurrencyBBalance,
   selectedCurrencyBalance,
-  marketSelector
-  }) => {
-    
+  marketSelector,
+  setModalOpen,
+  setActionToCall,
+  value
+}) => {
   const { i18n } = useLingui()
   const [marketAddress, setMarketAddress] = useState('')
 
   const sell = marketSelector
   const buy = !marketSelector
-  const portfolio = window.location.href.endsWith("?filter=portfolio")
+  const portfolio = window.location.href.endsWith('?filter=portfolio')
 
-  const ImplAddr = "0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe" // add this to SDK
+  const ImplAddr = '0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe' // add this to SDK
 
   const factoryContract = useFactoryGridexContract()
-  factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then(a => setMarketAddress(a))
+  factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then((a) => setMarketAddress(a))
 
   const marketContract = useGridexMarketContract(marketAddress)
 
@@ -75,20 +85,19 @@ const RobotListItemDetails = ({
     var moneyBalance = moneyContract.balanceOf(account)
 
     var stockDelta = moneyDelta / robot.highPrice
-    
-    if(moneyDeltaBN > moneyBalance) {
+
+    if (moneyDeltaBN > moneyBalance) {
       alert(`You don't have enough money.`)
-    } else if(stockDelta > robot.stockAmount) {  
+    } else if (stockDelta > robot.stockAmount) {
       alert('Tango CMM has not enough stock')
     }
-    
+
     let val = null
-    val = moneyAddress == '0x0000000000000000000000000000000000002711' ? {value: moneyDeltaBN} : null
-  
-    await marketContract.buyFromRobot(robotId, moneyDeltaBN, val)
-    .then((response) => {
+    val = moneyAddress == '0x0000000000000000000000000000000000002711' ? { value: moneyDeltaBN } : null
+
+    await marketContract.buyFromRobot(robotId, moneyDeltaBN, val).then((response) => {
       addTransaction(response, {
-        summary: `Buy Stock from ${(robot.fullId).slice(0,8)}...`
+        summary: `Buy Stock from ${robot.fullId.slice(0, 8)}...`,
       })
     })
   }
@@ -103,27 +112,24 @@ const RobotListItemDetails = ({
 
     if (stockDeltaBN > stockBalance) {
       alert(`You don't have enough stock.`)
-    } else if(moneyDelta > robot.moneyAmount) {
+    } else if (moneyDelta > robot.moneyAmount) {
       alert(`Tango CMM has not enough money`)
     }
 
-    let val = null;
-    val = stockAddress == '0x0000000000000000000000000000000000002711' ? {value: stockDeltaBN} : null
-  
+    let val = null
+    val = stockAddress == '0x0000000000000000000000000000000000002711' ? { value: stockDeltaBN } : null
+
     await marketContract.sellToRobot(robotId, stockDeltaBN, val)
   }
-  
 
   const DeleteRobot = async () => {
     await marketContract.deleteRobot(robot.index, robot.fullId).then((response) => {
       addTransaction(response, {
-        summary: `Delete Robot`
+        summary: `Delete Robot`,
       })
-    });
+    })
   }
 
-  const activeLink = String(window.location)
-  
   return (
     <Transition
       show={true}
@@ -134,84 +140,94 @@ const RobotListItemDetails = ({
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-    <Disclosure.Panel className="m-auto mt-2 mb-3 flex flex-col justify-center w-full border-t-0 rounded rounded-t-none p-2 bg-dark-800" static>
-      <>
-        <div
-          className={portfolio ? `hidden` : classNames(
-            'flex mb-2 items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-full'
-          )}
-        >
-          <>
-            {showMaxButton && (
-              <Button
-                onClick={onMax}
-                size="xs"
-                className="text-base font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap"
-              >
-                {i18n._(t`Max`)}
-              </Button>
-            )}
-            <Input.Numeric
-              id="token-amount-input"
-              value={inputValue}
-              onUserInput={(val) => {
-                // console.log('val:', val);
-                onUserInput(val)
-              }}
-              className= {`w-2/3 h-16 text-base bg-transparent`}
-            />
-            {currency && selectedCurrencyBBalance ? (
-              <div className="flex flex-col">
-                <div onClick={onMax} className="text-xs  text-right  cursor-pointer text-low-emphesis">
-                  {buy ? (
-                    <>
-                      {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
-                    </>
-                  ) : sell && (
-                    <>
-                      {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBalance, 4)} {currency.symbol}
-                    </>
-                  )}
+      <Disclosure.Panel
+        className="m-auto mt-2 mb-3 flex flex-col justify-center w-full border-t-0 rounded rounded-t-none p-2 bg-dark-800"
+        static
+      >
+        <>
+          <div
+            className={
+              portfolio
+                ? `hidden`
+                : classNames(
+                    'flex mb-2 items-center w-full space-x-3 rounded bg-dark-900 focus:bg-dark-700 h-16 px-3 sm:w-full'
+                  )
+            }
+          >
+            <>
+              {showMaxButton && (
+                <Button
+                  onClick={onMax}
+                  size="xs"
+                  className="text-base font-medium bg-transparent border rounded-full hover:bg-primary border-low-emphesis text-secondary whitespace-nowrap"
+                >
+                  {i18n._(t`Max`)}
+                </Button>
+              )}
+              <Input.Numeric
+                id="token-amount-input"
+                value={inputValue}
+                onUserInput={(val) => {
+                  // console.log('val:', val);
+                  onUserInput(val)
+                }}
+                className={`w-2/3 h-16 text-base bg-transparent`}
+              />
+              {currency && selectedCurrencyBBalance ? (
+                <div className="flex flex-col">
+                  <div onClick={onMax} className="text-xs  text-right  cursor-pointer text-low-emphesis">
+                    {buy ? (
+                      <>
+                        {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBBalance, 4)} {currencyB.symbol}
+                      </>
+                    ) : (
+                      sell && (
+                        <>
+                          {i18n._(t`Balance:`)} {formatCurrencyAmount(selectedCurrencyBalance, 4)} {currency.symbol}
+                        </>
+                      )
+                    )}
+                  </div>
+                  {/* <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} /> */}
                 </div>
-                {/* <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} /> */}
-              </div>
-            ) : null}
-          </>
-        </div>
-      </>
-        {
-          robot.ownerAddr == account &&
-          (
+              ) : null}
+            </>
+          </div>
+        </>
+        {(robot.ownerAddr == account && (
+          <Button
+            color="red"
+            onClick={() => {
+              setModalOpen(true)
+              value(DeleteRobot)
+            }}
+            className={`w-full mx-auto`}
+          >
+            {i18n._(t`Delete Tango CMM`)}
+          </Button>
+        )) ||
+          (buy && (
             <Button
-              color='red'
-              onClick={DeleteRobot}
-              className={`w-full mx-auto`}
-            >
-              {i18n._(t`Delete Tango CMM`)}
-            </Button>
-          ) 
-          ||
-          buy && 
-          (
-            <Button
-              onClick={() => Buy(robot.fullId)}
+              onClick={() => {
+                setModalOpen(true)
+                setActionToCall(Buy(robot.fullId))
+              }}
               className={`w-full mx-auto bg-[#B95C40]  text-gray-200 hover:text-white`}
             >
               {i18n._(t`Buy ${robot?.stock?.symbol} from CMM`)}
             </Button>
-          ) 
-          ||
-          sell && 
-          (
+          )) ||
+          (sell && (
             <Button
-              onClick={() => Sell(robot.fullId)}
+              onClick={() => {
+                setModalOpen(true)
+                setActionToCall(Sell(robot.fullId))
+              }}
               className={`w-full mx-auto bg-[#5C1B0B] text-gray-200 hover:text-white`}
-            
             >
               {i18n._(t`Sell ${robot?.stock?.symbol} to CMM`)}
             </Button>
-          )
-        }
+          ))}
       </Disclosure.Panel>
     </Transition>
   )

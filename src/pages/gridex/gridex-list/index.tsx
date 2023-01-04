@@ -35,7 +35,7 @@ import Container from '../../../components/Container'
 import FarmList from '../../../features/onsen/FarmList'
 import Head from 'next/head'
 import Menu from '../../../features/onsen/FarmMenu'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import Search from '../../../components/Search'
 import { classNames, maxAmountSpend } from '../../../functions'
 import dynamic from 'next/dynamic'
@@ -66,6 +66,8 @@ import GridexInfo from '../../../modals/GridexModal'
 import GridexToggle from '../../../components/Toggle/gridexToggle'
 import { NextPage } from 'next'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
+import ActionModalHeader from "../../../features/robots/ActionModalHeader"
+import ActionModalFooter from "../../../features/robots/ActionModalFooter"
 
 async function getAllRobots(onlyForAddr, moneyContract, stockContract, marketContract, token1, token2) {
   const moneyDecimals = await moneyContract?.decimals()
@@ -158,17 +160,11 @@ export default function Gridex() {
 
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
-    // console.log(currenciesSelected?.currencyA)
   }
 
   const handleCurrencyBSelect = (currencyB: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyB: currencyB })
-    // console.log(currenciesSelected?.currencyB)
   }
-
-  // useEffect(() => {
-  //   console.log(currenciesSelected)
-  // }, [currenciesSelected])
 
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
@@ -180,8 +176,15 @@ export default function Gridex() {
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
   const [gridexInfoOpen, setGridexInfoOpen] = useState(false)
 
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const [attemptingTxn, setAttempingTxn] = useState(false)
+
   const [isOpen, setIsOpen] = useState(false)
   const [hash, setHash] = useState("")
+
+  const [actionToCall, setActionToCall] = useState()
+  // "buy" "sell" "delte"
 
   const formattedAmounts = {
     [independentField]: typedValue,
@@ -207,13 +210,10 @@ export default function Gridex() {
     {}
   )
 
-  const ImplAddr = '0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe' // add this to SDK
+  const ImplAddr = '0x8dEa2aB783258207f6db13F8b43a4Bda7B03bFBe'
 
   const stock = currenciesSelected.currencyA
   const money = currenciesSelected.currencyB
-
-  // console.log("stock: ", stock);
-  // console.log("money: ", money);
 
   const stockAddress = stock?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : stock?.address
   const moneyAddress = money?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : money?.address
@@ -301,18 +301,53 @@ export default function Gridex() {
       exact: true,
     },
   ]
-
-  // function functionSelector() {
-  //   window.location.href.endsWith( `?filter=sell`) ? setMarketSelector(true) : setMarketSelector(false);
-  //   window.location.href.endsWith( `?filter=sell`) ? history.pushState(null, '', `?filter=buy`) : history.pushState(null, '',`?filter=sell`)
-  // }
-
+  
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyA ?? undefined)
   const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyB ?? undefined)
 
-  const pendingText = `Creating a Gridex of ${currenciesSelected?.currencyA?.symbol} + ${currenciesSelected?.currencyB?.symbol}`
-
+  const pendingText = `This is the action modal`
   const pendingText2 = ``
+
+  const value = (data) => {
+  }
+  
+  const modalHeader = useCallback(() => {
+    return (
+      <ActionModalHeader
+        currencyA={currenciesSelected?.currencyA}
+        currencyB={currenciesSelected?.currencyB}
+        // maxValue={maxValue}
+        // minValue={minValue}
+        // stockInputValue={stockInputValue}
+        // moneyInputValue={moneyInputValue}
+      />
+    )
+  }, [currenciesSelected?.currencyA, currenciesSelected?.currencyB])
+
+  const modalBottom = useCallback(() => { 
+    return (   
+      <ActionModalFooter  
+        onConfirm={actionToCall} 
+        swapErrorMessage={undefined}
+      />
+    )
+  }, [currenciesSelected?.currencyA, currenciesSelected?.currencyB, actionToCall, setActionToCall])
+
+    const confirmationContent = useCallback(
+      () =>
+       (
+          <ConfirmationModalContent
+            title="Confirm Action"
+            onDismiss={() => {
+              setModalOpen(false)
+              setHash(undefined)
+            }}
+            topContent={modalHeader}
+            bottomContent={modalBottom}
+          />
+        ),
+      [modalBottom, modalHeader]
+    )
 
 
   return (
@@ -328,16 +363,16 @@ export default function Gridex() {
       <div className={classNames('px-3 md:px-0 mb-8 lg:block md:col-span-1')}>
         <GridexMenu positionsLength={positions.length} options={optionsMenu} robots={result} />
       </div>
-{/* 
+
       <TransactionConfirmationModal
-        isOpen={isOpen}
-        onDismiss={() => setIsOpen(false)}
+        isOpen={modalOpen}
+        onDismiss={() => setModalOpen(false)}
         attemptingTxn={attemptingTxn}
         hash={hash}
         content={confirmationContent}
         pendingText={pendingText}
         pendingText2={pendingText2}
-      /> */}
+      />
 
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
         <div className="w-full sm:flex sm:gap-2">
@@ -409,6 +444,9 @@ export default function Gridex() {
           selectedCurrencyBBalance={selectedCurrencyBBalance}
           selectedCurrencyBalance={selectedCurrencyBalance}
           marketSelector={marketSelector}
+          setModalOpen={setModalOpen}
+          setActionToCall={setActionToCall}
+          value={value}
         />
         <div className="ml-2 mt-4">
           <button className="text-sm hover:text-high-emphesis" onClick={() => setGridexInfoOpen(true)}>

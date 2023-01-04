@@ -79,45 +79,9 @@ export default function CreateGridexPage() {
   const [foundMarketAddress, setFoundMarketAddress] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
   const [attemptingTxn, setAttempingTxn] = useState(false)
-  const [hash, setHash] = useState("")
-
-  // const [showConfirm, setShowConfirm] = useState(false)
+  const [hash, setHash] = useState('')
 
   const addTransaction = useTransactionAdder()
-
-  // const minPriceValue = (value) => {
-  //   useMemo(() => {
-  //     setMinValue(value)
-  //   },
-  //   [value]
-  // )
-  // }
-  // function minPriceValue(value) {
-  //   useMemo(() => {
-  //       setMinValue(value)
-  //     },
-  //     [value]
-  //   )
-  // }
-
-  //   const maxPriceValue = (value) => {
-  //     useMemo(() => {
-  //        setMaxValue(value)
-  //      },
-  //      [value]
-  //    )
-  //  }
-
-  // function maxPriceValue(value) {
-  //    useMemo(() => {
-  //       setMaxValue(value)
-  //     },
-  //     [value]
-  //   )
-  // }
-
-  // console.log(minValue)
-  // console.log(maxValue)
 
   function packPrice(price) {
     var effBits = 1
@@ -156,19 +120,21 @@ export default function CreateGridexPage() {
   const stockContract = useTokenContract(stock?.address)
   const moneyContract = useTokenContract(money?.address)
   const factoryContract = useFactoryGridexContract()
-  
+
   const [marketAddress, setMarketAddress] = useState()
   factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then((a) => setMarketAddress(a))
 
   const marketContract = useGridexMarketContract(marketAddress)
+
+  const provider = new ethers.providers.Web3Provider(window?.ethereum)
 
   async function CreateRobot() {
     const moneyDecimals = await moneyContract?.decimals()
     const stockDecimals = await stockContract?.decimals()
     const stockAmount = formatCurrencyAmount(parsedAmounts[Field.CURRENCY_A], 4)
     const moneyAmount = formatCurrencyAmount(parsedAmounts[Field.CURRENCY_B], 4)
-    console.log(stockAmount);
-    console.log(moneyAmount);
+    console.log(stockAmount)
+    console.log(moneyAmount)
     var stockAmountBN = parseUnits(stockAmount, stockDecimals)
     var moneyAmountBN = parseUnits(moneyAmount, moneyDecimals)
     var highPrice = packPrice(parseUnits(maxValue))
@@ -184,7 +150,7 @@ export default function CreateGridexPage() {
         : moneyAddress == BCHADDRESS
         ? { value: moneyAmountBN }
         : null
-        
+
     setAttempingTxn(true)
     await marketContract
       .createRobot(robotInfo, val)
@@ -194,9 +160,12 @@ export default function CreateGridexPage() {
         addTransaction(response, {
           summary: `Create Robot`,
         })
+        // provider.waitForTransaction(response.hash).then(() => {
+        //   setHash(undefined)
+        // })
       })
       .catch((error) => {
-        setHash("")
+        setHash('')
         console.log('error', error)
         setAttempingTxn(false)
       })
@@ -278,7 +247,6 @@ export default function CreateGridexPage() {
   const minValueFilled = minValue !== '' ? true : false
   const maxValueFilled = maxValue !== '' ? true : false
 
- 
   return (
     <>
       <Head>
@@ -325,13 +293,6 @@ export default function CreateGridexPage() {
                   id="add-liquidity-input-tokena"
                   showCommonBases
                 />
-{/* 
-                <TransactionConfirmationModal
-                  isOpen={isOpen}
-                  onDismiss={() => setIsOpen(false)}
-                  attemptingTxn={attemptingTxn}
-                  hash={hash}
-                /> */}
 
                 <ConfirmCreateModal
                   currencyA={currenciesSelected?.currencyA}
@@ -342,7 +303,10 @@ export default function CreateGridexPage() {
                   moneyInputValue={parsedAmounts[Field.CURRENCY_A]}
                   isOpen={isOpen}
                   onConfirm={() => CreateRobot()}
-                  onDismiss={() => setIsOpen(false)}
+                  onDismiss={() => {
+                    setIsOpen(false)
+                    setHash(undefined)
+                  }}
                   attemptingTxn={attemptingTxn}
                   txHash={hash}
                   swapErrorMessage={undefined}
