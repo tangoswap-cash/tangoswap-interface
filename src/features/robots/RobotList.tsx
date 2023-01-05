@@ -25,8 +25,13 @@ const RobotList = ({
   selectedCurrencyBalance,
   marketSelector,
   setModalOpen,
-  setActionToCall,
-  value
+  setIndex,
+  setRobotId,
+  setRobotHighPrice,
+  setRobotLowPrice,
+  setRobotStockAmount,
+  setRobotMoneyAmount,
+  setActionToCall
 }) => {
   const { items, requestSort, sortConfig } = useSortableData(robots)
   const { i18n } = useLingui()
@@ -99,8 +104,13 @@ const RobotList = ({
               selectedCurrencyBalance={selectedCurrencyBalance}
               marketSelector={marketSelector}
               setModalOpen={setModalOpen}
+              setIndex={setIndex}
+              setRobotId={setRobotId}
+              setRobotHighPrice={setRobotHighPrice}
+              setRobotLowPrice={setRobotLowPrice}
+              setRobotStockAmount={setRobotStockAmount}
+              setRobotMoneyAmount={setRobotMoneyAmount}
               setActionToCall={setActionToCall}
-              value={value}
             />
           ))}
         </div>

@@ -30,8 +30,13 @@ const RobotListItems = ({
   selectedCurrencyBalance,
   marketSelector,
   setModalOpen,
+  setIndex,
+  setRobotId,
+  setRobotHighPrice,
+  setRobotLowPrice,
+  setRobotStockAmount,
+  setRobotMoneyAmount,
   setActionToCall,
-  value,
   ...rest
 }) => {
   const token0 = robot?.stock
@@ -129,8 +134,13 @@ const RobotListItems = ({
               selectedCurrencyBalance={selectedCurrencyBalance}
               marketSelector={marketSelector}
               setModalOpen={setModalOpen}
+              setIndex={setIndex}
+              setRobotId={setRobotId}
+              setRobotHighPrice={setRobotHighPrice}
+              setRobotLowPrice={setRobotLowPrice}
+              setRobotStockAmount={setRobotStockAmount}
+              setRobotMoneyAmount={setRobotMoneyAmount}
               setActionToCall={setActionToCall}
-              value={value}
             />
           )}
         </>

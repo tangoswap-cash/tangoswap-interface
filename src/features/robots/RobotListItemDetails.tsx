@@ -48,8 +48,13 @@ const RobotListItemDetails = ({
   selectedCurrencyBalance,
   marketSelector,
   setModalOpen,
+  setIndex,
+  setRobotId,
+  setRobotHighPrice,
+  setRobotLowPrice,
+  setRobotStockAmount,
+  setRobotMoneyAmount,
   setActionToCall,
-  value
 }) => {
   const { i18n } = useLingui()
   const [marketAddress, setMarketAddress] = useState('')
@@ -77,52 +82,7 @@ const RobotListItemDetails = ({
   const stockContract = useTokenContract(stockAddress)
   const moneyContract = useTokenContract(moneyAddress)
 
-  async function Buy(robotId) {
-    const moneyDecimals = await moneyContract?.decimals()
-    var moneyDelta = inputValue //*1.0
-    var moneyDeltaBN = parseUnits(inputValue, moneyDecimals)
-    var robot = RobotsMap[robotId]
-    var moneyBalance = moneyContract.balanceOf(account)
-
-    var stockDelta = moneyDelta / robot.highPrice
-
-    if (moneyDeltaBN > moneyBalance) {
-      alert(`You don't have enough money.`)
-    } else if (stockDelta > robot.stockAmount) {
-      alert('Tango CMM has not enough stock')
-    }
-
-    let val = null
-    val = moneyAddress == '0x0000000000000000000000000000000000002711' ? { value: moneyDeltaBN } : null
-
-    await marketContract.buyFromRobot(robotId, moneyDeltaBN, val).then((response) => {
-      addTransaction(response, {
-        summary: `Buy Stock from ${robot.fullId.slice(0, 8)}...`,
-      })
-    })
-  }
-
-  async function Sell(robotId) {
-    const stockDecimals = await stockContract?.decimals()
-    var stockDelta = inputValue
-    var stockDeltaBN = parseUnits(inputValue, stockDecimals)
-    var robot = RobotsMap[robotId]
-    var moneyDelta = stockDelta * robot.lowPrice
-    var stockBalance = stockContract.balanceOf(account)
-
-    if (stockDeltaBN > stockBalance) {
-      alert(`You don't have enough stock.`)
-    } else if (moneyDelta > robot.moneyAmount) {
-      alert(`Tango CMM has not enough money`)
-    }
-
-    let val = null
-    val = stockAddress == '0x0000000000000000000000000000000000002711' ? { value: stockDeltaBN } : null
-
-    await marketContract.sellToRobot(robotId, stockDeltaBN, val)
-  }
-
-  const DeleteRobot = async () => {
+  async function DeleteRobot() {
     await marketContract.deleteRobot(robot.index, robot.fullId).then((response) => {
       addTransaction(response, {
         summary: `Delete Robot`,
@@ -199,7 +159,9 @@ const RobotListItemDetails = ({
             color="red"
             onClick={() => {
               setModalOpen(true)
-              value(DeleteRobot)
+              setActionToCall("delete")
+              setIndex(robot?.index)
+              setRobotId(robot?.fullId)
             }}
             className={`w-full mx-auto`}
           >
@@ -210,7 +172,11 @@ const RobotListItemDetails = ({
             <Button
               onClick={() => {
                 setModalOpen(true)
-                setActionToCall(Buy(robot.fullId))
+                setActionToCall("buy")
+                setIndex(robot?.index)
+                setRobotId(robot?.fullId)
+                setRobotHighPrice(robot?.highPrice)
+                setRobotStockAmount(robot?.stockAmount)
               }}
               className={`w-full mx-auto bg-[#B95C40]  text-gray-200 hover:text-white`}
             >
@@ -221,7 +187,11 @@ const RobotListItemDetails = ({
             <Button
               onClick={() => {
                 setModalOpen(true)
-                setActionToCall(Sell(robot.fullId))
+                setActionToCall("sell")
+                setIndex(robot?.index)
+                setRobotId(robot?.fullId)
+                setRobotLowPrice(robot?.lowPrice)
+                setRobotMoneyAmount(robot?.moneyAmount)
               }}
               className={`w-full mx-auto bg-[#5C1B0B] text-gray-200 hover:text-white`}
             >

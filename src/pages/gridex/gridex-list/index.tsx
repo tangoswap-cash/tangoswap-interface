@@ -66,8 +66,10 @@ import GridexInfo from '../../../modals/GridexModal'
 import GridexToggle from '../../../components/Toggle/gridexToggle'
 import { NextPage } from 'next'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
-import ActionModalHeader from "../../../features/robots/ActionModalHeader"
-import ActionModalFooter from "../../../features/robots/ActionModalFooter"
+import ActionModalHeader from '../../../features/robots/ActionModalHeader'
+import ActionModalFooter from '../../../features/robots/ActionModalFooter'
+import { useTransactionAdder } from '../../../state/transactions/hooks'
+import { Contract } from '@ethersproject/contracts'
 
 async function getAllRobots(onlyForAddr, moneyContract, stockContract, marketContract, token1, token2) {
   const moneyDecimals = await moneyContract?.decimals()
@@ -152,11 +154,26 @@ export default function Gridex() {
   const [marketAddress, setMarketAddress] = useState('')
   const [gridexList, setGridexList] = useState([])
   const [RobotsMap, setRobotsMap] = useState({})
+  const [gridexInfoOpen, setGridexInfoOpen] = useState(false)
 
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const [attemptingTxn, setAttempingTxn] = useState(false)
+  const [hash, setHash] = useState('')
+  
   const [currenciesSelected, setCurrenciesSelected] = useState({
     currencyA: null,
     currencyB: null,
   })
+
+  const [marketSelector, setMarketSelector] = useState(false)
+
+  const [index, setIndex] = useState()
+  const [robotId, setRobotId] = useState()
+  const [robotHighPrice, setRobotHighPrice] = useState(0)
+  const [robotLowPrice, setRobotLowPrice] = useState(0)
+  const [robotStockAmount, setRobotStockAmount] = useState(0)
+  const [robotMoneyAmount, setRobotMoneyAmount] = useState(0)
 
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
@@ -174,17 +191,6 @@ export default function Gridex() {
   )
 
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
-  const [gridexInfoOpen, setGridexInfoOpen] = useState(false)
-
-  const [modalOpen, setModalOpen] = useState(false)
-
-  const [attemptingTxn, setAttempingTxn] = useState(false)
-
-  const [isOpen, setIsOpen] = useState(false)
-  const [hash, setHash] = useState("")
-
-  const [actionToCall, setActionToCall] = useState()
-  // "buy" "sell" "delte"
 
   const formattedAmounts = {
     [independentField]: typedValue,
@@ -219,20 +225,24 @@ export default function Gridex() {
   const moneyAddress = money?.symbol == 'BCH' ? '0x0000000000000000000000000000000000002711' : money?.address
 
   const factoryContract = useFactoryGridexContract()
-  factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then((a) => setMarketAddress(a))
 
   const marketContract = useGridexMarketContract(marketAddress)
 
-  const stockContract = useTokenContract(stock?.address)
-  const moneyContract = useTokenContract(money?.address)
+  /* This can be used anywhere on the code too */
+  const stockcontract = useTokenContract(stock?.address)
+  const moneycontract = useTokenContract(money?.address)
 
-  const [marketSelector, setMarketSelector] = useState(false)
+  /* This states are neccesary to make Buy/Sell functions work, if these states are not existent, the function doesn't detect stockContract, moneyContract */
+  const [stockContract, setStockContract] = useState<Contract>() 
+  const [moneyContract, setMoneyContract] = useState<Contract>()
+
+  const [actionToCall, setActionToCall] = useState("")
 
   useEffect(() => {
     getAllRobots(
       '',
-      moneyContract,
-      stockContract,
+      moneycontract,
+      stockcontract,
       marketContract,
       currenciesSelected?.currencyA,
       currenciesSelected?.currencyB
@@ -240,7 +250,13 @@ export default function Gridex() {
       setGridexList(result.allRobots)
       setRobotsMap(result.RobotsMapF)
     })
-  }, [currenciesSelected, moneyContract, stockContract, marketContract])
+  }, [currenciesSelected, moneycontract, stockcontract, marketContract])
+
+  useEffect(() => {
+    factoryContract.getAddress(stockAddress, moneyAddress, ImplAddr).then((a) => setMarketAddress(a))
+    setStockContract(stockcontract)
+    setMoneyContract(moneycontract)
+  }, [currenciesSelected, moneycontract, stockcontract, marketContract])
 
   const type = router.query.filter as string
   const portfolio = type == 'portfolio'
@@ -301,16 +317,92 @@ export default function Gridex() {
       exact: true,
     },
   ]
-  
+
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyA ?? undefined)
   const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyB ?? undefined)
 
   const pendingText = `This is the action modal`
   const pendingText2 = ``
 
-  const value = (data) => {
-  }
+  const addTransaction = useTransactionAdder()
+
   
+  const inputValue = formattedAmounts[Field.CURRENCY_B]
+
+  async function Buy(robotId) {
+    const moneyDecimals = await moneyContract?.decimals()
+    var moneyDelta = inputValue //*1.0
+    var moneyDeltaBN = parseUnits(inputValue, moneyDecimals)
+    var robot = RobotsMap[robotId]
+    var moneyBalance = moneyContract.balanceOf(account)
+
+    var stockDelta = moneyDelta / robotHighPrice
+
+    if (moneyDeltaBN > moneyBalance) {
+      alert(`You don't have enough money.`)
+    } else if (stockDelta > robotStockAmount) {
+      alert('Tango CMM has not enough stock')
+    }
+
+    let val = null
+    val = moneyAddress == '0x0000000000000000000000000000000000002711' ? { value: moneyDeltaBN } : null
+
+    setAttempingTxn(true)
+    await marketContract.buyFromRobot(robotId, moneyDeltaBN, val).then((response) => {
+      setHash(response.hash)
+      setAttempingTxn(false)
+      addTransaction(response, {
+        summary: `Buy Stock from ${robot.fullId.slice(0, 8)}...`,
+      })
+    }).catch(e => {
+      setHash('')
+      setAttempingTxn(false)
+  })
+  }
+  async function Sell(robotId) {
+    const stockDecimals = await stockContract?.decimals()
+    var stockDelta = inputValue
+    var stockDeltaBN = parseUnits(inputValue, stockDecimals)
+    var robot = RobotsMap[robotId]
+    var moneyDelta = stockDelta * robotLowPrice
+    var stockBalance = stockContract?.balanceOf(account)
+
+    if (stockDeltaBN > stockBalance) {
+      alert(`You don't have enough stock.`)
+    } else if (moneyDelta > robotMoneyAmount) {
+      alert(`Tango CMM has not enough money`)
+    }
+
+    let val = null
+    val = stockAddress == '0x0000000000000000000000000000000000002711' ? { value: stockDeltaBN } : null
+
+      setAttempingTxn(true)
+      await marketContract.sellToRobot(robotId, stockDeltaBN, val).then((response) => {
+      setHash(response.hash)
+      setAttempingTxn(false)
+      addTransaction(response, {
+        summary: `Sell Stock to ${robot.fullId.slice(0, 8)}...`,
+      })
+    }).catch(e => {
+        setHash('')
+        setAttempingTxn(false)
+    })
+  }
+
+  async function DeleteRobot() {
+      setAttempingTxn(true)
+      await marketContract.deleteRobot(index, robotId).then((response) => {
+      setHash(response.hash)
+      setAttempingTxn(false)
+      addTransaction(response, {
+        summary: `Delete Robot`,
+      })
+    }).catch(e => {
+      setHash('')
+      setAttempingTxn(false)
+  })
+  }
+
   const modalHeader = useCallback(() => {
     return (
       <ActionModalHeader
@@ -322,33 +414,40 @@ export default function Gridex() {
         // moneyInputValue={moneyInputValue}
       />
     )
-  }, [currenciesSelected?.currencyA, currenciesSelected?.currencyB])
+  }, [currenciesSelected])
 
-  const modalBottom = useCallback(() => { 
-    return (   
-      <ActionModalFooter  
-        onConfirm={actionToCall} 
-        swapErrorMessage={undefined}
+  const onConfirm = () => {
+    actionToCall == "buy" 
+    ? Buy(robotId)
+    : actionToCall == "sell" 
+    ? Sell(robotId) 
+    : actionToCall == "delete" 
+    && DeleteRobot()
+  }
+
+  const modalBottom = useCallback(() => {
+    return (
+      <ActionModalFooter 
+        onConfirm={onConfirm} 
+        swapErrorMessage={undefined} 
+    />
+    )
+  }, [modalHeader, currenciesSelected, stockContract, moneyContract, marketContract, factoryContract, index, robotId,])
+
+  const confirmationContent = useCallback(
+    () => (
+      <ConfirmationModalContent
+        title="Confirm Action"
+        onDismiss={() => {
+          setModalOpen(false)
+          setHash(undefined)
+        }}
+        topContent={modalHeader}
+        bottomContent={modalBottom}
       />
-    )
-  }, [currenciesSelected?.currencyA, currenciesSelected?.currencyB, actionToCall, setActionToCall])
-
-    const confirmationContent = useCallback(
-      () =>
-       (
-          <ConfirmationModalContent
-            title="Confirm Action"
-            onDismiss={() => {
-              setModalOpen(false)
-              setHash(undefined)
-            }}
-            topContent={modalHeader}
-            bottomContent={modalBottom}
-          />
-        ),
-      [modalBottom, modalHeader]
-    )
-
+    ),
+    [modalBottom, modalHeader]
+  )
 
   return (
     <Container
@@ -432,7 +531,7 @@ export default function Gridex() {
           moneyAddress={moneyAddress}
           robots={result}
           term={term}
-          inputValue={formattedAmounts[Field.CURRENCY_B]}
+          inputValue={inputValue}
           RobotsMap={RobotsMap}
           showMaxButton={!atMaxAmounts[Field.CURRENCY_B]}
           onUserInput={onFieldBInput}
@@ -445,8 +544,13 @@ export default function Gridex() {
           selectedCurrencyBalance={selectedCurrencyBalance}
           marketSelector={marketSelector}
           setModalOpen={setModalOpen}
+          setIndex={setIndex}
+          setRobotId={setRobotId}
+          setRobotHighPrice={setRobotHighPrice}
+          setRobotLowPrice={setRobotLowPrice}
+          setRobotStockAmount={setRobotStockAmount}
+          setRobotMoneyAmount={setRobotMoneyAmount}
           setActionToCall={setActionToCall}
-          value={value}
         />
         <div className="ml-2 mt-4">
           <button className="text-sm hover:text-high-emphesis" onClick={() => setGridexInfoOpen(true)}>

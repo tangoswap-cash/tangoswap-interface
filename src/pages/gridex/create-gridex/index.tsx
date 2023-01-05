@@ -160,13 +160,9 @@ export default function CreateGridexPage() {
         addTransaction(response, {
           summary: `Create Robot`,
         })
-        // provider.waitForTransaction(response.hash).then(() => {
-        //   setHash(undefined)
-        // })
       })
       .catch((error) => {
         setHash('')
-        console.log('error', error)
         setAttempingTxn(false)
       })
   }
