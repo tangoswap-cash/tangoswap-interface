@@ -1,34 +1,22 @@
 import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
 import { AutoRow, RowBetween } from '../../../components/Row'
-import Button, { ButtonError } from '../../../components/Button'
+import Button from '../../../components/Button'
 import {
   Currency,
   CurrencyAmount,
-  Percent,
-  WNATIVE,
-  currencyEquals,
-  SmartBCH,
-  Token,
-  TradeType,
   Trade as V2Trade,
 } from '@tangoswapcash/sdk'
 import { ONE_BIPS, ZERO_PERCENT } from '../../../constants'
 import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react'
-import { calculateGasMargin, calculateSlippageAmount, getGasPrice } from '../../../functions/trade'
 import { currencyId, maxAmountSpend } from '../../../functions/currency'
 import { useDerivedMintInfo, useGridexMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
 import { useExpertModeManager, useUserSlippageToleranceWithDefault } from '../../../state/user/hooks'
-import Alert from '../../../components/Alert'
 import { AutoColumn } from '../../../components/Column'
 import { BigNumber } from '@ethersproject/bignumber'
-import { ConfirmAddModalBottom } from '../../../features/exchange-v1/liquidity/ConfirmAddModalBottom'
 import Container from '../../../components/Container'
 import CurrencyInputPanel from '../../../components/CurrencyInputPanel'
-import CurrencyLogo from '../../../components/CurrencyLogo'
 import Dots from '../../../components/Dots'
-import DoubleCurrencyLogo from '../../../components/DoubleLogo'
 import DoubleGlowShadow from '../../../components/DoubleGlowShadow'
-import ExchangeHeader from '../../../features/trade/Header'
 import { Field } from '../../../state/mint/actions'
 import Head from 'next/head'
 import NavLink from '../../../components/NavLink'
@@ -37,10 +25,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import Web3Connect from '../../../components/Web3Connect'
 import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React'
-import { useCurrency } from '../../../hooks/Tokens'
-import { useIsSwapUnsupported } from '../../../hooks/useIsSwapUnsupported'
 import { useLingui } from '@lingui/react'
-import { useRouter } from 'next/router'
 import {
   useApproveSep206Callback,
   useFactoryGridexContract,
@@ -48,24 +33,11 @@ import {
   useTokenContract,
 } from '../../../hooks'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
-import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
-import { useWalletModalToggle } from '../../../state/application/hooks'
 import PanelLimitPrice from '../../../components/PanelLimitPrice'
-import { useCurrencyBalances } from '../../../state/wallet/hooks'
 import { ethers } from 'ethers'
 import { parseUnits } from '@ethersproject/units'
-import { formatUnits } from '@ethersproject/units'
 import { formatCurrencyAmount } from '../../../functions'
-import ConfirmCreateModal from '../../../features/robots/ConfirmCreateModal'
-import { useDerivedSwapInfo, useSwapState } from '../../../state/swap/hooks'
-import { useSwapCallback } from '../../../hooks/useSwapCallback'
-import Modal from '../../../components/Modal'
-import TransactionConfirmationModal, {
-  ConfirmationModalContent,
-  TransactionErrorContent,
-} from '../../../modals/TransactionConfirmationModal'
-import CreateModalHeader from '../../../features/robots/CreateModalHeader'
-import CreateModalFooter from '../../../features/robots/CreateModalFooter'
+import ConfirmCreateModal from '../../../features/robots/CreateGridexModal/ConfirmCreateModal'
 
 export default function CreateGridexPage() {
   const { i18n } = useLingui()
@@ -126,8 +98,6 @@ export default function CreateGridexPage() {
 
   const marketContract = useGridexMarketContract(marketAddress)
 
-  const provider = new ethers.providers.Web3Provider(window?.ethereum)
-
   async function CreateRobot() {
     const moneyDecimals = await moneyContract?.decimals()
     const stockDecimals = await stockContract?.decimals()
@@ -162,7 +132,7 @@ export default function CreateGridexPage() {
         })
       })
       .catch((error) => {
-        setHash('')
+        setHash(undefined)
         setAttempingTxn(false)
       })
   }

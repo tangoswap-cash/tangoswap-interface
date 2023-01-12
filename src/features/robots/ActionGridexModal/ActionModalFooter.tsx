@@ -1,20 +1,20 @@
 import { Currency, TradeType, Trade as V2Trade } from '@tangoswapcash/sdk'
 import React, { ReactNode } from 'react'
 
-import { ButtonError } from '../../components/Button'
-import { SwapCallbackError } from '../exchange-v1/swap/styleds'
+import { ButtonError } from '../../../components/Button'
+import { SwapCallbackError } from '../../exchange-v1/swap/styleds'
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
 
 export default function CreateModalFooter({
 //   trade,
   onConfirm,
-  swapErrorMessage,
+  txErrorMsg,
 //   disabledConfirm,
 }: {
 //   trade: V2Trade<Currency, Currency, TradeType>
   onConfirm: () => void
-  swapErrorMessage: ReactNode | undefined
+  txErrorMsg: ReactNode | undefined
 //   disabledConfirm: boolean
 }) {
   const { i18n } = useLingui()
@@ -100,7 +100,7 @@ export default function CreateModalFooter({
         {i18n._(t`Confirm Action`)}
       </ButtonError>
 
-      {swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
+      {txErrorMsg ? <SwapCallbackError error={txErrorMsg} /> : null}
     </div>
   )
 }

@@ -9,7 +9,7 @@ import {
   ZERO,
 } from '@tangoswapcash/sdk'
 import { Disclosure, Transition } from '@headlessui/react'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import Button, { ButtonError } from '../../components/Button'
 import Dots from '../../components/Dots'
@@ -30,7 +30,7 @@ import { usePendingSushi, useUserInfo } from '../onsen/hooks'
 import useMasterChef from '../onsen/useMasterChef'
 import usePendingReward from '../onsen/usePendingReward'
 import { useFactoryGridexContract, useGridexMarketContract, useTokenContract } from '../../hooks'
-import { parseUnits } from '@ethersproject/units'
+import { parseEther, parseUnits } from '@ethersproject/units'
 import { FiatValue } from '../../components/BuyRobotsPanel/FiatValue'
 
 const RobotListItemDetails = ({
@@ -50,10 +50,6 @@ const RobotListItemDetails = ({
   setModalOpen,
   setIndex,
   setRobotId,
-  setRobotHighPrice,
-  setRobotLowPrice,
-  setRobotStockAmount,
-  setRobotMoneyAmount,
   setActionToCall,
 }) => {
   const { i18n } = useLingui()
@@ -79,15 +75,53 @@ const RobotListItemDetails = ({
   const [maxValue, setMaxValue] = useState(robot.maxValue ? robot.maxValue : 0)
   const [minValue, setMinValue] = useState(robot.minValue ? robot.minValue : 0)
 
+  const [errorCode, setErrorCode] = useState(null)
+
   const stockContract = useTokenContract(stockAddress)
   const moneyContract = useTokenContract(moneyAddress)
 
-  async function DeleteRobot() {
-    await marketContract.deleteRobot(robot.index, robot.fullId).then((response) => {
-      addTransaction(response, {
-        summary: `Delete Robot`,
-      })
-    })
+  // variable to check if the user has enough balance || cmm has enough balance
+  async function balanceStatus() {
+    if (sell) {
+      const stockDecimals = await stockContract?.decimals()
+      const stockDelta = inputValue
+      const stockDeltaBN = parseUnits(inputValue, stockDecimals)
+      const moneyDelta = stockDelta * robot.lowPrice
+      const stockBalance = await stockContract?.balanceOf(account)
+
+      if (stockDeltaBN.gt(stockBalance)) {
+        return 0 // "Error: You don't have enough stock."
+      } else if (moneyDelta > robot.moneyAmount) {
+        return 1 // "Error: CMM has not enough money"
+      } else {
+        return 'No error'
+      }
+    }
+    if (buy) {
+      const moneyDecimals = await moneyContract?.decimals()
+      const moneyDelta = inputValue
+      const moneyDeltaBN = parseUnits(inputValue, moneyDecimals)
+      const moneyBalance = await moneyContract.balanceOf(account)
+      const stockDelta = moneyDelta / robot.highPrice
+
+      if (moneyDeltaBN.gt(moneyBalance)) {
+        return 0 // alert(`You don't have enough money.`)
+      } else if (stockDelta > robot.stockAmount) {
+        return 1 //alert('Tango CMM has not enough stock')
+      }
+    }
+  }
+
+  useEffect(() => {
+    balanceStatus().then((r) => setErrorCode(r))
+  }, [balanceStatus, currency, currencyB, marketSelector, inputValue])
+
+
+  const openTx = (action: string) => {
+    setModalOpen(true)
+    setActionToCall(action)
+    setIndex(robot?.index)
+    setRobotId(robot?.fullId)
   }
 
   return (
@@ -157,42 +191,40 @@ const RobotListItemDetails = ({
         {(robot.ownerAddr == account && (
           <Button
             color="red"
-            onClick={() => {
-              setModalOpen(true)
-              setActionToCall("delete")
-              setIndex(robot?.index)
-              setRobotId(robot?.fullId)
-            }}
+            onClick={() => openTx("delete")}
             className={`w-full mx-auto`}
           >
             {i18n._(t`Delete Tango CMM`)}
           </Button>
         )) ||
-          (buy && (
-            <Button
-              onClick={() => {
-                setModalOpen(true)
-                setActionToCall("buy")
-                setIndex(robot?.index)
-                setRobotId(robot?.fullId)
-                setRobotHighPrice(robot?.highPrice)
-                setRobotStockAmount(robot?.stockAmount)
-              }}
-              className={`w-full mx-auto bg-[#B95C40]  text-gray-200 hover:text-white`}
-            >
-              {i18n._(t`Buy ${robot?.stock?.symbol} from CMM`)}
+          (buy &&
+            (errorCode == 0 ? (
+              <Button disabled={true} className={`w-full mx-auto bg-[#B95C40] text-gray-200 hover:text-white`}>
+                {i18n._(t`You don't have enough Money`)}
+              </Button>
+            ) : errorCode == 1 ? (
+              <Button disabled={true} className={`w-full mx-auto bg-[#B95C40] text-gray-200 hover:text-white`}>
+                {i18n._(t`CMM has not enough stock`)}
+              </Button>
+            ) : (
+              <Button
+                onClick={() => openTx("buy")}
+                className={`w-full mx-auto bg-[#B95C40]  text-gray-200 hover:text-white`}
+              >
+                {i18n._(t`Buy ${robot?.stock?.symbol} from CMM`)}
+              </Button>
+            ))) ||
+          (sell && errorCode == 0 ? (
+            <Button disabled={true} className={`w-full mx-auto bg-[#5C1B0B] text-gray-200 hover:text-white`}>
+              {i18n._(t`You don't have enough Stock`)}
             </Button>
-          )) ||
-          (sell && (
+          ) : errorCode == 1 ? (
+            <Button disabled={true} className={`w-full mx-auto bg-[#5C1B0B] text-gray-200 hover:text-white`}>
+              {i18n._(t`CMM has not enough money`)}
+            </Button>
+          ) : (
             <Button
-              onClick={() => {
-                setModalOpen(true)
-                setActionToCall("sell")
-                setIndex(robot?.index)
-                setRobotId(robot?.fullId)
-                setRobotLowPrice(robot?.lowPrice)
-                setRobotMoneyAmount(robot?.moneyAmount)
-              }}
+              onClick={() => openTx("delete")}
               className={`w-full mx-auto bg-[#5C1B0B] text-gray-200 hover:text-white`}
             >
               {i18n._(t`Sell ${robot?.stock?.symbol} to CMM`)}

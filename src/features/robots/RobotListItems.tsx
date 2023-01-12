@@ -32,10 +32,6 @@ const RobotListItems = ({
   setModalOpen,
   setIndex,
   setRobotId,
-  setRobotHighPrice,
-  setRobotLowPrice,
-  setRobotStockAmount,
-  setRobotMoneyAmount,
   setActionToCall,
   ...rest
 }) => {
@@ -136,10 +132,6 @@ const RobotListItems = ({
               setModalOpen={setModalOpen}
               setIndex={setIndex}
               setRobotId={setRobotId}
-              setRobotHighPrice={setRobotHighPrice}
-              setRobotLowPrice={setRobotLowPrice}
-              setRobotStockAmount={setRobotStockAmount}
-              setRobotMoneyAmount={setRobotMoneyAmount}
               setActionToCall={setActionToCall}
             />
           )}

@@ -1,8 +1,8 @@
 import { Currency, TradeType, Trade as V2Trade } from '@tangoswapcash/sdk'
 import React, { ReactNode } from 'react'
 
-import { ButtonError } from '../../components/Button'
-import { SwapCallbackError } from '../exchange-v1/swap/styleds'
+import { ButtonError } from '../../../components/Button'
+import { SwapCallbackError } from '../../exchange-v1/swap/styleds'
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
 

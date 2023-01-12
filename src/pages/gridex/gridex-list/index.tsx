@@ -45,7 +45,6 @@ import usePool from '../../../hooks/usePool'
 import { useCurrencyBalance, useTokenBalancesWithLoadingIndicator } from '../../../state/wallet/hooks'
 import { usePositions, usePendingSushi } from '../../../features/onsen/hooks'
 import { useRouter } from 'next/router'
-import { updateUserFarmFilter } from '../../../state/user/actions'
 import { getFarmFilter, useUpdateFarmFilter } from '../../../state/user/hooks'
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
@@ -53,21 +52,19 @@ import RobotList from '../../../features/robots/RobotList'
 import Button from '../../../components/Button'
 import NavLink from '../../../components/NavLink'
 import GridexMenu from '../../../features/onsen/GridexMenu'
-import { isMobile } from 'react-device-detect'
 import { ethers } from 'ethers'
 import { parseUnits } from '@ethersproject/units'
 import { formatUnits } from '@ethersproject/units'
-import { formatCurrencyAmount } from '../../../functions'
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from '../../../state/mint/hooks'
 import BuyRobotsPanel from '../../../components/BuyRobotsPanel'
 import { Field } from '../../../state/burn/actions'
 import Typography from '../../../components/Typography'
 import GridexInfo from '../../../modals/GridexModal'
 import GridexToggle from '../../../components/Toggle/gridexToggle'
-import { NextPage } from 'next'
 import TransactionConfirmationModal, { ConfirmationModalContent } from '../../../modals/TransactionConfirmationModal'
-import ActionModalHeader from '../../../features/robots/ActionModalHeader'
-import ActionModalFooter from '../../../features/robots/ActionModalFooter'
+import ActionModalHeader from '../../../features/robots/ActionGridexModal/ActionModalHeader'
+import ActionModalFooter from '../../../features/robots/ActionGridexModal/ActionModalFooter'
+import ActionConfirmModal from '../../../features/robots/ActionGridexModal/ActionConfirmModal'
 import { useTransactionAdder } from '../../../state/transactions/hooks'
 import { Contract } from '@ethersproject/contracts'
 
@@ -160,7 +157,8 @@ export default function Gridex() {
 
   const [attemptingTxn, setAttempingTxn] = useState(false)
   const [hash, setHash] = useState('')
-  
+  const [txErrorMsg, setTxErrorMsg] = useState()
+
   const [currenciesSelected, setCurrenciesSelected] = useState({
     currencyA: null,
     currencyB: null,
@@ -170,10 +168,6 @@ export default function Gridex() {
 
   const [index, setIndex] = useState()
   const [robotId, setRobotId] = useState()
-  const [robotHighPrice, setRobotHighPrice] = useState(0)
-  const [robotLowPrice, setRobotLowPrice] = useState(0)
-  const [robotStockAmount, setRobotStockAmount] = useState(0)
-  const [robotMoneyAmount, setRobotMoneyAmount] = useState(0)
 
   const handleCurrencyASelect = (currencyA: Currency) => {
     setCurrenciesSelected({ ...currenciesSelected, currencyA: currencyA })
@@ -228,15 +222,14 @@ export default function Gridex() {
 
   const marketContract = useGridexMarketContract(marketAddress)
 
-  /* This can be used anywhere on the code too */
   const stockcontract = useTokenContract(stock?.address)
   const moneycontract = useTokenContract(money?.address)
 
-  /* This states are neccesary to make Buy/Sell functions work, if these states are not existent, the function doesn't detect stockContract, moneyContract */
-  const [stockContract, setStockContract] = useState<Contract>() 
+  /* This states are neccesary to make Buy/Sell functions work, if these states are not existent, the functions doesn't detect stockContract, moneyContract */
+  const [stockContract, setStockContract] = useState<Contract>()
   const [moneyContract, setMoneyContract] = useState<Contract>()
 
-  const [actionToCall, setActionToCall] = useState("")
+  const [actionToCall, setActionToCall] = useState('')
 
   useEffect(() => {
     getAllRobots(
@@ -321,133 +314,89 @@ export default function Gridex() {
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyA ?? undefined)
   const selectedCurrencyBBalance = useCurrencyBalance(account ?? undefined, currenciesSelected?.currencyB ?? undefined)
 
-  const pendingText = `This is the action modal`
-  const pendingText2 = ``
-
   const addTransaction = useTransactionAdder()
 
-  
   const inputValue = formattedAmounts[Field.CURRENCY_B]
 
-  async function Buy(robotId) {
+  const Buy = async (robotId) => {
     const moneyDecimals = await moneyContract?.decimals()
-    var moneyDelta = inputValue //*1.0
-    var moneyDeltaBN = parseUnits(inputValue, moneyDecimals)
-    var robot = RobotsMap[robotId]
-    var moneyBalance = moneyContract.balanceOf(account)
+    const moneyDeltaBN = parseUnits(inputValue, moneyDecimals)
+    const robot = RobotsMap[robotId]
 
-    var stockDelta = moneyDelta / robotHighPrice
-
-    if (moneyDeltaBN > moneyBalance) {
-      alert(`You don't have enough money.`)
-    } else if (stockDelta > robotStockAmount) {
-      alert('Tango CMM has not enough stock')
-    }
-
-    let val = null
-    val = moneyAddress == '0x0000000000000000000000000000000000002711' ? { value: moneyDeltaBN } : null
+    let val = moneyAddress == '0x0000000000000000000000000000000000002711' ? { value: moneyDeltaBN } : null
 
     setAttempingTxn(true)
-    await marketContract.buyFromRobot(robotId, moneyDeltaBN, val).then((response) => {
-      setHash(response.hash)
-      setAttempingTxn(false)
-      addTransaction(response, {
-        summary: `Buy Stock from ${robot.fullId.slice(0, 8)}...`,
+    await marketContract
+      .buyFromRobot(robotId, moneyDeltaBN, val)
+      .then((response) => {
+        setHash(response.hash)
+        setAttempingTxn(false)
+        addTransaction(response, {
+          summary: `Buy Stock from ${robot.fullId.slice(0, 8)}...`,
+        })
       })
-    }).catch(e => {
-      setHash('')
-      setAttempingTxn(false)
-  })
+      .catch((e) => {
+        setHash(undefined)
+        setAttempingTxn(false)
+        setTxErrorMsg(e)
+      })
   }
-  async function Sell(robotId) {
-    const stockDecimals = await stockContract?.decimals()
-    var stockDelta = inputValue
-    var stockDeltaBN = parseUnits(inputValue, stockDecimals)
-    var robot = RobotsMap[robotId]
-    var moneyDelta = stockDelta * robotLowPrice
-    var stockBalance = stockContract?.balanceOf(account)
 
-    if (stockDeltaBN > stockBalance) {
-      alert(`You don't have enough stock.`)
-    } else if (moneyDelta > robotMoneyAmount) {
-      alert(`Tango CMM has not enough money`)
-    }
+  const Sell = async (robotId) => {
+    const stockDecimals = await stockContract?.decimals()
+    const stockDeltaBN = parseUnits(inputValue, stockDecimals)
+    const robot = RobotsMap[robotId]
 
     let val = null
     val = stockAddress == '0x0000000000000000000000000000000000002711' ? { value: stockDeltaBN } : null
 
-      setAttempingTxn(true)
-      await marketContract.sellToRobot(robotId, stockDeltaBN, val).then((response) => {
-      setHash(response.hash)
-      setAttempingTxn(false)
-      addTransaction(response, {
-        summary: `Sell Stock to ${robot.fullId.slice(0, 8)}...`,
-      })
-    }).catch(e => {
-        setHash('')
+    setAttempingTxn(true)
+    await marketContract
+      .sellToRobot(robotId, stockDeltaBN, val)
+      .then((response) => {
+        setHash(response.hash)
         setAttempingTxn(false)
-    })
-  }
-
-  async function DeleteRobot() {
-      setAttempingTxn(true)
-      await marketContract.deleteRobot(index, robotId).then((response) => {
-      setHash(response.hash)
-      setAttempingTxn(false)
-      addTransaction(response, {
-        summary: `Delete Robot`,
+        addTransaction(response, {
+          summary: `Sell Stock to ${robot.fullId.slice(0, 8)}...`,
+        })
       })
-    }).catch(e => {
-      setHash('')
-      setAttempingTxn(false)
-  })
+      .catch((e) => {
+        setHash(undefined)
+        setAttempingTxn(false)
+        setTxErrorMsg(e)
+      })
   }
 
-  const modalHeader = useCallback(() => {
-    return (
-      <ActionModalHeader
-        currencyA={currenciesSelected?.currencyA}
-        currencyB={currenciesSelected?.currencyB}
-        // maxValue={maxValue}
-        // minValue={minValue}
-        // stockInputValue={stockInputValue}
-        // moneyInputValue={moneyInputValue}
-      />
-    )
-  }, [currenciesSelected])
+  const DeleteRobot = async () => {
+    setAttempingTxn(true)
+    await marketContract
+      .deleteRobot(index, robotId)
+      .then((response) => {
+        setHash(response.hash)
+        setAttempingTxn(false)
+        addTransaction(response, {
+          summary: `Delete Robot`,
+        })
+      })
+      .catch((e) => {
+        setHash(undefined)
+        setAttempingTxn(false)
+        setTxErrorMsg(e)
+      })
+  }
 
   const onConfirm = () => {
-    actionToCall == "buy" 
-    ? Buy(robotId)
-    : actionToCall == "sell" 
-    ? Sell(robotId) 
-    : actionToCall == "delete" 
-    && DeleteRobot()
+    actionToCall == 'buy'
+      ? Buy(robotId)
+      : actionToCall == 'sell'
+      ? Sell(robotId)
+      : actionToCall == 'delete' && DeleteRobot()
   }
 
-  const modalBottom = useCallback(() => {
-    return (
-      <ActionModalFooter 
-        onConfirm={onConfirm} 
-        swapErrorMessage={undefined} 
-    />
-    )
-  }, [modalHeader, currenciesSelected, stockContract, moneyContract, marketContract, factoryContract, index, robotId,])
-
-  const confirmationContent = useCallback(
-    () => (
-      <ConfirmationModalContent
-        title="Confirm Action"
-        onDismiss={() => {
-          setModalOpen(false)
-          setHash(undefined)
-        }}
-        topContent={modalHeader}
-        bottomContent={modalBottom}
-      />
-    ),
-    [modalBottom, modalHeader]
-  )
+  const onDismiss = () => {
+    setModalOpen(false)
+    setHash(undefined)
+  }
 
   return (
     <Container
@@ -463,14 +412,21 @@ export default function Gridex() {
         <GridexMenu positionsLength={positions.length} options={optionsMenu} robots={result} />
       </div>
 
-      <TransactionConfirmationModal
+      <ActionConfirmModal
         isOpen={modalOpen}
-        onDismiss={() => setModalOpen(false)}
         attemptingTxn={attemptingTxn}
         hash={hash}
-        content={confirmationContent}
-        pendingText={pendingText}
-        pendingText2={pendingText2}
+        currencyA={currenciesSelected?.currencyA}
+        currencyB={currenciesSelected?.currencyB}
+        onConfirm={onConfirm}
+        txErrorMsg={txErrorMsg}
+        onDismiss={onDismiss}
+        stockContract={stockContract}
+        moneyContract={moneyContract}
+        marketContract={marketContract}
+        factoryContract={factoryContract}
+        index={index}
+        robotId={index}
       />
 
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
@@ -546,10 +502,6 @@ export default function Gridex() {
           setModalOpen={setModalOpen}
           setIndex={setIndex}
           setRobotId={setRobotId}
-          setRobotHighPrice={setRobotHighPrice}
-          setRobotLowPrice={setRobotLowPrice}
-          setRobotStockAmount={setRobotStockAmount}
-          setRobotMoneyAmount={setRobotMoneyAmount}
           setActionToCall={setActionToCall}
         />
         <div className="ml-2 mt-4">
