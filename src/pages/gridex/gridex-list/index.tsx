@@ -255,6 +255,12 @@ export default function Gridex() {
   const portfolio = type == 'portfolio'
   const sell = marketSelector
   const buy = !marketSelector
+  // console.log("buy",buy);
+  // console.log("sell",sell);
+  // console.log("portfolio",portfolio);
+  //console.log("marketSelector",marketSelector);
+
+
 
   const savedFilter = getFarmFilter()
 
@@ -389,8 +395,8 @@ export default function Gridex() {
     actionToCall == 'buy'
       ? Buy(robotId)
       : actionToCall == 'sell'
-      ? Sell(robotId)
-      : actionToCall == 'delete' && DeleteRobot()
+        ? Sell(robotId)
+        : actionToCall == 'delete' && DeleteRobot()
   }
 
   const onDismiss = () => {
@@ -422,12 +428,15 @@ export default function Gridex() {
         txErrorMsg={txErrorMsg}
         onDismiss={onDismiss}
         stockContract={stockContract}
-        moneyContract={moneyContract} 
+        moneyContract={moneyContract}
         marketContract={marketContract}
         factoryContract={factoryContract}
         index={index}
-        robotId={index}
-      />
+        robotId={index} 
+        currentMarket={marketSelector}
+        inputValue={inputValue}
+        robots={result}      
+        />
 
       <div className={classNames('space-y-6 col-span-4 lg:col-span-3')}>
         <div className="w-full sm:flex sm:gap-2">
@@ -456,7 +465,7 @@ export default function Gridex() {
           <div className="sm:mr-40">Tango CMM list </div>
           <div
             className={
-              window.location.href.endsWith(`?filter=portfolio`)
+              portfolio
                 ? 'hidden'
                 : 'flex items-center h-full pl-2 ml-8 sm:ml-auto'
             }
@@ -481,6 +490,25 @@ export default function Gridex() {
           </div>
           <div className="w-full h-0 ml-4 font-bold bg-transparent border border-b-0 border-transparent rounded text-high-emphesis md:border-gradient-r-blue-pink-dark-800 opacity-20"></div>
         </div>
+        <ActionConfirmModal
+          isOpen={modalOpen}
+          attemptingTxn={attemptingTxn}
+          hash={hash}
+          currencyA={currenciesSelected?.currencyA}
+          currencyB={currenciesSelected?.currencyB}
+          onConfirm={onConfirm}
+          txErrorMsg={txErrorMsg}
+          onDismiss={onDismiss}
+          stockContract={stockContract}
+          moneyContract={moneyContract}
+          marketContract={marketContract}
+          factoryContract={factoryContract}
+          index={index}
+          robotId={index}
+          currentMarket={marketSelector}
+          inputValue={inputValue}
+          robots={result}
+        />
 
         <RobotList
           stockAddress={stockAddress}
