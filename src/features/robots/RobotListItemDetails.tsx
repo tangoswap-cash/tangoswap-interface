@@ -89,13 +89,14 @@ const RobotListItemDetails = ({
       const moneyDelta = stockDelta * robot.lowPrice
       const stockBalance = await stockContract?.balanceOf(account)
 
+      console.log(stockDelta);
+
       if (stockDeltaBN.gt(stockBalance)) {
         return 0 // "Error: You don't have enough stock."
       } else if (moneyDelta > robot.moneyAmount) {
         return 1 // "Error: CMM has not enough money"
-      } else {
-        return 'No error'
-      }
+      } 
+
     }
     if (buy) {
       const moneyDecimals = await moneyContract?.decimals()
@@ -105,9 +106,9 @@ const RobotListItemDetails = ({
       const stockDelta = moneyDelta / robot.highPrice
 
       if (moneyDeltaBN.gt(moneyBalance)) {
-        return 0 // alert(`You don't have enough money.`)
+        return 0 // "Error: You don't have enough money"
       } else if (stockDelta > robot.stockAmount) {
-        return 1 //alert('Tango CMM has not enough stock')
+        return 1 // "Error: Tango CMM has not enough stock"
       }
     }
   }
@@ -198,12 +199,16 @@ const RobotListItemDetails = ({
           </Button>
         )) ||
           (buy &&
-            (errorCode == 0 ? (
-              <Button disabled={true} className={`w-full mx-auto bg-[#B95C40] text-gray-200 hover:text-white`}>
+            (inputValue == "" ? (
+              <Button disabled={true} className={`w-full mx-auto bg-[#723827] text-gray-200 hover:text-white`}>
+                {i18n._(t`Input an amount`)}
+              </Button>
+            ) : errorCode == 0 ? (
+              <Button disabled={true} className={`w-full mx-auto bg-[#723827] text-gray-200 hover:text-white`}>
                 {i18n._(t`You don't have enough Money`)}
               </Button>
             ) : errorCode == 1 ? (
-              <Button disabled={true} className={`w-full mx-auto bg-[#B95C40] text-gray-200 hover:text-white`}>
+              <Button disabled={true} className={`w-full mx-auto bg-[#723827] text-gray-200 hover:text-white`}>
                 {i18n._(t`CMM has not enough stock`)}
               </Button>
             ) : (
@@ -214,12 +219,16 @@ const RobotListItemDetails = ({
                 {i18n._(t`Buy ${robot?.stock?.symbol} from CMM`)}
               </Button>
             ))) ||
-          (sell && errorCode == 0 ? (
-            <Button disabled={true} className={`w-full mx-auto bg-[#5C1B0B] text-gray-200 hover:text-white`}>
+          (inputValue == "" ? (
+            <Button disabled={true} className={`w-full mx-auto bg-[#330f06] text-gray-200 hover:text-white`}>
+              {i18n._(t`Input an amount`)}
+            </Button>
+          ) : sell && errorCode == 0 ? (
+            <Button disabled={true} className={`w-full mx-auto bg-[#330f06] text-gray-200 hover:text-white`}>
               {i18n._(t`You don't have enough Stock`)}
             </Button>
           ) : errorCode == 1 ? (
-            <Button disabled={true} className={`w-full mx-auto bg-[#5C1B0B] text-gray-200 hover:text-white`}>
+            <Button disabled={true} className={`w-full mx-auto bg-[#330f06] text-gray-200 hover:text-white`}>
               {i18n._(t`CMM has not enough money`)}
             </Button>
           ) : (

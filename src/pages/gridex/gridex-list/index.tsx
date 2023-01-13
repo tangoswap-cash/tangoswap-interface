@@ -316,7 +316,7 @@ export default function Gridex() {
 
   const addTransaction = useTransactionAdder()
 
-  const inputValue = formattedAmounts[Field.CURRENCY_B]
+  const inputValue = formattedAmounts[Field.CURRENCY_B] 
 
   const Buy = async (robotId) => {
     const moneyDecimals = await moneyContract?.decimals()
@@ -422,7 +422,7 @@ export default function Gridex() {
         txErrorMsg={txErrorMsg}
         onDismiss={onDismiss}
         stockContract={stockContract}
-        moneyContract={moneyContract}
+        moneyContract={moneyContract} 
         marketContract={marketContract}
         factoryContract={factoryContract}
         index={index}
