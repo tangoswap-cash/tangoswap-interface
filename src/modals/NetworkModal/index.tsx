@@ -33,7 +33,7 @@ export const SUPPORTED_NETWORKS: {
       symbol: 'BCH',
       decimals: 18,
     },
-    rpcUrls: ['https://smartbch.fountainhead.cash/mainnet'],
+    rpcUrls: ['https://smartbch.greyh.at'],
     blockExplorerUrls: ['https://sonar.cash'],
   },
   [ChainId.SMARTBCH_AMBER]: {
