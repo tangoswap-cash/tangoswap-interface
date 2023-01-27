@@ -60,11 +60,11 @@ function getTokenPriceInBch(pool, pair, chainId, tangoPriceBCH, bchPriceUSD) {
   } else if (token1.address === TANGO[chainId].address) {
     [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
     factor = tangoPriceBCH;
-  } else if (token0.address === FLEXUSD.address) {
-    factor = bchPriceUSD;
-  } else if (token1.address === FLEXUSD.address) {
-    [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
-    factor = bchPriceUSD;
+  // } else if (token0.address === FLEXUSD.address) {
+  //   factor = bchPriceUSD;
+  // } else if (token1.address === FLEXUSD.address) {
+  //   [tokenAmount1, tokenAmount0] = [tokenAmount0, tokenAmount1];
+  //   factor = bchPriceUSD;
   } else if (token0.address === WBCH[chainId].address) {
     factor = 1;
   } else if (token1.address === WBCH[chainId].address) {
@@ -81,6 +81,9 @@ export default function Farm(): JSX.Element {
   const router = useRouter()
 
   const [tangoPriceUSD, setTangoPriceUSD] = useState(0);
+  const [bchPriceUSD, setBchPriceUSD] = useState(0);
+  const [tangoPriceBCH, setTangoPriceBCH] = useState(0);
+
 
   const type = router.query.filter as string
 
@@ -497,11 +500,12 @@ export default function Farm(): JSX.Element {
 
 
   // console.log(farms);
-  const flexUSDTangoPool = farms[1].pool;
-  const bchFlexUSDPool = farms[3].pool;
-  const bchTangoPool = farms[2].pool;
-  let bchPriceUSD = 0;
-  let tangoPriceBCH = 0;
+  // const flexUSDTangoPool = farms[1].pool;
+  // const bchFlexUSDPool = farms[3].pool;
+  // const bchTangoPool = farms[2].pool;
+
+  // let bchPriceUSD = 0;
+  // let tangoPriceBCH = 0;
 
   // tangoPriceUSD
   axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tangoswap&vs_currencies=usd')
@@ -509,15 +513,29 @@ export default function Farm(): JSX.Element {
     return setTangoPriceUSD(response.data.tangoswap.usd)
   })
 
-  if (bchFlexUSDPool.reserves) {
-    bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
-  }
+  // bchPriceUSD
+  axios.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin-cash&vs_currencies=usd')
+  .then(response => {
+    console.log(response.data["bitcoin-cash"])
+    return setBchPriceUSD(response.data["bitcoin-cash"].usd)
+  })
+
+  // tangoPriceBCH
+  axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tangoswap&vs_currencies=bch')
+  .then(response => {
+    return setTangoPriceBCH(response.data.tangoswap.bch)
+  })
+
+
+  // if (bchFlexUSDPool.reserves) {
+  //   bchPriceUSD = Number.parseFloat(bchFlexUSDPool.reserves[1].toFixed()) / Number.parseFloat(bchFlexUSDPool.reserves[0].toFixed());
+  // }
   // if (flexUSDTangoPool.reserves) {
   //   tangoPriceUSD = 1. / ( Number.parseFloat(flexUSDTangoPool.reserves[0].toFixed()) / Number.parseFloat(flexUSDTangoPool.reserves[1].toFixed()))
   // }
-  if (bchTangoPool.reserves) {
-    tangoPriceBCH = Number.parseFloat(bchTangoPool.reserves[0].toFixed()) / Number.parseFloat(bchTangoPool.reserves[1].toFixed())
-  }
+  // if (bchTangoPool.reserves) {
+  //   tangoPriceBCH = Number.parseFloat(bchTangoPool.reserves[0].toFixed()) / Number.parseFloat(bchTangoPool.reserves[1].toFixed())
+  // }
 
   for (const [pairAddress, pair] of Object.entries(hardcodedPairs2x[chainId])) {
     swapPairs.push({

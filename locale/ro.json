@@ -241,7 +241,6 @@
   "TANGOswap": "",
   "TVL": "TVL",
   "Take Limit Order": "",
-  "Tango CMM": "",
   "Telegram": "",
   "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer.": "Invariabila Uniswap x*y=k nu a fost acceptată de swap. Acest lucru înseamnă, de obicei, că unul dintre token-urile pe care le schimbați încorporează un comportament personalizat la transfer.",
   "The difference between the market price and estimated price due to trade size.": "Diferența dintre prețul pieței și prețul estimat ca urmare a dimensiunii tranzacției.",
