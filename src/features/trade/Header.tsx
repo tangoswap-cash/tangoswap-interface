@@ -75,7 +75,7 @@ const ExchangeHeader: FC<ExchangeHeaderProps> = ({ input, output, allowedSlippag
           }}
         >
           <a className="flex items-center justify-center px-4 text-base font-medium text-center rounded-md text-secondary hover:text-high-emphesis ">
-            {i18n._(t`Limit`)} <sup>NEW</sup>
+            {i18n._(t`Limit`)}
           </a>
         </NavLink>
         <NavLink
@@ -111,7 +111,7 @@ const ExchangeHeader: FC<ExchangeHeaderProps> = ({ input, output, allowedSlippag
             </div>
           )*/}
           {refreshPrice &&
-            <div onClick={refreshPrice} className="relative flex items-center justify-center rounded hover:bg-dark-800 w-8 h-8 rounded cursor-pointer">
+            <div onClick={refreshPrice} className="relative flex items-center justify-center w-8 h-8 rounded cursor-pointer hover:bg-dark-800">
               <span className={refreshingPrice ? "animate-spin opacity-40" : undefined}>
                 <RefreshIcon className="w-[26px] h-[26px] transform" />
               </span>
